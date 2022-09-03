@@ -5,5 +5,89 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 type Todo @model {
   id: ID!
   name: String!
-  description: String
+  description: String,
+  sortNumber: Int
+}
+
+type Accounts @model {
+  id: ID!
+  account_id: String
+  sub: String
+  status: Int
+  user_name: String
+}
+
+type Associate @model {
+  id: ID!
+  associate_id: String
+  account_id: String
+  invite_key: String
+  company_group_cd: String
+  status: Int
+  delete: Int
+}
+
+type Staff @model {
+  id: ID!
+  staff_id: String
+  associate_id: String
+  company_cd: String
+  company_group_cd: String
+  invite_key: String
+  status: Int
+  delete: Int
+}
+
+type Employee @model {
+  id: ID!
+  company_employee_id: String
+  staff_id: String
+  company_cd: String
+  last_name: String
+  first_name: String
+  last_name_kana: String
+  first_name_kana: String
+  gender: Int
+  birth: String
+  employee_number: String
+  permanent: Int
+  official_position: String
+  delete: Int
+  status: Int
+}
+
+type Company @model {
+  id: ID!
+  company_cd: String
+  company_name: String
+  company_name_kana: String
+  company_form: Int
+  form_name_position: Int
+  homepage_url: String
+  membership: Int
+  certified: Int
+  statsu: Int
+  delete: Int
+}
+
+type Brand @model {
+  id: ID!
+  company_brand_cd: String
+  brand_name: String
+  brand_cd: String
+  exchange_time: String
+  company_cd: String
+  status: Int
+  delete: Int
+}
+
+type Role @model {
+  id: ID!
+  role_cd: String
+  role_name: String
+}
+type Policy @model {
+  id: ID!
+  func_cd: String
+  crud: String
 }
