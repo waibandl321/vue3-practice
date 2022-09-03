@@ -31,7 +31,8 @@ export default {
           last_name_kana: '',
           first_name_kana: '',
           gender: '',
-          employee_number: ''
+          employee_number: '',
+          role_cd: ''
         },
         company: {
           company_type: 0,
@@ -70,7 +71,9 @@ export default {
         const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
         console.log('created associate', associate)
         const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
-        await storeAuth.storeSetAssociateStaff(associate, staff)
+        // const staff_role = await accountApiFunc.apiStaffRoleCreate(staff)
+        console.log('created staff', staff)
+        storeAuth.storeSetAssociateStaff(associate, staff)
         await employeeApiFunc.apiEmployeeCreate(this.params.profile)
         this.$router.push('/')
       } catch (error) {

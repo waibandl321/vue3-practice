@@ -175,6 +175,54 @@ export const onDeleteStaff = /* GraphQL */ `
     }
   }
 `;
+export const onCreateStaffRole = /* GraphQL */ `
+  subscription OnCreateStaffRole(
+    $filter: ModelSubscriptionStaffRoleFilterInput
+  ) {
+    onCreateStaffRole(filter: $filter) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateStaffRole = /* GraphQL */ `
+  subscription OnUpdateStaffRole(
+    $filter: ModelSubscriptionStaffRoleFilterInput
+  ) {
+    onUpdateStaffRole(filter: $filter) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteStaffRole = /* GraphQL */ `
+  subscription OnDeleteStaffRole(
+    $filter: ModelSubscriptionStaffRoleFilterInput
+  ) {
+    onDeleteStaffRole(filter: $filter) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateEmployee = /* GraphQL */ `
   subscription OnCreateEmployee($filter: ModelSubscriptionEmployeeFilterInput) {
     onCreateEmployee(filter: $filter) {

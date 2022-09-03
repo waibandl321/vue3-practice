@@ -205,6 +205,57 @@ export const deleteStaff = /* GraphQL */ `
     }
   }
 `;
+export const createStaffRole = /* GraphQL */ `
+  mutation CreateStaffRole(
+    $input: CreateStaffRoleInput!
+    $condition: ModelStaffRoleConditionInput
+  ) {
+    createStaffRole(input: $input, condition: $condition) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateStaffRole = /* GraphQL */ `
+  mutation UpdateStaffRole(
+    $input: UpdateStaffRoleInput!
+    $condition: ModelStaffRoleConditionInput
+  ) {
+    updateStaffRole(input: $input, condition: $condition) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteStaffRole = /* GraphQL */ `
+  mutation DeleteStaffRole(
+    $input: DeleteStaffRoleInput!
+    $condition: ModelStaffRoleConditionInput
+  ) {
+    deleteStaffRole(input: $input, condition: $condition) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createEmployee = /* GraphQL */ `
   mutation CreateEmployee(
     $input: CreateEmployeeInput!

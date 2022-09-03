@@ -38,6 +38,15 @@ type Staff @model {
   delete: Int
 }
 
+type StaffRole @model {
+  id: ID!
+  role_cd: String
+  staff_id: String
+  company_cd: String
+  status: Int
+  delete: Int
+}
+
 type Employee @model {
   id: ID!
   company_employee_id: String

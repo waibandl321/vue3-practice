@@ -141,6 +141,41 @@ export const listStaff = /* GraphQL */ `
     }
   }
 `;
+export const getStaffRole = /* GraphQL */ `
+  query GetStaffRole($id: ID!) {
+    getStaffRole(id: $id) {
+      id
+      role_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listStaffRoles = /* GraphQL */ `
+  query ListStaffRoles(
+    $filter: ModelStaffRoleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listStaffRoles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        role_cd
+        staff_id
+        company_cd
+        status
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getEmployee = /* GraphQL */ `
   query GetEmployee($id: ID!) {
     getEmployee(id: $id) {
