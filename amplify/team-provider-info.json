@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-portalweb-dev-115524-authRole",
+      "UnauthRoleArn": "arn:aws:iam::136112039144:role/amplify-portalweb-dev-115524-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::136112039144:role/amplify-portalweb-dev-115524-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-portalweb-dev-115524-deployment",
+      "UnauthRoleName": "amplify-portalweb-dev-115524-unauthRole",
+      "StackName": "amplify-portalweb-dev-115524",
+      "StackId": "arn:aws:cloudformation:us-east-1:136112039144:stack/amplify-portalweb-dev-115524/dd9db4a0-2b33-11ed-b6f1-0a9e82969eeb",
+      "AmplifyAppId": "di0t3lv9keu0p"
+    }
+  }
+}
