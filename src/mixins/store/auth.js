@@ -17,6 +17,8 @@ export default {
     store.commit('mSetStaff', staff)
   },
   storeSetAssociateStaff (associate, staff) {
+    console.log('store save associate', associate)
+    console.log('store save staff', staff)
     store.commit('mSetAssociate', associate)
     store.commit('mSetStaff', staff)
   },

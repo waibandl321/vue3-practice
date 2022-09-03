@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createAccounts, createAssociate, createStaff } from '@/graphql/mutations'
-import { listAccountss, listAssociates, listStaffs } from '@/graphql/queries'
+import { listAccounts, listAssociates, listStaff } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 
 async function apiAccountCreate (user) {
@@ -22,10 +22,10 @@ async function apiAccountCreate (user) {
   })
 }
 
-async function apiAssociateCreate (account, company, invite_key = null) {
+async function apiAssociateCreate (_account, company, invite_key = null) {
   const _assosiate = {
     associate_id: uuid.v4(),
-    account_id: account.account_id,
+    account_id: _account.account_id,
     invite_key: invite_key,
     company_group_cd: company.id,
     status: 0,
@@ -42,6 +42,7 @@ async function apiAssociateCreate (account, company, invite_key = null) {
   })
 }
 async function apiStaffCreate (associate, company, invite_key = null) {
+  console.log('staff create');
   const _staff = {
     staff_id: uuid.v4(),
     associate_id: associate.associate_id,
@@ -63,13 +64,14 @@ async function apiStaffCreate (associate, company, invite_key = null) {
 }
 
 async function getAccount (user) {
+  console.log('getAccount', user)
   const filter = {
     sub: {
       eq: user.attributes.sub
     }
   }
   return await API.graphql({
-    query: listAccountss,
+    query: listAccounts,
     variables: { filter: filter }
   })
 }
@@ -91,7 +93,7 @@ async function getStaff (associate) {
     }
   }
   return await API.graphql({
-    query: listStaffs,
+    query: listStaff,
     variables: { filter: filter }
   })
 }

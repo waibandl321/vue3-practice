@@ -24,7 +24,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   // storeデータチェック用
   console.log('cognito', store.getters.cognitoUser)
-  console.log({
+  console.log('store account', {
     account_id: store.getters.accountId,
     staff_id: store.getters.staffId,
     associate_id: store.getters.associateId,

@@ -65,25 +65,24 @@ export default {
         }
       } catch (error) {
         console.log('error signing in', error)
+        this.loading = false
         this.error = error
       }
-      this.loading = false
     },
     async afterSigninMove (user) {
       let account = await accountFunc.getAccount(user)
-      account = account.data.listAccountss.items[0]
+      account = account.data.listAccounts.items[0]
       storeAuth.storeSetAccount(account)
 
       let associate = await accountFunc.getAssociate(account)
       associate = associate.data.listAssociates.items
-      this.storeSetAssociate(associate)
 
       if (associate.length === 1) {
-        console.log('associate', ...associate)
         let staff = await accountFunc.getStaff(...associate)
-        staff = staff.data.listStaffs.items
+        staff = staff.data.listStaff.items
+        storeAuth.storeSetAssociateStaff(...associate, ...staff)
         if (staff.length === 1) {
-          console.log('staff', staff)
+          
           // MEMO: staffとassociateは同時生成なので、一旦条件なしで進める
           this.$router.push('/')
         }
@@ -91,6 +90,7 @@ export default {
         // アソシエイトなし
         this.$router.push('/setup/welcome')
       }
+      this.loading = false
     }
   }
 }

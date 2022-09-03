@@ -58,16 +58,17 @@ export default {
         this.company = await companyApiFunc.apiCompanyCreate(this.params.company)
         this.brand = await brandApiFunc.apiBrandCreate(this.params.brand, this.company)
         await storeAuth.storeSetSetupInfo(this.company, this.brand)
+        this.afterSave()
       } catch (error) {
         console.log(error)
         this.loading = false
       }
-      await this.afterSave()
     },
     async afterSave () {
       try {
         const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-        const associate = await accountApiFunc.apiAssociateCreate(account, this.company)
+        const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
+        console.log('created associate', associate)
         const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
         await storeAuth.storeSetAssociateStaff(associate, staff)
         await employeeApiFunc.apiEmployeeCreate(this.params.profile)
