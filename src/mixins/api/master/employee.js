@@ -1,7 +1,6 @@
 import { API } from 'aws-amplify'
 import { createEmployee, updateEmployee } from '@/graphql/mutations'
 import { listEmployees } from '@/graphql/queries'
-
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
@@ -19,6 +18,7 @@ async function apiEmployeeCreate (employee) {
 }
 
 function generateEmployeeObject (employee) {
+  console.log()
   return {
     company_employee_id: employee.company_employee_id ?? uuid.v4(),
     staff_id: store.getters.staffId,
@@ -29,7 +29,7 @@ function generateEmployeeObject (employee) {
     first_name_kana: employee.first_name_kana,
     gender: employee.gender,
     birth: null,
-    employee_number: employee.employee_number ?? uuid.v4(),
+    employee_number: employee.employee_number.length === 0 ? uuid.v4() : employee.employee_number,
     permanent: employee.permanent ? employee.permanent : 0,
     official_position: employee.official_position ?? null,
     delete: 0,
@@ -38,8 +38,14 @@ function generateEmployeeObject (employee) {
 }
 
 async function apiGetEmployee () {
+  const filter = {
+    company_cd: {
+      eq: store.getters.companyCd
+    }
+  }
   const results = await API.graphql({
-    query: listEmployees
+    query: listEmployees,
+    variables: { filter: filter }
   })
   return results.data.listEmployees.items
 }

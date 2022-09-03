@@ -6,7 +6,7 @@
     <v-card-item>
         <v-card-subtitle>社員番号</v-card-subtitle>
         <v-text-field
-          v-model="params.editor.employee_number"
+          v-model.trim="params.editor.employee_number"
           hide-details="auto"
           ></v-text-field>
       </v-card-item>

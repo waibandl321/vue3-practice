@@ -24,5 +24,14 @@ export default {
   },
   storeResetUser () {
     store.commit('mResetUser')
-  }
+  },
+  storeSetCompanyGroupCd (company_group_cd) {
+    store.commit('mSetCompanyGroupCd', company_group_cd)
+  },
+  storeSetCompanyCd (company_cd) {
+    store.commit('mSetCompanyCd', company_cd)
+  },
+  storeSetBrandCd (brand) {
+    store.commit('mSetBrandCd', brand)
+  },
 }

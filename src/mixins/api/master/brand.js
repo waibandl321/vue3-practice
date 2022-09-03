@@ -30,8 +30,28 @@ function generateBrandObject (brand, company = null) {
 }
 
 async function apiGetBrand () {
+  const filter = {
+    company_cd: {
+      eq: store.getters.companyCd
+    }
+  }
   const results = await API.graphql({
-    query: listBrands
+    query: listBrands,
+    variables: { filter: filter }
+  })
+  return results.data.listBrands.items
+}
+
+// サインイン用ブランド取得
+async function _apiGetBrand (company_cd) {
+  const filter = {
+    company_cd: {
+      eq: company_cd
+    }
+  }
+  const results = await API.graphql({
+    query: listBrands,
+    variables: { filter: filter }
   })
   return results.data.listBrands.items
 }
@@ -54,5 +74,6 @@ async function apiUpdateBrand (_brand) {
 export default {
   apiBrandCreate,
   apiGetBrand,
+  _apiGetBrand,
   apiUpdateBrand
 }

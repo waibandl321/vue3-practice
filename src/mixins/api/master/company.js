@@ -1,7 +1,8 @@
 import { API } from 'aws-amplify'
 import { createCompany, updateCompany } from '@/graphql/mutations'
-import { listCompanys } from '@/graphql/queries'
+import { listCompanies } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
+import store from '@/store'
 
 async function apiCompanyCreate (company) {
   const _company = generateCompanyObject(company)
@@ -32,10 +33,16 @@ function generateCompanyObject (company) {
 }
 
 async function apiGetCompany () {
+  const filter = {
+    company_cd: {
+      eq: store.getters.companyCd
+    }
+  }
   const results = await API.graphql({
-    query: listCompanys
+    query: listCompanies,
+    variables: { filter: filter }
   })
-  return results.data.listCompanys.items
+  return results.data.listCompanies.items
 }
 
 async function apiUpdateCompany (_company) {

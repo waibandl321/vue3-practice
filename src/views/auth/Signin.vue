@@ -41,6 +41,7 @@
 import { Auth } from 'aws-amplify'
 import storeAuth from '@/mixins/store/auth.js'
 import accountFunc from '@/mixins/api/account.js'
+import brandFunc from '@/mixins/api/master/brand.js'
 
 export default {
   data () {
@@ -82,8 +83,11 @@ export default {
         staff = staff.data.listStaff.items
         storeAuth.storeSetAssociateStaff(...associate, ...staff)
         if (staff.length === 1) {
-          
-          // MEMO: staffとassociateは同時生成なので、一旦条件なしで進める
+          storeAuth.storeSetCompanyCd(staff[0].company_cd)
+          storeAuth.storeSetCompanyGroupCd(staff[0].company_group_cd)
+
+          const brand = await brandFunc._apiGetBrand(staff[0].company_cd)
+          storeAuth.storeSetBrandCd(...brand)
           this.$router.push('/')
         }
       } else {

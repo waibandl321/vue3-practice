@@ -6,6 +6,7 @@
       :title="item.text"
       link
       :to="item.path"
+      dense
     ></v-list-item>
   </v-list>
 </template>

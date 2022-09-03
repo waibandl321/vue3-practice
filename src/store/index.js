@@ -89,6 +89,12 @@ export default createStore({
       state.company_cd = company.company_cd
       state.company_group_cd = company.id
     },
+    mSetCompanyCd (state, company_cd) {
+      state.company_cd = company_cd
+    },
+    mSetCompanyGroupCd (state, company_group_cd) {
+      state.company_group_cd = company_group_cd
+    },
     mSetBrandCd (state, brand) {
       state.brand_cd = brand.company_brand_cd
     }
