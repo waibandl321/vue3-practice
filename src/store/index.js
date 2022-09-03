@@ -21,7 +21,8 @@ export default createStore({
     company_cd: null,
     company_group_cd: null,
     shop_cd: null,
-    staff_id: null
+    staff_id: null,
+    staff_role_cd: null
   },
   getters: {
     cognitoUser (state) {
@@ -52,6 +53,9 @@ export default createStore({
     },
     brandCd (state) {
       return state.brand_cd
+    },
+    staffRoleCd (state) {
+      return state.staff_role_cd
     }
   },
   mutations: {
@@ -67,7 +71,8 @@ export default createStore({
       state.staff_id = null
       state.company_cd = null
       state.company_group_cd = null
-      state.brand_cd = null
+      state.brand_cd = null,
+      state.staff_role_cd = null
     },
     mSetCognitoUser (state, user) {
       state.attributes.sub = user.attributes.sub
@@ -97,6 +102,9 @@ export default createStore({
     },
     mSetBrandCd (state, brand) {
       state.brand_cd = brand.company_brand_cd
+    },
+    mSetStaffRole (state, role_cd) {
+      state.staff_role_cd = role_cd
     }
   },
   actions: {

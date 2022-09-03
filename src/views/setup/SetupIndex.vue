@@ -71,9 +71,12 @@ export default {
         const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
         console.log('created associate', associate)
         const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
-        // const staff_role = await accountApiFunc.apiStaffRoleCreate(staff)
         console.log('created staff', staff)
+        // MEMO: setupから登録されるスタッフについては強制的に「admin」権限
+        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff)
+        console.log('created staff role', staff)
         storeAuth.storeSetAssociateStaff(associate, staff)
+        storeAuth.storeSetStaffRole(staff_role)
         await employeeApiFunc.apiEmployeeCreate(this.params.profile)
         this.$router.push('/')
       } catch (error) {

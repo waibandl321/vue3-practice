@@ -34,4 +34,7 @@ export default {
   storeSetBrandCd (brand) {
     store.commit('mSetBrandCd', brand)
   },
+  storeSetStaffRole (staff_role) {
+    store.commit('mSetStaffRole', staff_role.role_cd)
+  }
 }

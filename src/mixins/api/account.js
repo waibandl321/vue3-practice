@@ -1,5 +1,5 @@
 import { API } from 'aws-amplify'
-import { createAccounts, createAssociate, createStaff } from '@/graphql/mutations'
+import { createAccounts, createAssociate, createStaff, createStaffRole } from '@/graphql/mutations'
 import { listAccounts, listAssociates, listStaff } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 
@@ -98,11 +98,32 @@ async function getStaff (associate) {
   })
 }
 
+async function apiSetupStaffRoleCreate (staff) {
+  const staff_role = {
+    role_cd: 'admin',
+    staff_id: staff.staff_id,
+    company_cd: staff.company_cd,
+    status: 0,
+    delete: 0
+  }
+  return await API.graphql({
+    query: createStaffRole,
+    variables: { input: staff_role }
+  }).then((res) => {
+    return res.data.createStaffRole
+  }).catch((error) => {
+    console.log(error)
+    return null
+  })
+}
+
 export default {
   apiAccountCreate,
   apiAssociateCreate,
   apiStaffCreate,
   getAccount,
   getStaff,
-  getAssociate
+  getAssociate,
+
+  apiSetupStaffRoleCreate
 }
