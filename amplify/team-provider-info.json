@@ -10,6 +10,11 @@
       "StackName": "amplify-portalweb-dev-115524",
       "StackId": "arn:aws:cloudformation:us-east-1:136112039144:stack/amplify-portalweb-dev-115524/dd9db4a0-2b33-11ed-b6f1-0a9e82969eeb",
       "AmplifyAppId": "di0t3lv9keu0p"
+    },
+    "categories": {
+      "auth": {
+        "portalweb1c9d506d": {}
+      }
     }
   }
 }
