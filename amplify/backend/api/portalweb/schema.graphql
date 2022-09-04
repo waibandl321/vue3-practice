@@ -75,7 +75,7 @@ type Company @model {
   homepage_url: String
   membership: Int
   certified: Int
-  statsu: Int
+  status: Int
   delete: Int
 }
 
@@ -119,7 +119,7 @@ type Position @model {
   company_position_cd: String
   company_cd: String
   position_cd: String
-  statsu: Int
+  status: Int
   delete: Int
 }
 
@@ -129,7 +129,7 @@ type StaffPosition @model {
   position_cd: String
   staff_id: String
   company_cd: String
-  statsu: Int
+  status: Int
   delete: Int
 }
 
@@ -146,7 +146,7 @@ type Shop @model {
   phone: String
   is_head: Int
   francisee_id: String
-  statsu: Int
+  status: Int
   delete: Int
 }
 
@@ -158,7 +158,7 @@ type ShopTime @model {
   holiday: Int
   start_time: String
   end_time: String
-  statsu: Int
+  status: Int
 }
 
 type ShopStaff @model {
@@ -166,7 +166,7 @@ type ShopStaff @model {
   shop_staff_id: String
   shop_cd: String
   staff_id: String
-  statsu: Int
+  status: Int
   delete: Int
 }
 

@@ -4,6 +4,7 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
+      {{ params }}
       <div>
         <v-table
           fixed-header
@@ -11,7 +12,7 @@
         >
           <thead>
             <tr>
-              <th class="text-left">コード</th>
+              <th class="text-left">店舗コード</th>
               <th class="text-left">店舗名</th>
               <th class="text-left">エリア</th>
               <th class="text-left">ブランド</th>
@@ -21,6 +22,7 @@
             <tr
               v-for="item in items"
               :key="item.shop_id"
+              @click="recordClick(item)"
             >
               <td>{{ item.shop_cd }}</td>
               <td>{{ item.shop_name }}</td>

@@ -27,7 +27,7 @@ function generateCompanyObject (company) {
     homepage_url: company.homepage_url,
     membership: company.membership ? 7 : 9,
     certified: company.certified ? 0 : 1,
-    statsu: 0,
+    status: 0,
     delete: 0
   }
 }

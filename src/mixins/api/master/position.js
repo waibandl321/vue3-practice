@@ -39,7 +39,7 @@ function generatePositionObject (position) {
     // MEMO: position_cd = ポジション名
     position_cd: position.position_cd,
     company_cd: store.getters.companyCd,
-    statsu: 0,
+    status: 0,
     delete: 0
   }
 }

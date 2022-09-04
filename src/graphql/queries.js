@@ -241,7 +241,7 @@ export const getCompany = /* GraphQL */ `
       homepage_url
       membership
       certified
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -265,7 +265,7 @@ export const listCompanies = /* GraphQL */ `
         homepage_url
         membership
         certified
-        statsu
+        status
         delete
         createdAt
         updatedAt
@@ -402,7 +402,7 @@ export const getPosition = /* GraphQL */ `
       company_position_cd
       company_cd
       position_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -421,7 +421,7 @@ export const listPositions = /* GraphQL */ `
         company_position_cd
         company_cd
         position_cd
-        statsu
+        status
         delete
         createdAt
         updatedAt
@@ -438,7 +438,7 @@ export const getStaffPosition = /* GraphQL */ `
       position_cd
       staff_id
       company_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -458,7 +458,7 @@ export const listStaffPositions = /* GraphQL */ `
         position_cd
         staff_id
         company_cd
-        statsu
+        status
         delete
         createdAt
         updatedAt
@@ -482,7 +482,7 @@ export const getShop = /* GraphQL */ `
       phone
       is_head
       francisee_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -509,7 +509,7 @@ export const listShops = /* GraphQL */ `
         phone
         is_head
         francisee_id
-        statsu
+        status
         delete
         createdAt
         updatedAt
@@ -528,7 +528,7 @@ export const getShopTime = /* GraphQL */ `
       holiday
       start_time
       end_time
-      statsu
+      status
       createdAt
       updatedAt
     }
@@ -549,7 +549,7 @@ export const listShopTimes = /* GraphQL */ `
         holiday
         start_time
         end_time
-        statsu
+        status
         createdAt
         updatedAt
       }
@@ -564,7 +564,7 @@ export const getShopStaff = /* GraphQL */ `
       shop_staff_id
       shop_cd
       staff_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -583,7 +583,7 @@ export const listShopStaffs = /* GraphQL */ `
         shop_staff_id
         shop_cd
         staff_id
-        statsu
+        status
         delete
         createdAt
         updatedAt

@@ -349,7 +349,7 @@ export const createCompany = /* GraphQL */ `
       homepage_url
       membership
       certified
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -371,7 +371,7 @@ export const updateCompany = /* GraphQL */ `
       homepage_url
       membership
       certified
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -393,7 +393,7 @@ export const deleteCompany = /* GraphQL */ `
       homepage_url
       membership
       certified
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -587,7 +587,7 @@ export const createPosition = /* GraphQL */ `
       company_position_cd
       company_cd
       position_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -604,7 +604,7 @@ export const updatePosition = /* GraphQL */ `
       company_position_cd
       company_cd
       position_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -621,7 +621,7 @@ export const deletePosition = /* GraphQL */ `
       company_position_cd
       company_cd
       position_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -639,7 +639,7 @@ export const createStaffPosition = /* GraphQL */ `
       position_cd
       staff_id
       company_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -657,7 +657,7 @@ export const updateStaffPosition = /* GraphQL */ `
       position_cd
       staff_id
       company_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -675,7 +675,7 @@ export const deleteStaffPosition = /* GraphQL */ `
       position_cd
       staff_id
       company_cd
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -700,7 +700,7 @@ export const createShop = /* GraphQL */ `
       phone
       is_head
       francisee_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -725,7 +725,7 @@ export const updateShop = /* GraphQL */ `
       phone
       is_head
       francisee_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -750,7 +750,7 @@ export const deleteShop = /* GraphQL */ `
       phone
       is_head
       francisee_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -770,7 +770,7 @@ export const createShopTime = /* GraphQL */ `
       holiday
       start_time
       end_time
-      statsu
+      status
       createdAt
       updatedAt
     }
@@ -789,7 +789,7 @@ export const updateShopTime = /* GraphQL */ `
       holiday
       start_time
       end_time
-      statsu
+      status
       createdAt
       updatedAt
     }
@@ -808,7 +808,7 @@ export const deleteShopTime = /* GraphQL */ `
       holiday
       start_time
       end_time
-      statsu
+      status
       createdAt
       updatedAt
     }
@@ -824,7 +824,7 @@ export const createShopStaff = /* GraphQL */ `
       shop_staff_id
       shop_cd
       staff_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -841,7 +841,7 @@ export const updateShopStaff = /* GraphQL */ `
       shop_staff_id
       shop_cd
       staff_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
@@ -858,7 +858,7 @@ export const deleteShopStaff = /* GraphQL */ `
       shop_staff_id
       shop_cd
       staff_id
-      statsu
+      status
       delete
       createdAt
       updatedAt
