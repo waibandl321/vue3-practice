@@ -28,6 +28,14 @@
           </tbody>
         </v-table>
       </div>
+      <div class="fixed-btn">
+        <v-btn
+          color="primary"
+          icon="mdi-plus"
+          size="x-large"
+          @click="clickNew()"
+        ></v-btn>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -51,8 +59,11 @@ export default {
     }
     getBrands()
 
+    const is_new = true
+
     return {
-      items
+      items,
+      is_new
     }
   },
   methods: {
@@ -60,7 +71,24 @@ export default {
       // eslint-disable-next-line vue/no-mutating-props
       this.params.viewer = item
       this.changeMode('view')
+    },
+    clickNew () {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.editor = {
+        brand_cd: "",
+        brand_name: "",
+        status: 0,
+        delete: 0
+      }
+      this.changeMode('edit', this.is_new)
     }
   }
 }
 </script>
+<style scoped>
+  .fixed-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+  }
+  </style>

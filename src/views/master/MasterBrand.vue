@@ -37,12 +37,16 @@ export default {
       mode: 'list',
       params: {
         viewer: {},
-        editor: {}
+        editor: {},
+        is_new: false
       }
     }
   },
   methods: {
-    changeMode (_mode) {
+    changeMode (_mode, is_new = false) {
+      if(is_new) {
+        this.params.is_new = true
+      }
       this.mode = _mode
     }
   }

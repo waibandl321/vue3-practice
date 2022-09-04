@@ -2,7 +2,7 @@
 <template>
   <v-container>
     <v-card-title>ブランド登録</v-card-title>
-    {{ params.editor }}
+    {{ params }}
     <v-card-item>
         <v-card-subtitle>
           ブランドコード
@@ -64,7 +64,13 @@ export default {
   methods: {
     async save () {
       // データ保存処理
-      await brandApiFunc.apiUpdateBrand(this.params.editor)
+      if(this.params.is_new) {
+        await brandApiFunc.apiBrandCreate(this.params.editor)
+      } else {
+        await brandApiFunc.apiUpdateBrand(this.params.editor)
+      }
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.is_new = false
       this.changeMode('list')
     }
   }

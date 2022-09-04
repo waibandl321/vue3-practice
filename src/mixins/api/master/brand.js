@@ -10,10 +10,26 @@ async function apiBrandCreate (brand, company) {
     query: createBrand,
     variables: { input: _brand }
   }).then((res) => {
+    alert(`ブランド: ${res.data.createBrand}を作成しました`)
     return res.data.createBrand
   }).catch((error) => {
     console.log(error)
     return null
+  })
+}
+
+async function apiUpdateBrand (_brand) {
+  const item = generateBrandObject(_brand)
+  item.id = _brand.id
+
+  await API.graphql({
+    query: updateBrand,
+    variables: { input: item }
+  }).then(() => {
+    alert(`アイテム「${_brand.brand_name}」を更新しました。`)
+  }).catch((error) => {
+    console.log(error)
+    alert(`アイテム「${_brand.brand_name}」の更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
@@ -54,21 +70,6 @@ async function _apiGetBrand (company_cd) {
     variables: { filter: filter }
   })
   return results.data.listBrands.items
-}
-
-async function apiUpdateBrand (_brand) {
-  const item = generateBrandObject(_brand)
-  item.id = _brand.id
-
-  await API.graphql({
-    query: updateBrand,
-    variables: { input: item }
-  }).then(() => {
-    alert(`アイテム「${_brand.brand_name}」を更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`アイテム「${_brand.brand_name}」の更新に失敗しました。エラーメッセージ:${error}`)
-  })
 }
 
 export default {
