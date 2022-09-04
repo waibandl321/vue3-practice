@@ -274,6 +274,51 @@ export const listCompanies = /* GraphQL */ `
     }
   }
 `;
+export const getInvitation = /* GraphQL */ `
+  query GetInvitation($id: ID!) {
+    getInvitation(id: $id) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listInvitations = /* GraphQL */ `
+  query ListInvitations(
+    $filter: ModelInvitationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listInvitations(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        company_cd
+        shop_cd
+        role_cd
+        employee_id
+        send_type
+        expired_in
+        approval
+        invitation_id
+        send_to
+        url
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getBrand = /* GraphQL */ `
   query GetBrand($id: ID!) {
     getBrand(id: $id) {
@@ -306,6 +351,273 @@ export const listBrands = /* GraphQL */ `
         company_cd
         status
         delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getArea = /* GraphQL */ `
+  query GetArea($id: ID!) {
+    getArea(id: $id) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listAreas = /* GraphQL */ `
+  query ListAreas(
+    $filter: ModelAreaFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAreas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        company_area_cd
+        area_cd
+        area_name
+        company_cd
+        status
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getPosition = /* GraphQL */ `
+  query GetPosition($id: ID!) {
+    getPosition(id: $id) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listPositions = /* GraphQL */ `
+  query ListPositions(
+    $filter: ModelPositionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPositions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        company_position_cd
+        company_cd
+        position_cd
+        statsu
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getStaffPosition = /* GraphQL */ `
+  query GetStaffPosition($id: ID!) {
+    getStaffPosition(id: $id) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listStaffPositions = /* GraphQL */ `
+  query ListStaffPositions(
+    $filter: ModelStaffPositionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listStaffPositions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        staff_position_id
+        position_cd
+        staff_id
+        company_cd
+        statsu
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getShop = /* GraphQL */ `
+  query GetShop($id: ID!) {
+    getShop(id: $id) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listShops = /* GraphQL */ `
+  query ListShops(
+    $filter: ModelShopFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listShops(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        company_shop_cd
+        shop_cd
+        address
+        area_cd
+        brand_cd
+        company_cd
+        shop_name_kana
+        shop_name
+        phone
+        is_head
+        francisee_id
+        statsu
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getShopTime = /* GraphQL */ `
+  query GetShopTime($id: ID!) {
+    getShopTime(id: $id) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listShopTimes = /* GraphQL */ `
+  query ListShopTimes(
+    $filter: ModelShopTimeFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listShopTimes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        shop_time_id
+        shop_cd
+        day_cd
+        holiday
+        start_time
+        end_time
+        statsu
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getShopStaff = /* GraphQL */ `
+  query GetShopStaff($id: ID!) {
+    getShopStaff(id: $id) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listShopStaffs = /* GraphQL */ `
+  query ListShopStaffs(
+    $filter: ModelShopStaffFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listShopStaffs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        shop_staff_id
+        shop_cd
+        staff_id
+        statsu
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getShopStaffGroup = /* GraphQL */ `
+  query GetShopStaffGroup($id: ID!) {
+    getShopStaffGroup(id: $id) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listShopStaffGroups = /* GraphQL */ `
+  query ListShopStaffGroups(
+    $filter: ModelShopStaffGroupFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listShopStaffGroups(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        staff_group_cd
+        shop_cd
+        group_name
+        staff_id
         createdAt
         updatedAt
       }

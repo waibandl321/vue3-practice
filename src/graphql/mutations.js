@@ -400,6 +400,72 @@ export const deleteCompany = /* GraphQL */ `
     }
   }
 `;
+export const createInvitation = /* GraphQL */ `
+  mutation CreateInvitation(
+    $input: CreateInvitationInput!
+    $condition: ModelInvitationConditionInput
+  ) {
+    createInvitation(input: $input, condition: $condition) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateInvitation = /* GraphQL */ `
+  mutation UpdateInvitation(
+    $input: UpdateInvitationInput!
+    $condition: ModelInvitationConditionInput
+  ) {
+    updateInvitation(input: $input, condition: $condition) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteInvitation = /* GraphQL */ `
+  mutation DeleteInvitation(
+    $input: DeleteInvitationInput!
+    $condition: ModelInvitationConditionInput
+  ) {
+    deleteInvitation(input: $input, condition: $condition) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createBrand = /* GraphQL */ `
   mutation CreateBrand(
     $input: CreateBrandInput!
@@ -452,6 +518,396 @@ export const deleteBrand = /* GraphQL */ `
       company_cd
       status
       delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createArea = /* GraphQL */ `
+  mutation CreateArea(
+    $input: CreateAreaInput!
+    $condition: ModelAreaConditionInput
+  ) {
+    createArea(input: $input, condition: $condition) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateArea = /* GraphQL */ `
+  mutation UpdateArea(
+    $input: UpdateAreaInput!
+    $condition: ModelAreaConditionInput
+  ) {
+    updateArea(input: $input, condition: $condition) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteArea = /* GraphQL */ `
+  mutation DeleteArea(
+    $input: DeleteAreaInput!
+    $condition: ModelAreaConditionInput
+  ) {
+    deleteArea(input: $input, condition: $condition) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createPosition = /* GraphQL */ `
+  mutation CreatePosition(
+    $input: CreatePositionInput!
+    $condition: ModelPositionConditionInput
+  ) {
+    createPosition(input: $input, condition: $condition) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updatePosition = /* GraphQL */ `
+  mutation UpdatePosition(
+    $input: UpdatePositionInput!
+    $condition: ModelPositionConditionInput
+  ) {
+    updatePosition(input: $input, condition: $condition) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deletePosition = /* GraphQL */ `
+  mutation DeletePosition(
+    $input: DeletePositionInput!
+    $condition: ModelPositionConditionInput
+  ) {
+    deletePosition(input: $input, condition: $condition) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createStaffPosition = /* GraphQL */ `
+  mutation CreateStaffPosition(
+    $input: CreateStaffPositionInput!
+    $condition: ModelStaffPositionConditionInput
+  ) {
+    createStaffPosition(input: $input, condition: $condition) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateStaffPosition = /* GraphQL */ `
+  mutation UpdateStaffPosition(
+    $input: UpdateStaffPositionInput!
+    $condition: ModelStaffPositionConditionInput
+  ) {
+    updateStaffPosition(input: $input, condition: $condition) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteStaffPosition = /* GraphQL */ `
+  mutation DeleteStaffPosition(
+    $input: DeleteStaffPositionInput!
+    $condition: ModelStaffPositionConditionInput
+  ) {
+    deleteStaffPosition(input: $input, condition: $condition) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createShop = /* GraphQL */ `
+  mutation CreateShop(
+    $input: CreateShopInput!
+    $condition: ModelShopConditionInput
+  ) {
+    createShop(input: $input, condition: $condition) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateShop = /* GraphQL */ `
+  mutation UpdateShop(
+    $input: UpdateShopInput!
+    $condition: ModelShopConditionInput
+  ) {
+    updateShop(input: $input, condition: $condition) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteShop = /* GraphQL */ `
+  mutation DeleteShop(
+    $input: DeleteShopInput!
+    $condition: ModelShopConditionInput
+  ) {
+    deleteShop(input: $input, condition: $condition) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createShopTime = /* GraphQL */ `
+  mutation CreateShopTime(
+    $input: CreateShopTimeInput!
+    $condition: ModelShopTimeConditionInput
+  ) {
+    createShopTime(input: $input, condition: $condition) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateShopTime = /* GraphQL */ `
+  mutation UpdateShopTime(
+    $input: UpdateShopTimeInput!
+    $condition: ModelShopTimeConditionInput
+  ) {
+    updateShopTime(input: $input, condition: $condition) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteShopTime = /* GraphQL */ `
+  mutation DeleteShopTime(
+    $input: DeleteShopTimeInput!
+    $condition: ModelShopTimeConditionInput
+  ) {
+    deleteShopTime(input: $input, condition: $condition) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createShopStaff = /* GraphQL */ `
+  mutation CreateShopStaff(
+    $input: CreateShopStaffInput!
+    $condition: ModelShopStaffConditionInput
+  ) {
+    createShopStaff(input: $input, condition: $condition) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateShopStaff = /* GraphQL */ `
+  mutation UpdateShopStaff(
+    $input: UpdateShopStaffInput!
+    $condition: ModelShopStaffConditionInput
+  ) {
+    updateShopStaff(input: $input, condition: $condition) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteShopStaff = /* GraphQL */ `
+  mutation DeleteShopStaff(
+    $input: DeleteShopStaffInput!
+    $condition: ModelShopStaffConditionInput
+  ) {
+    deleteShopStaff(input: $input, condition: $condition) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createShopStaffGroup = /* GraphQL */ `
+  mutation CreateShopStaffGroup(
+    $input: CreateShopStaffGroupInput!
+    $condition: ModelShopStaffGroupConditionInput
+  ) {
+    createShopStaffGroup(input: $input, condition: $condition) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateShopStaffGroup = /* GraphQL */ `
+  mutation UpdateShopStaffGroup(
+    $input: UpdateShopStaffGroupInput!
+    $condition: ModelShopStaffGroupConditionInput
+  ) {
+    updateShopStaffGroup(input: $input, condition: $condition) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteShopStaffGroup = /* GraphQL */ `
+  mutation DeleteShopStaffGroup(
+    $input: DeleteShopStaffGroupInput!
+    $condition: ModelShopStaffGroupConditionInput
+  ) {
+    deleteShopStaffGroup(input: $input, condition: $condition) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
       createdAt
       updatedAt
     }

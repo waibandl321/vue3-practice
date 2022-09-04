@@ -349,6 +349,69 @@ export const onDeleteCompany = /* GraphQL */ `
     }
   }
 `;
+export const onCreateInvitation = /* GraphQL */ `
+  subscription OnCreateInvitation(
+    $filter: ModelSubscriptionInvitationFilterInput
+  ) {
+    onCreateInvitation(filter: $filter) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateInvitation = /* GraphQL */ `
+  subscription OnUpdateInvitation(
+    $filter: ModelSubscriptionInvitationFilterInput
+  ) {
+    onUpdateInvitation(filter: $filter) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteInvitation = /* GraphQL */ `
+  subscription OnDeleteInvitation(
+    $filter: ModelSubscriptionInvitationFilterInput
+  ) {
+    onDeleteInvitation(filter: $filter) {
+      id
+      company_cd
+      shop_cd
+      role_cd
+      employee_id
+      send_type
+      expired_in
+      approval
+      invitation_id
+      send_to
+      url
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateBrand = /* GraphQL */ `
   subscription OnCreateBrand($filter: ModelSubscriptionBrandFilterInput) {
     onCreateBrand(filter: $filter) {
@@ -392,6 +455,351 @@ export const onDeleteBrand = /* GraphQL */ `
       company_cd
       status
       delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateArea = /* GraphQL */ `
+  subscription OnCreateArea($filter: ModelSubscriptionAreaFilterInput) {
+    onCreateArea(filter: $filter) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateArea = /* GraphQL */ `
+  subscription OnUpdateArea($filter: ModelSubscriptionAreaFilterInput) {
+    onUpdateArea(filter: $filter) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteArea = /* GraphQL */ `
+  subscription OnDeleteArea($filter: ModelSubscriptionAreaFilterInput) {
+    onDeleteArea(filter: $filter) {
+      id
+      company_area_cd
+      area_cd
+      area_name
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreatePosition = /* GraphQL */ `
+  subscription OnCreatePosition($filter: ModelSubscriptionPositionFilterInput) {
+    onCreatePosition(filter: $filter) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdatePosition = /* GraphQL */ `
+  subscription OnUpdatePosition($filter: ModelSubscriptionPositionFilterInput) {
+    onUpdatePosition(filter: $filter) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeletePosition = /* GraphQL */ `
+  subscription OnDeletePosition($filter: ModelSubscriptionPositionFilterInput) {
+    onDeletePosition(filter: $filter) {
+      id
+      company_position_cd
+      company_cd
+      position_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateStaffPosition = /* GraphQL */ `
+  subscription OnCreateStaffPosition(
+    $filter: ModelSubscriptionStaffPositionFilterInput
+  ) {
+    onCreateStaffPosition(filter: $filter) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateStaffPosition = /* GraphQL */ `
+  subscription OnUpdateStaffPosition(
+    $filter: ModelSubscriptionStaffPositionFilterInput
+  ) {
+    onUpdateStaffPosition(filter: $filter) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteStaffPosition = /* GraphQL */ `
+  subscription OnDeleteStaffPosition(
+    $filter: ModelSubscriptionStaffPositionFilterInput
+  ) {
+    onDeleteStaffPosition(filter: $filter) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateShop = /* GraphQL */ `
+  subscription OnCreateShop($filter: ModelSubscriptionShopFilterInput) {
+    onCreateShop(filter: $filter) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateShop = /* GraphQL */ `
+  subscription OnUpdateShop($filter: ModelSubscriptionShopFilterInput) {
+    onUpdateShop(filter: $filter) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteShop = /* GraphQL */ `
+  subscription OnDeleteShop($filter: ModelSubscriptionShopFilterInput) {
+    onDeleteShop(filter: $filter) {
+      id
+      company_shop_cd
+      shop_cd
+      address
+      area_cd
+      brand_cd
+      company_cd
+      shop_name_kana
+      shop_name
+      phone
+      is_head
+      francisee_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateShopTime = /* GraphQL */ `
+  subscription OnCreateShopTime($filter: ModelSubscriptionShopTimeFilterInput) {
+    onCreateShopTime(filter: $filter) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateShopTime = /* GraphQL */ `
+  subscription OnUpdateShopTime($filter: ModelSubscriptionShopTimeFilterInput) {
+    onUpdateShopTime(filter: $filter) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteShopTime = /* GraphQL */ `
+  subscription OnDeleteShopTime($filter: ModelSubscriptionShopTimeFilterInput) {
+    onDeleteShopTime(filter: $filter) {
+      id
+      shop_time_id
+      shop_cd
+      day_cd
+      holiday
+      start_time
+      end_time
+      statsu
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateShopStaff = /* GraphQL */ `
+  subscription OnCreateShopStaff(
+    $filter: ModelSubscriptionShopStaffFilterInput
+  ) {
+    onCreateShopStaff(filter: $filter) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateShopStaff = /* GraphQL */ `
+  subscription OnUpdateShopStaff(
+    $filter: ModelSubscriptionShopStaffFilterInput
+  ) {
+    onUpdateShopStaff(filter: $filter) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteShopStaff = /* GraphQL */ `
+  subscription OnDeleteShopStaff(
+    $filter: ModelSubscriptionShopStaffFilterInput
+  ) {
+    onDeleteShopStaff(filter: $filter) {
+      id
+      shop_staff_id
+      shop_cd
+      staff_id
+      statsu
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateShopStaffGroup = /* GraphQL */ `
+  subscription OnCreateShopStaffGroup(
+    $filter: ModelSubscriptionShopStaffGroupFilterInput
+  ) {
+    onCreateShopStaffGroup(filter: $filter) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateShopStaffGroup = /* GraphQL */ `
+  subscription OnUpdateShopStaffGroup(
+    $filter: ModelSubscriptionShopStaffGroupFilterInput
+  ) {
+    onUpdateShopStaffGroup(filter: $filter) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteShopStaffGroup = /* GraphQL */ `
+  subscription OnDeleteShopStaffGroup(
+    $filter: ModelSubscriptionShopStaffGroupFilterInput
+  ) {
+    onDeleteShopStaffGroup(filter: $filter) {
+      id
+      staff_group_cd
+      shop_cd
+      group_name
+      staff_id
       createdAt
       updatedAt
     }

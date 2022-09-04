@@ -79,6 +79,20 @@ type Company @model {
   delete: Int
 }
 
+type Invitation @model {
+  id: ID!
+  company_cd: String
+  shop_cd: String
+  role_cd: String
+  employee_id: String
+  send_type: Int
+  expired_in: Int
+  approval: Int
+  invitation_id: String
+  send_to: String
+  url: String
+}
+
 type Brand @model {
   id: ID!
   company_brand_cd: String
@@ -88,6 +102,80 @@ type Brand @model {
   company_cd: String
   status: Int
   delete: Int
+}
+
+type Area @model {
+  id: ID!
+  company_area_cd: String
+  area_cd: String
+  area_name: String
+  company_cd: String
+  status: Int
+  delete: Int
+}
+
+type Position @model {
+  id: ID!
+  company_position_cd: String
+  company_cd: String
+  position_cd: String
+  statsu: Int
+  delete: Int
+}
+
+type StaffPosition @model {
+  id: ID!
+  staff_position_id: String
+  position_cd: String
+  staff_id: String
+  company_cd: String
+  statsu: Int
+  delete: Int
+}
+
+type Shop @model {
+  id: ID!
+  company_shop_cd: String
+  shop_cd: String
+  address: String
+  area_cd: String
+  brand_cd: String
+  company_cd: String
+  shop_name_kana: String
+  shop_name: String
+  phone: String
+  is_head: Int
+  francisee_id: String
+  statsu: Int
+  delete: Int
+}
+
+type ShopTime @model {
+  id: ID!
+  shop_time_id: String
+  shop_cd: String
+  day_cd: String
+  holiday: Int
+  start_time: String
+  end_time: String
+  statsu: Int
+}
+
+type ShopStaff @model {
+  id: ID!
+  shop_staff_id: String
+  shop_cd: String
+  staff_id: String
+  statsu: Int
+  delete: Int
+}
+
+type ShopStaffGroup @model {
+  id: ID!
+  staff_group_cd: String
+  shop_cd: String
+  group_name: String
+  staff_id: String
 }
 
 type Role @model {

@@ -30,7 +30,8 @@ router.beforeEach(async (to, from, next) => {
     associate_id: store.getters.associateId,
     company_cd: store.getters.companyCd,
     company_group_cd: store.getters.companyGroupCd,
-    brand_cd: store.getters.brandCd
+    brand_cd: store.getters.brandCd,
+    staff_role_cd: store.getters.staffRoleCd
   })
 
   const user = await Utils.getAuthenticationedUser()
