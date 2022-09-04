@@ -28,11 +28,11 @@ import AreaEdit from '@/components/master/area/AreaEdit.vue'
   export default {
     name: 'master-brand',
     components: {
-    Header,
-    AreaList,
-    AreaDetail,
-    AreaEdit
-},
+      Header,
+      AreaList,
+      AreaDetail,
+      AreaEdit
+    },
     data () {
       return {
         mode: 'list',

@@ -30,37 +30,71 @@
           </tbody>
         </v-table>
       </div>
+      <div class="fixed-btn">
+        <v-btn
+          color="primary"
+          icon="mdi-plus"
+          size="x-large"
+          @click="clickNew()"
+        ></v-btn>
+      </div>
     </v-col>
   </v-row>
 </template>
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
+import shopApiFunc from '@/mixins/api/master/shop.js'
+import { ref } from 'vue'
 export default {
   name: 'shop-list',
   components: { MasterLeftMenu },
+  props: {
+    params: Object,
+    changeMode: Function
+  },
   setup () {
-    const items = [
-      {
-        company_shop_cd: 'company_shop_001',
-        shop_cd: '001',
-        address: '',
-        area_cd: '001',
-        brand_cd: '001',
-        company_cd: '001',
-        shop_name_kana: 'テンポ001',
-        shop_name: '店舗001',
-        phone: '03-0000-0000',
-        is_head: false,
-        francisee_id: null,
-        statsu: 0,
-        delete: 0,
-        updated_at: ''
-      }
-    ]
+    const items = ref([])
+    const getShopList = async () => {
+      items.value = await shopApiFunc.apiGetShops()
+    }
+    getShopList()
+
+    const is_new = true
+
     return {
-      items
+      items,
+      is_new
+    }
+  },
+  methods: {
+    recordClick (item) {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.viewer = item
+      this.changeMode('view')
+    },
+    clickNew () {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.editor = {
+        shop_cd: "",
+        shop_name: "",
+        shop_name_kana: "",
+        brand_cd: "",
+        area_cd: "",
+        address: "",
+        phone: "",
+        status: 0,
+        delete: 0
+      }
+      this.changeMode('edit', this.is_new)
     }
   }
 }
 </script>
+<style scoped>
+  .fixed-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+  }
+  </style>
