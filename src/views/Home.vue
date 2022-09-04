@@ -26,7 +26,8 @@ export default {
   },
   setup () {
     const tests = [
-      { key: 'amplify-tutorial', to: '/test/amplify-tutorial', text: '【テスト】Amplify チュートリアル' }
+      { key: 'amplify-tutorial', to: '/test/amplify-tutorial', text: '【テスト】Amplify チュートリアル' },
+      { key: 'invitation-check', to: '/test/invitation-check', text: '【テスト】招待チェック' }
     ]
     // expose to template
     return {

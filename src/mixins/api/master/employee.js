@@ -17,8 +17,22 @@ async function apiEmployeeCreate (employee) {
   })
 }
 
+async function apiUpdateEmployee (_employee) {
+  const item = generateEmployeeObject(_employee)
+  item.id = _employee.id
+
+  await API.graphql({
+    query: updateEmployee,
+    variables: { input: item }
+  }).then(() => {
+    alert(`アイテム「${_employee.employee_number}」を更新しました。`)
+  }).catch((error) => {
+    console.log(error)
+    alert(`アイテム「${_employee.employee_number}」の更新に失敗しました。エラーメッセージ:${error}`)
+  })
+}
+
 function generateEmployeeObject (employee) {
-  console.log()
   return {
     company_employee_id: employee.company_employee_id ?? uuid.v4(),
     staff_id: store.getters.staffId,
@@ -50,20 +64,6 @@ async function apiGetEmployee () {
   return results.data.listEmployees.items
 }
 
-async function apiUpdateEmployee (_employee) {
-  const item = generateEmployeeObject(_employee)
-  item.id = _employee.id
-
-  await API.graphql({
-    query: updateEmployee,
-    variables: { input: item }
-  }).then(() => {
-    alert(`アイテム「${_employee.employee_number}」を更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`アイテム「${_employee.employee_number}」の更新に失敗しました。エラーメッセージ:${error}`)
-  })
-}
 export default {
   apiEmployeeCreate,
   apiGetEmployee,

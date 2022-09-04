@@ -16,6 +16,11 @@
       :changeMode="changeMode"
       :params="params"
     />
+    <EmployeeNew
+      v-if="mode === 'new'"
+      :changeMode="changeMode"
+      :params="params"
+    />
   </v-main>
 </template>
 
@@ -24,13 +29,15 @@ import Header from '@/components/common/PcHeader.vue'
 import EmployeeList from '@/components/master/employee/EmployeeList.vue'
 import EmployeeDetail from '@/components/master/employee/EmployeeDetail.vue'
 import EmployeeEdit from '@/components/master/employee/EmployeeEdit.vue'
+import EmployeeNew from '@/components/master/employee/EmployeeNew.vue'
 export default {
   name: 'master-area',
   components: {
     Header,
     EmployeeList,
     EmployeeDetail,
-    EmployeeEdit
+    EmployeeEdit,
+    EmployeeNew
   },
   data () {
     return {

@@ -4,7 +4,7 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ params }}
+      {{ items }}
       <div>
         <v-table
           fixed-header

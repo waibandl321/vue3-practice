@@ -106,5 +106,6 @@ export default {
 }
 .second {
   margin-left: 16px;
+  background: inherit;
 }
 </style>

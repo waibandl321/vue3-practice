@@ -32,6 +32,14 @@
           </tbody>
         </v-table>
       </div>
+      <div class="fixed-btn">
+        <v-btn
+          color="primary"
+          icon="mdi-plus"
+          size="x-large"
+          @click="clickNew()"
+        ></v-btn>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -63,7 +71,28 @@ export default {
       // eslint-disable-next-line vue/no-mutating-props
       this.params.viewer = item
       this.changeMode('view')
+    },
+    clickNew () {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.editor = {
+        employee_number: "",
+        last_name: "",
+        first_name: "",
+        last_name_kana: "",
+        first_name_kana: "",
+        gender: null,
+        permanent: 0,
+        official_position: ""
+      }
+      this.changeMode('new')
     }
   }
 }
 </script>
+<style scoped>
+  .fixed-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+  }
+  </style>
