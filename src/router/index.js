@@ -23,12 +23,15 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const user = await Utils.getAuthenticationedUser()
+  // Cognitoログインユーザーが存在する場合はロップページに飛ばす
   if (to.path.includes('auth/signin') && to.path.includes('auth/signup') && user) {
     return next({
       name: 'home'
     })
   }
+  // 認証以外へのルーティング制御
   if (!to.path.includes('auth/signin') && !to.path.includes('auth/signup') && !user) {
+    // 招待コードあり
     if (to.query.ivc) {
       Utils.setInvitationCode(to.query.ivc)
       Utils.setInvitationSendTo(to.query.to)
@@ -40,6 +43,15 @@ router.beforeEach(async (to, from, next) => {
       name: 'auth-signin'
     })
   }
+  // 初期設定完了の場合は遷移させない
+  if(to.path.includes('setup')) {
+    if(store.getters.staff.staff_id) {
+      return next({
+        name: 'home'
+      })
+    }
+  }
+  // 初期設定とサインアウト以外のルーティングの場合 + 未登録の場合は初期設定画面に遷移
   if (!to.path.includes('setup/') && !to.path.includes('auth/signout')) {
     if (store.getters.account) {
       // exist account

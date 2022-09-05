@@ -58,7 +58,7 @@ export default {
   setup () {
     const items = ref([])
     const getCompnay = async () => {
-      items.value = await employeeApiFunc.apiGetEmployee()
+      items.value = await employeeApiFunc.apiGetEmployeeList()
     }
     getCompnay()
 

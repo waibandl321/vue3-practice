@@ -71,25 +71,23 @@ export default {
       }
     },
     async afterSigninMove (user) {
-      const account = await accountApiFunc.getAccount(user)
-      const associate = await accountApiFunc.getAssociate(account)
-      storeAuth.storeSetAccount(account)
-
-      if (associate.id) {
+      try {
+        const account = await accountApiFunc.getAccount(user)
+        const associate = await accountApiFunc.getAssociate(account)
         const staff = await accountApiFunc.getStaff(associate)
         // TODO: staff roleもstoreに保存する必要がある
-        if (staff.id) {
-          storeAuth.storeSetAssociateStaff(associate, staff)
-          storeAuth.storeSetCompanyCd(staff.company_cd)
-          storeAuth.storeSetCompanyGroupCd(staff.company_group_cd)
-          // TODO: 複数のブランドある場合どうするか
-          const brand = await brandFunc._apiGetBrand(staff.company_cd)
-          storeAuth.storeSetBrandCd(...brand)
-          this.$router.push('/')
-        }
-      } else {
-        // アソシエイトなし
-        this.$router.push('/setup/welcome')
+        const brand = await brandFunc._apiGetBrand(staff.company_cd)
+
+        storeAuth.storeSetAccount(account)
+        storeAuth.storeSetAssociateStaff(associate, staff)
+        storeAuth.storeSetCompanyCd(staff.company_cd)
+        storeAuth.storeSetCompanyGroupCd(staff.company_group_cd)
+        // TODO: 複数のブランドある場合どうするか
+        storeAuth.storeSetBrandCd(...brand)
+
+        this.$router.push('/')
+      } catch (error) {
+        console.log(error)
       }
       this.loading = false
     }

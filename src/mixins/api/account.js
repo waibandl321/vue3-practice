@@ -42,7 +42,6 @@ async function apiAssociateCreate (_account, company, invite_key = null) {
   })
 }
 async function apiStaffCreate (associate, company, invite_key = null) {
-  console.log('staff create');
   const _staff = {
     staff_id: uuid.v4(),
     associate_id: associate.associate_id,
@@ -56,6 +55,7 @@ async function apiStaffCreate (associate, company, invite_key = null) {
     query: createStaff,
     variables: { input: _staff }
   }).then((res) => {
+    console.log('created staff', res);
     return res.data.createStaff
   }).catch((error) => {
     console.log(error)

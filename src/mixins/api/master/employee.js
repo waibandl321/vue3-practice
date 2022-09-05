@@ -57,10 +57,23 @@ function generateEmployeeObject (employee) {
   }
 }
 
-async function apiGetEmployee () {
+async function apiGetEmployeeList () {
   const filter = {
     company_cd: {
       eq: store.getters.companyCd
+    }
+  }
+  const results = await API.graphql({
+    query: listEmployees,
+    variables: { filter: filter }
+  })
+  return results.data.listEmployees.items
+}
+
+async function apiGetEmployeeRelateStaffId (staff_id) {
+  const filter = {
+    staff_id: {
+      eq: staff_id
     }
   }
   const results = await API.graphql({
@@ -80,7 +93,8 @@ async function apiGetEmployeeDetail (employee_id) {
 
 export default {
   apiEmployeeCreate,
-  apiGetEmployee,
+  apiGetEmployeeList,
   apiUpdateEmployee,
-  apiGetEmployeeDetail
+  apiGetEmployeeDetail,
+  apiGetEmployeeRelateStaffId
 }
