@@ -34,7 +34,8 @@ router.beforeEach(async (to, from, next) => {
     // 招待コードあり
     if (to.query.ivc) {
       Utils.setInvitationCode(to.query.ivc)
-      Utils.setInvitationSendTo(to.query.to)
+      Utils.setInvitationEmployeeId(to.query.emp)
+      // Utils.setInvitationSendTo(to.query.to)
       return next({
         name: 'auth-signup'
       })
@@ -45,7 +46,7 @@ router.beforeEach(async (to, from, next) => {
   }
   // 初期設定完了の場合は遷移させない
   if(to.path.includes('setup')) {
-    if(store.getters.staff.staff_id) {
+    if(store.getters.staff) {
       return next({
         name: 'home'
       })
@@ -55,7 +56,7 @@ router.beforeEach(async (to, from, next) => {
   if (!to.path.includes('setup/') && !to.path.includes('auth/signout')) {
     if (store.getters.account) {
       // exist account
-      if (!store.getters.staff.staff_id && store.getters.invitationCd) {
+      if (!store.getters.staff && store.getters.invitationCd) {
         // no staff
         return next({
           name: 'setup-welcome'

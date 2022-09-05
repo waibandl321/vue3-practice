@@ -17,6 +17,9 @@ export default {
   setInvitationCode (invitation_cd) {
     storeAuth.storeSetInvitationCode(invitation_cd)
   },
+  setInvitationEmployeeId (invitation_employee_id) {
+    storeAuth.storeSetInvitationEmployeeId(invitation_employee_id)
+  },
   // TODO: メールアドレスは暗号化するが、+などの記号を含むアドレスの場合どうするか
   // gmailのサブアドレスなど
   setInvitationSendTo (send_to) {

@@ -76,7 +76,8 @@ function createInvitationUrl (data) {
   let basepath = "http://localhost:8080?ivc="
   basepath += data.company_cd
   // TODO: 暗号化予定
-  basepath += '&to=' + data.send_to
+  // basepath += '&to=' + data.send_to
+  basepath += '&emp=' + data.employee_id
   // if(data.shop_cd !== "admin") {
   //   basepath += '&ivc_shop=' + data.shop_cd
   // }
@@ -84,10 +85,10 @@ function createInvitationUrl (data) {
 }
 
 async function apiGetInvitation () {
-  console.log('send to:', store.getters.invitationSendTo);
+  console.log('invitation employee id:', store.getters.invitationEmployeeId);
   const filter = {
-    send_to: {
-      eq: store.getters.invitationSendTo
+    employee_id: {
+      eq: store.getters.invitationEmployeeId
     }
   }
   const results = await API.graphql({

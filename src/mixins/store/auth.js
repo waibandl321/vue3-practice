@@ -43,5 +43,8 @@ export default {
   },
   storeSetInvitationSendTo (send_to) {
     store.commit('mSetInvitationSendTo', send_to)
+  },
+  storeSetInvitationEmployeeId (invitation_employee_id) {
+    store.commit('mSetInvitationEmployeeId', invitation_employee_id)
   }
 }
