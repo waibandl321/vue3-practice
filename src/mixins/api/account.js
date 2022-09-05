@@ -64,16 +64,17 @@ async function apiStaffCreate (associate, company, invite_key = null) {
 }
 
 async function getAccount (user) {
-  console.log('getAccount', user)
   const filter = {
     sub: {
       eq: user.attributes.sub
     }
   }
-  return await API.graphql({
+  const result = await API.graphql({
     query: listAccounts,
     variables: { filter: filter }
   })
+
+  return result.data.listAccounts.items[0]
 }
 async function getAssociate (account) {
   const filter = {
@@ -81,10 +82,11 @@ async function getAssociate (account) {
       eq: account.account_id
     }
   }
-  return await API.graphql({
+  const result = await API.graphql({
     query: listAssociates,
     variables: { filter: filter }
   })
+  return result.data.listAssociates.items[0]
 }
 async function getStaff (associate) {
   const filter = {
@@ -92,10 +94,11 @@ async function getStaff (associate) {
       eq: associate.associate_id
     }
   }
-  return await API.graphql({
+  const result = await API.graphql({
     query: listStaff,
     variables: { filter: filter }
   })
+  return result.data.listStaff.items[0]
 }
 
 async function apiSetupStaffRoleCreate (staff, invitation_role = null) {

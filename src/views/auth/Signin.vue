@@ -40,7 +40,7 @@
 <script>
 import { Auth } from 'aws-amplify'
 import storeAuth from '@/mixins/store/auth.js'
-import accountFunc from '@/mixins/api/account.js'
+import accountApiFunc from '@/mixins/api/account.js'
 import brandFunc from '@/mixins/api/master/brand.js'
 
 export default {
@@ -71,22 +71,19 @@ export default {
       }
     },
     async afterSigninMove (user) {
-      let account = await accountFunc.getAccount(user)
-      account = account.data.listAccounts.items[0]
+      const account = await accountApiFunc.getAccount(user)
+      const associate = await accountApiFunc.getAssociate(account)
       storeAuth.storeSetAccount(account)
 
-      let associate = await accountFunc.getAssociate(account)
-      associate = associate.data.listAssociates.items
-
-      if (associate.length === 1) {
-        let staff = await accountFunc.getStaff(...associate)
-        staff = staff.data.listStaff.items
-        storeAuth.storeSetAssociateStaff(...associate, ...staff)
-        if (staff.length === 1) {
-          storeAuth.storeSetCompanyCd(staff[0].company_cd)
-          storeAuth.storeSetCompanyGroupCd(staff[0].company_group_cd)
-
-          const brand = await brandFunc._apiGetBrand(staff[0].company_cd)
+      if (associate.id) {
+        const staff = await accountApiFunc.getStaff(associate)
+        // TODO: staff roleもstoreに保存する必要がある
+        if (staff.id) {
+          storeAuth.storeSetAssociateStaff(associate, staff)
+          storeAuth.storeSetCompanyCd(staff.company_cd)
+          storeAuth.storeSetCompanyGroupCd(staff.company_group_cd)
+          // TODO: 複数のブランドある場合どうするか
+          const brand = await brandFunc._apiGetBrand(staff.company_cd)
           storeAuth.storeSetBrandCd(...brand)
           this.$router.push('/')
         }

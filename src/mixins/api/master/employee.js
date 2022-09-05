@@ -41,7 +41,7 @@ async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done =
 function generateEmployeeObject (employee) {
   return {
     company_employee_id: employee.company_employee_id ?? uuid.v4(),
-    staff_id: store.getters.staffId,
+    staff_id: store.getters.staff.staff_id,
     company_cd: store.getters.companyCd,
     last_name: employee.last_name,
     first_name: employee.first_name,

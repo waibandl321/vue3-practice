@@ -15,13 +15,13 @@ export default createStore({
     cognito_id_token: null,
     cognito_refresh_token: null,
     // アカウントまわり
-    account_id: null,
+    account: null,
     associate_id: null,
     brand_cd: null,
     company_cd: null,
     company_group_cd: null,
     shop_cd: null,
-    staff_id: null,
+    staff: null,
     staff_role_cd: null,
     //招待
     invitation_cd: null,
@@ -39,11 +39,11 @@ export default createStore({
         cognito_refresh_token: state.cognito_refresh_token
       }
     },
-    accountId (state) {
-      return state.account_id
+    account (state) {
+      return state.account
     },
-    staffId (state) {
-      return state.staff_id
+    staff (state) {
+      return state.staff
     },
     associateId (state) {
       return state.associate_id
@@ -75,10 +75,10 @@ export default createStore({
       state.cognito_access_token = null
       state.cognito_id_token = null
       state.cognito_refresh_token = null
-      state.account_id = null
+      state.account = null
 
       state.associate_id = null
-      state.staff_id = null
+      state.staff = null
       state.company_cd = null
       state.company_group_cd = null
       state.brand_cd = null,
@@ -92,13 +92,13 @@ export default createStore({
       state.cognito_refresh_token = user.signInUserSession.refreshToken.token
     },
     mSetAccount (state, account) {
-      state.account_id = account.account_id
+      state.account = account
     },
     mSetAssociate (state, associate) {
       state.associate_id = associate.associate_id
     },
     mSetStaff (state, staff) {
-      state.staff_id = staff.staff_id
+      state.staff = staff
     },
     mSetCompany (state, company) {
       state.company_cd = company.company_cd

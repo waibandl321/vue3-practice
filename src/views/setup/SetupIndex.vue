@@ -77,7 +77,7 @@ export default {
         // アカウント作成
         const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
         // アソシエイト作成
-        const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
+        const associate = await accountApiFunc.apiAssociateCreate(account, this.company)
         // staff作成
         const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
         const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation.role_cd)
@@ -110,7 +110,7 @@ export default {
     async afterSave (invitation_role = null) {
       try {
         const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-        const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
+        const associate = await accountApiFunc.apiAssociateCreate(account, this.company)
         console.log('created associate', associate)
         const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
         console.log('created staff', staff)

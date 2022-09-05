@@ -43,15 +43,13 @@ export default {
     }
   },
   setup () {
-    // 自動ログイン
     const router = useRouter()
+    // アカウント作成後の自動ログイン
     const listenToAutoSignInEvent = () => {
       Hub.listen('auth', async ({ payload }) => {
         const { event } = payload
         if (event === 'autoSignIn') {
           const user = payload.data
-          // assign user
-          console.log('auto login', user)
           // アカウントDB作成
           await accountFunc.apiAccountCreate(user).then((account) => {
             storeAuth.storeSetAccount(account)
@@ -59,6 +57,7 @@ export default {
             router.push('/')
           })
         } else if (event === 'autoSignIn_failure') {
+          alert('自動サインインに失敗しました。改めてサインインしてください。')
           router.push('/auth/signin')
         }
       })
