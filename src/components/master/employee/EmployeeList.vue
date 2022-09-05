@@ -48,6 +48,7 @@
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 import employeeApiFunc from '@/mixins/api/master/employee.js'
 import { ref } from 'vue'
+
 export default {
   name: 'employee-list',
   components: { MasterLeftMenu },

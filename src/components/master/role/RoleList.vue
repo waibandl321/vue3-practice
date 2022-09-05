@@ -20,25 +20,23 @@
 </template>
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-import roleMixin from '@/mixins/utils/role.js'
+import roleFunc from '@/mixins/api/master/role.js'
+import { ref } from 'vue'
 export default {
   name: 'role-list',
   components: {
     MasterLeftMenu
   },
-  mixins: [roleMixin],
-  data () {
-    return {
-      items: [],
-      role_view: null
+  setup () {
+    const items = ref([])
+    const role_view = ref(null)
+    const getRoles = () => {
+      items.value = roleFunc.getSystemRoleList()
     }
-  },
-  created () {
-    this.init()
-  },
-  methods: {
-    init () {
-      this.items = this.getSystemRoleList()
+    getRoles()
+    return {
+      items,
+      role_view
     }
   }
 }

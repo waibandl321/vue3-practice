@@ -32,11 +32,11 @@ function generateEmployeeObject (employee) {
     first_name_kana: employee.first_name_kana,
     gender: employee.gender,
     birth: null,
-    employee_number: employee.employee_number.length === 0 ? uuid.v4() : employee.employee_number,
+    employee_number: employee.employee_number !== "" ? employee.employee_number : uuid.v4(),
     permanent: employee.permanent,
-    official_position: employee.official_position ?? null,
+    official_position: employee.official_position !== "" ? employee.official_position : "",
     delete: 0,
-    status: 1
+    status: 1 //未登録フラグ
   }
 }
 

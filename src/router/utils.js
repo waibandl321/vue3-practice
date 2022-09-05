@@ -10,6 +10,7 @@ export default {
       }
     }).catch((error) => {
       console.log(error)
+      storeAuth.storeResetUser()
       return null
     })
   },

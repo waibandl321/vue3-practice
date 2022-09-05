@@ -31,7 +31,7 @@ import EmployeeDetail from '@/components/master/employee/EmployeeDetail.vue'
 import EmployeeEdit from '@/components/master/employee/EmployeeEdit.vue'
 import EmployeeNew from '@/components/master/employee/EmployeeNew.vue'
 export default {
-  name: 'master-area',
+  name: 'master-employee',
   components: {
     Header,
     EmployeeList,
@@ -44,7 +44,8 @@ export default {
       mode: 'list',
       params: {
         viewer: {},
-        editor: {}
+        editor: {},
+        loading: false
       }
     }
   },
