@@ -12,5 +12,11 @@ export default {
       console.log(error)
       return null
     })
+  },
+  setInvitationCode (invitation_cd) {
+    storeAuth.storeSetInvitationCode(invitation_cd)
+  },
+  setInvitationSendTo (send_to) {
+    storeAuth.storeSetInvitationSendTo(send_to)
   }
 }

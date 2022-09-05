@@ -45,6 +45,19 @@ async function apiGetCompany () {
   return results.data.listCompanies.items
 }
 
+async function apiGetCompanyFromInvitation (_company_cd) {
+  const filter = {
+    company_cd: {
+      eq: _company_cd
+    }
+  }
+  const results = await API.graphql({
+    query: listCompanies,
+    variables: { filter: filter }
+  })
+  return results.data.listCompanies.items[0]
+}
+
 async function apiUpdateCompany (_company) {
   const item = generateCompanyObject(_company)
   item.id = _company.id
@@ -63,5 +76,6 @@ async function apiUpdateCompany (_company) {
 export default {
   apiCompanyCreate,
   apiGetCompany,
-  apiUpdateCompany
+  apiUpdateCompany,
+  apiGetCompanyFromInvitation
 }

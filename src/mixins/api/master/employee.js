@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createEmployee, updateEmployee } from '@/graphql/mutations'
-import { listEmployees } from '@/graphql/queries'
+import { listEmployees, getEmployee } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
@@ -17,9 +17,15 @@ async function apiEmployeeCreate (employee) {
   })
 }
 
-async function apiUpdateEmployee (_employee) {
+async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done = false) {
   const item = generateEmployeeObject(_employee)
   item.id = _employee.id
+  if(_staff_id) {
+    item.staff_id = _staff_id
+  }
+  if(invitation_done) {
+    item.status = 0
+  }
 
   await API.graphql({
     query: updateEmployee,
@@ -64,8 +70,16 @@ async function apiGetEmployee () {
   return results.data.listEmployees.items
 }
 
+async function apiGetEmployeeDetail (employee_id) {
+  return await API.graphql({
+    query: getEmployee,
+    variables: { id: employee_id }
+  })
+}
+
 export default {
   apiEmployeeCreate,
   apiGetEmployee,
-  apiUpdateEmployee
+  apiUpdateEmployee,
+  apiGetEmployeeDetail
 }

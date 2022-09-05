@@ -1,8 +1,11 @@
 import { API } from 'aws-amplify'
 import { createEmployee, createInvitation } from '@/graphql/mutations'
+import { listInvitations } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
+// import crypto from 'crypto-js';
 import store from '@/store/index.js'
 
+// 招待社員作成
 async function apiCreateInvitationEmployee (employee) {
   const _employee = generateEmployeeObject(employee)
   return await API.graphql({
@@ -17,6 +20,7 @@ async function apiCreateInvitationEmployee (employee) {
     return null
   })
 }
+// 招待社員データ生成
 function generateEmployeeObject (employee) {
   return {
     company_employee_id: uuid.v4(),
@@ -32,11 +36,11 @@ function generateEmployeeObject (employee) {
     permanent: employee.permanent,
     official_position: employee.official_position ?? null,
     delete: 0,
-    status: 0
+    status: 1
   }
 }
 
-
+// 招待データ追加
 async function apiCreateInvitation (employee, invitation) {
   const _invitation = generateInvitationObject(employee, invitation)
   return await API.graphql({
@@ -51,7 +55,7 @@ async function apiCreateInvitation (employee, invitation) {
     return null
   })
 }
-
+// 招待データ生成
 function generateInvitationObject (employee, invitation) {
   const result = {
     company_cd: store.getters.companyCd,
@@ -67,18 +71,34 @@ function generateInvitationObject (employee, invitation) {
   result.url = createInvitationUrl(result)
   return result
 }
-
+// 招待URL生成
 function createInvitationUrl (data) {
   let basepath = "http://localhost:8080?ivc="
   basepath += data.company_cd
-  if(data.shop_cd !== "admin") {
-    basepath += '&ivc_shop=' + data.shop_cd
-  }
+  // TODO: 暗号化予定
+  basepath += '&to=' + data.send_to
+  // if(data.shop_cd !== "admin") {
+  //   basepath += '&ivc_shop=' + data.shop_cd
+  // }
   return basepath
+}
+
+async function apiGetInvitation () {
+  const filter = {
+    send_to: {
+      eq: store.getters.invitationSendTo
+    }
+  }
+  const results = await API.graphql({
+    query: listInvitations,
+    variables: { filter: filter }
+  })
+  return results.data.listInvitations.items[0]
 }
 
 
 export default {
   apiCreateInvitationEmployee,
-  apiCreateInvitation
+  apiCreateInvitation,
+  apiGetInvitation
 }

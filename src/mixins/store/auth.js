@@ -36,5 +36,12 @@ export default {
   },
   storeSetStaffRole (staff_role) {
     store.commit('mSetStaffRole', staff_role.role_cd)
+  },
+  // 招待
+  storeSetInvitationCode (invitation_cd) {
+    store.commit('mSetInvitationCode', invitation_cd)
+  },
+  storeSetInvitationSendTo (send_to) {
+    store.commit('mSetInvitationSendTo', send_to)
   }
 }

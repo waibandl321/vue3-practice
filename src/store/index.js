@@ -22,7 +22,10 @@ export default createStore({
     company_group_cd: null,
     shop_cd: null,
     staff_id: null,
-    staff_role_cd: null
+    staff_role_cd: null,
+    //招待
+    invitation_cd: null,
+    invitation_send_to: null
   },
   getters: {
     cognitoUser (state) {
@@ -56,6 +59,13 @@ export default createStore({
     },
     staffRoleCd (state) {
       return state.staff_role_cd
+    },
+    // 招待
+    invitationCd (state) {
+      return state.invitation_cd
+    },
+    invitationSendTo (state) {
+      return state.invitation_send_to
     }
   },
   mutations: {
@@ -105,6 +115,13 @@ export default createStore({
     },
     mSetStaffRole (state, role_cd) {
       state.staff_role_cd = role_cd
+    },
+    //招待
+    mSetInvitationCode (state, invitation_cd) {
+      state.invitation_cd = invitation_cd
+    },
+    mSetInvitationSendTo (state, invitation_send_to) {
+      state.invitation_send_to = invitation_send_to
     }
   },
   actions: {

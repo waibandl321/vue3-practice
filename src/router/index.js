@@ -23,6 +23,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   // storeデータチェック用
+  console.log('route to', to)
   console.log('cognito', store.getters.cognitoUser)
   console.log('store account', {
     account_id: store.getters.accountId,
@@ -33,6 +34,7 @@ router.beforeEach(async (to, from, next) => {
     brand_cd: store.getters.brandCd,
     staff_role_cd: store.getters.staffRoleCd
   })
+  console.log('invitation', store.getters.invitationCd)
 
   const user = await Utils.getAuthenticationedUser()
   if (to.path.includes('auth/signin') && to.path.includes('auth/signup') && user) {
@@ -41,13 +43,21 @@ router.beforeEach(async (to, from, next) => {
     })
   }
   if (!to.path.includes('auth/signin') && !to.path.includes('auth/signup') && !user) {
-    window.location = '/auth/signin'
-    return
+    if (to.query.ivc) {
+      Utils.setInvitationCode(to.query.ivc)
+      Utils.setInvitationSendTo(to.query.to)
+      return next({
+        name: 'auth-signup'
+      })
+    }
+    return next({
+      name: 'auth-signin'
+    })
   }
   if (!to.path.includes('setup/') && !to.path.includes('auth/signout')) {
     if (store.getters.accountId) {
       // exist account
-      if (!store.getters.staffId) {
+      if (!store.getters.staffId && store.getters.invitationCd) {
         // no staff
         return next({
           name: 'setup-welcome'

@@ -1,3 +1,42 @@
+import crypto from 'crypto-js';
+export default {
+  methods: {
+    getCompanyTypes () {
+      return CompanyTypes
+    },
+    getCompanyFormPositions () {
+      return CompanyFormPositions
+    },
+    getCompanyForms () {
+      return CompanyForms
+    },
+    getCompanyFormText (value) {
+      return CompanyForms.find(r => r.value === value).name
+    },
+    getCompanyFormKanaText (value) {
+      return CompanyForms.find(r => r.value === value).name_kana
+    },
+    getGenderList () {
+      return GenderList
+    },
+    getGenderText (value) {
+      return GenderList.find(v => v.value === value).text
+    },
+    getPermanentList () {
+      return Permanents
+    },
+    getPermanentText (value) {
+      return Permanents.find(v => v.value === value).text
+    },
+    cryptoData (value) {
+      return crypto.AES.encrypt(value, CryptHash)
+    },
+    decryptoData (value) {
+      return crypto.AES.decrypt(value, CryptHash)
+    }
+  }
+}
+const CryptHash = 'hcg7ebiisufh'
 const CompanyTypes = [
   { value: 0, text: '法人' },
   { value: 1, text: '個人事業主' }
@@ -57,34 +96,3 @@ const Permanents = [
     text: '臨時'
   }
 ]
-export default {
-  methods: {
-    getCompanyTypes () {
-      return CompanyTypes
-    },
-    getCompanyFormPositions () {
-      return CompanyFormPositions
-    },
-    getCompanyForms () {
-      return CompanyForms
-    },
-    getCompanyFormText (value) {
-      return CompanyForms.find(r => r.value === value).name
-    },
-    getCompanyFormKanaText (value) {
-      return CompanyForms.find(r => r.value === value).name_kana
-    },
-    getGenderList () {
-      return GenderList
-    },
-    getGenderText (value) {
-      return GenderList.find(v => v.value === value).text
-    },
-    getPermanentList () {
-      return Permanents
-    },
-    getPermanentText (value) {
-      return Permanents.find(v => v.value === value).text
-    }
-  }
-}

@@ -98,9 +98,9 @@ async function getStaff (associate) {
   })
 }
 
-async function apiSetupStaffRoleCreate (staff) {
+async function apiSetupStaffRoleCreate (staff, invitation_role = null) {
   const staff_role = {
-    role_cd: 'admin',
+    role_cd: invitation_role ?? 'admin',
     staff_id: staff.staff_id,
     company_cd: staff.company_cd,
     status: 0,
