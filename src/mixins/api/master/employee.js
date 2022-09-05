@@ -31,10 +31,10 @@ async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done =
     query: updateEmployee,
     variables: { input: item }
   }).then(() => {
-    alert(`アイテム「${_employee.employee_number}」を更新しました。`)
+    alert(`従業員「${_employee.employee_number}」を更新しました。`)
   }).catch((error) => {
     console.log(error)
-    alert(`アイテム「${_employee.employee_number}」の更新に失敗しました。エラーメッセージ:${error}`)
+    alert(`従業員「${_employee.employee_number}」の更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
@@ -71,10 +71,11 @@ async function apiGetEmployee () {
 }
 
 async function apiGetEmployeeDetail (employee_id) {
-  return await API.graphql({
+  const result = await API.graphql({
     query: getEmployee,
     variables: { id: employee_id }
   })
+  return result.data.getEmployee
 }
 
 export default {

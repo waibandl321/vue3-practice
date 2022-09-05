@@ -84,6 +84,7 @@ function createInvitationUrl (data) {
 }
 
 async function apiGetInvitation () {
+  console.log('send to:', store.getters.invitationSendTo);
   const filter = {
     send_to: {
       eq: store.getters.invitationSendTo

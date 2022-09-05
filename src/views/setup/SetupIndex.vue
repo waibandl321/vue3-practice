@@ -67,27 +67,30 @@ export default {
   },
   methods: {
     async invitationSave (_invitation_cd) {
-      this.loading = true
       // _invitation_cd = 企業コード
-      this.company = await companyApiFunc.apiGetCompanyFromInvitation(_invitation_cd)
-      // 招待情報取得
-      const invitation = await invitationApiFunc.apiGetInvitation()
-      console.log('招待データ', invitation)
-      // アカウント作成
-      // const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-      // アソシエイト作成
-      // const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
-      // staff作成
-      // const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
-      // const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation.role_cd)
-      // storeAuth.storeSetAssociateStaff(associate, staff)
-      // storeAuth.storeSetStaffRole(staff_role)
-      // employee取得
-      // const employee = await employeeApiFunc.apiGetEmployeeDetail(invitation.employee_id)
-      // employee更新
-      // await employeeApiFunc.apiUpdateEmployee(employee, staff.staff_id, true)
-
-      this.$router.push('/')
+      this.loading = true
+      try {
+        this.company = await companyApiFunc.apiGetCompanyFromInvitation(_invitation_cd)
+        // 招待情報取得
+        const invitation = await invitationApiFunc.apiGetInvitation()
+        console.log('招待データ', invitation)
+        // アカウント作成
+        const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
+        // アソシエイト作成
+        const associate = await accountApiFunc.apiAssociateCreate(account.data.listAccounts.items[0], this.company)
+        // staff作成
+        const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
+        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation.role_cd)
+        storeAuth.storeSetAssociateStaff(associate, staff)
+        storeAuth.storeSetStaffRole(staff_role)
+        // employee取得
+        const employee = await employeeApiFunc.apiGetEmployeeDetail(invitation.employee_id)
+        // employee更新
+        await employeeApiFunc.apiUpdateEmployee(employee, staff.staff_id, true)
+        this.$router.push('/')
+      } catch (error) {
+        console.log(error);
+      }
       this.company = null
       this.brand = null
       this.loading = false

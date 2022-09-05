@@ -17,6 +17,7 @@ export default {
     storeAuth.storeSetInvitationCode(invitation_cd)
   },
   setInvitationSendTo (send_to) {
+    send_to = send_to.replace(' ', '+')
     storeAuth.storeSetInvitationSendTo(send_to)
   }
 }
