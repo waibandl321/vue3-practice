@@ -143,7 +143,10 @@ export default {
       active_staff.value = staff
       role_dialog.value = true
     }
-    const saveChangeRole = () => {
+    const saveChangeRole = async () => {
+      const role = active_staff.value.staff_role
+      const staff_id = active_staff.value.employee.staff_id
+      await accountApiFunc.apiUpdateStaffRole(staff_id, role)
       role_dialog.value = false
     }
     const closeModal = () => {

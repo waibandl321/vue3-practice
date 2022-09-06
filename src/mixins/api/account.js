@@ -1,7 +1,8 @@
 import { API } from 'aws-amplify'
-import { createAccounts, createAssociate, createStaff, createStaffRole } from '@/graphql/mutations'
+import { createAccounts, createAssociate, createStaff, createStaffRole, updateStaffRole } from '@/graphql/mutations'
 import { listAccounts, listAssociates, listStaff, listStaffRoles } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
+import store from '@/store'
 
 async function apiAccountCreate (user) {
   console.log('apiAccountCreate', user)
@@ -134,6 +135,24 @@ async function apiGetStaffRole (staff_id) {
   return result.data.listStaffRoles.items[0]
 }
 
+async function apiUpdateStaffRole (staff_id, role) {
+  const staff_role = {
+    id: role.id,
+    role_cd: role.role_cd,
+    staff_id: staff_id,
+    company_cd: store.getters.companyCd
+  }
+  await API.graphql({
+    query: updateStaffRole,
+    variables: { input: staff_role }
+  }).then(() => {
+    alert(`スタッフの権限を更新しました。`)
+  }).catch((error) => {
+    console.log(error)
+    alert(`スタッフの権限の更新に失敗しました。エラーメッセージ:${error}`)
+  })
+}
+
 export default {
   apiAccountCreate,
   apiAssociateCreate,
@@ -143,5 +162,6 @@ export default {
   getAssociate,
 
   apiSetupStaffRoleCreate,
-  apiGetStaffRole
+  apiGetStaffRole,
+  apiUpdateStaffRole
 }
