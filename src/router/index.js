@@ -24,10 +24,19 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const user = await Utils.getAuthenticationedUser()
   // Cognitoログインユーザーが存在する場合はロップページに飛ばす
-  if (to.path.includes('auth/signin') && to.path.includes('auth/signup') && user) {
-    return next({
-      name: 'home'
-    })
+  if(user) {
+    if (to.path.includes('auth/signin') && to.path.includes('auth/signup')) {
+      return next({
+        name: 'home'
+      })
+    }
+    // 店舗招待
+    if(to.query.ivs) {
+      Utils.setInvitationShopCd(to.query.ivs)
+      return next({
+        name: 'master-shop'
+      })
+    }
   }
   // 認証以外へのルーティング制御
   if (!to.path.includes('auth/signin') && !to.path.includes('auth/signup') && !user) {

@@ -21,6 +21,9 @@
       :changeMode="changeMode"
       :params="params"
     />
+    <ShopInviteProcedure
+      v-if="mode === 'invite-procedure'"
+    />
     <ShopStaffList
       v-if="mode === 'staff-list'"
       :changeMode="changeMode"
@@ -48,16 +51,19 @@
 import areaApiFunc from '@/mixins/api/master/area.js'
 import brandApiFunc from '@/mixins/api/master/brand.js'
 import roleFunc from '@/mixins/api/master/role.js'
+import store from '@/store'
 
 import Header from '@/components/common/PcHeader.vue'
 import ShopList from '@/components/master/shop/ShopList.vue'
 import ShopEdit from '@/components/master/shop/ShopEdit.vue'
 import ShopDetail from '../../components/master/shop/ShopDetail.vue'
-import ShopInvite from '@/components/master/shop/ShopInvite.vue'
+import ShopInvite from '@/components/master/shop/invite/ShopInvite.vue'
 import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
 import StaffGroupList from '@/components/master/shop/staff_group/StaffGroupList.vue'
 import StaffGroupDetail from '@/components/master/shop/staff_group/StaffGroupDetail.vue'
 import StaffGroupEdit from '@/components/master/shop/staff_group/StaffGroupEdit.vue'
+import ShopInviteProcedure from '@/components/master/shop/invite/ShopInviteProcedure.vue'
+
 
 export default {
   name: 'master-shop',
@@ -70,7 +76,8 @@ export default {
     ShopStaffList,
     StaffGroupList,
     StaffGroupDetail,
-    StaffGroupEdit
+    StaffGroupEdit,
+    ShopInviteProcedure
   },
   data () {
     return {
@@ -87,6 +94,10 @@ export default {
     }
   },
   async created () {
+    if (store.getters.invitationShopCode) {
+      this.mode = 'invite-procedure'
+      return;
+    }
     this.params.brands = await brandApiFunc.apiGetBrand()
     this.params.areas = await areaApiFunc.apiGetArea()
     this.params.roles = roleFunc.getSystemRoleList()

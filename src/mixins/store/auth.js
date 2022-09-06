@@ -46,5 +46,9 @@ export default {
   },
   storeSetInvitationEmployeeId (invitation_employee_id) {
     store.commit('mSetInvitationEmployeeId', invitation_employee_id)
+  },
+  // 店舗招待
+  storeSetInvitationShopCode (invitation_shop_cd) {
+    store.commit('mSetInvitationShopCode', invitation_shop_cd)
   }
 }

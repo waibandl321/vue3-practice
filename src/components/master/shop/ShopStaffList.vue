@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    {{ params.viewer }}
+    {{ members }}
     <v-card>
       <v-card-title>{{ params.viewer.shop_name }} 従業員一覧</v-card-title>
       <v-table height="50vh">
@@ -88,6 +88,8 @@
 
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
+import { ref } from '@vue/reactivity'
+import shopApiFunc from '@/mixins/api/master/shop'
 export default {
   name: 'shop-invite',
   components: {
@@ -96,6 +98,16 @@ export default {
   props: {
     params: Object,
     changeMode: Function
+  },
+  setup (props) {
+    const members = ref([])
+    const getShopStaff = async () => {
+      members.value = await shopApiFunc.apiGetShopStaffList(props.params.viewer.company_shop_cd)
+    }
+    getShopStaff()
+    return {
+      members
+    }
   },
   data () {
     return {

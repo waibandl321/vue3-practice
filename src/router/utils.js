@@ -14,6 +14,7 @@ export default {
       return null
     })
   },
+  // 従業員招待
   setInvitationCode (invitation_cd) {
     storeAuth.storeSetInvitationCode(invitation_cd)
   },
@@ -25,5 +26,9 @@ export default {
   setInvitationSendTo (send_to) {
     send_to = send_to.replace(' ', '+')
     storeAuth.storeSetInvitationSendTo(send_to)
+  },
+  // 店舗招待
+  setInvitationShopCd (invitation_shop_cd) {
+    storeAuth.storeSetInvitationShopCode(invitation_shop_cd)
   }
 }

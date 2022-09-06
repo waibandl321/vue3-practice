@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
-import { createShop, updateShop } from '@/graphql/mutations'
-import { listShops } from '@/graphql/queries'
+import { createShop, updateShop, createShopStaff } from '@/graphql/mutations'
+import { listShops, listShopStaffs } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
@@ -63,8 +63,48 @@ async function apiGetShops () {
   return results.data.listShops.items
 }
 
+// ショップスタッフ作成
+async function apiCreateShopStaff () {
+  const shop_staff = generateShopStaffObject()
+  return await API.graphql({
+    query: createShopStaff,
+    variables: { input: shop_staff }
+  }).then((res) => {
+    alert(`店舗「${res.data.createShopStaff.shop_cd}」にメンバーを招待しました。`)
+  }).catch((error) => {
+    alert(`店舗へのメンバー招待に失敗しました。`)
+    console.log(error)
+    return null
+  })
+}
+
+function generateShopStaffObject () {
+  return {
+    shop_staff_id: uuid.v4(),
+    shop_cd: store.getters.invitationShopCode,
+    staff_id: store.getters.staff.staff_id,
+    status: 0,
+    delete: 0
+  }
+}
+
+async function apiGetShopStaffList(company_shop_cd) {
+  const filter = {
+    shop_cd: {
+      eq: company_shop_cd
+    }
+  }
+  const results = await API.graphql({
+    query: listShopStaffs,
+    variables: { filter: filter }
+  })
+  return results.data.listShopStaffs.items
+}
+
 export default {
   apiCreateShop,
   apiUpdateShop,
-  apiGetShops
+  apiGetShops,
+  apiCreateShopStaff,
+  apiGetShopStaffList
 }
