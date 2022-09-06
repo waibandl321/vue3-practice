@@ -41,7 +41,7 @@
   </v-container>
 </template>
 <script>
-import utilsMixin from '@/mixins/utils/utils.js'
+import utilFunc from '@/mixins/utils/utils.js'
 import PcFooter from '@/components/common/PcFooter.vue'
 
 export default {
@@ -54,8 +54,8 @@ export default {
   setup (props) {
     // eslint-disable-next-line vue/no-setup-props-destructure
     const detail = props.params.viewer
-    detail.company_form_text = utilsMixin.methods.getCompanyFormText(detail.company_form)
-    detail.company_form_kana_text = utilsMixin.methods.getCompanyFormKanaText(detail.company_form)
+    detail.company_form_text = utilFunc.methods.getCompanyFormText(detail.company_form)
+    detail.company_form_kana_text = utilFunc.methods.getCompanyFormKanaText(detail.company_form)
 
     return {
       detail

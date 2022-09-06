@@ -38,7 +38,6 @@
           ブランド
           <span class="red">必須</span>
         </v-card-subtitle>
-        {{ params.brands }}
         <v-select
           v-model="params.editor.brand_cd"
           :items="params.brands"
@@ -54,7 +53,6 @@
           エリア
           <span class="red">必須</span>
         </v-card-subtitle>
-        {{ params.areas }}
         <v-select
           v-model="params.editor.area_cd"
           :items="params.areas"

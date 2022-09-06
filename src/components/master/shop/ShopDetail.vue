@@ -15,11 +15,11 @@
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>ブランド</v-card-subtitle>
-      <v-card-text>{{ detail.brand_cd }}</v-card-text>
+      <v-card-text>{{ brandText(detail.brand_cd) }}</v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>エリア</v-card-subtitle>
-      <v-card-text>{{ detail.area_cd }}</v-card-text>
+      <v-card-text>{{ areaText(detail.area_cd) }}</v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>住所</v-card-subtitle>
@@ -57,8 +57,17 @@ export default {
     // eslint-disable-next-line vue/no-setup-props-destructure
     const detail = props.params.viewer
 
+    const brandText = (brand_cd) => {
+      return props.params.brands.find(v => v.brand_cd === brand_cd).brand_name
+    }
+    const areaText = (area_cd) => {
+      return props.params.areas.find(v => v.area_cd === area_cd).area_name
+    }
+
     return {
-      detail
+      detail,
+      brandText,
+      areaText
     }
   },
   data () {

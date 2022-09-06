@@ -26,10 +26,10 @@ async function apiUpdateShop (_shop) {
     query: updateShop,
     variables: { input: item }
   }).then(() => {
-    alert(`エリアを更新しました。`)
+    alert(`店舗情報を更新しました。`)
   }).catch((error) => {
     console.log(error)
-    alert(`エリアの更新に失敗しました。エラーメッセージ:${error}`)
+    alert(`店舗情報の更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
