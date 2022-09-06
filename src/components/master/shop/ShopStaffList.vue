@@ -43,6 +43,7 @@
                       <v-btn variant="text"
                         color="primary"
                         block
+                        @click="clickDeleteShopStaff(staff)"
                       >店舗から削除</v-btn>
                     </v-list-item>
                   </v-list>
@@ -113,6 +114,7 @@ export default {
         members = await shopApiFunc.apiGetShopStaffList(props.params.viewer.company_shop_cd)
         members.forEach( async (member) => {
           const item = {}
+          item.shop_staff = member
           item.employee = await employeeApiFunc.apiGetEmployeeRelateStaffId(member.staff_id)
           item.staff_role = await accountApiFunc.apiGetStaffRole(member.staff_id)
           items.value.push(item)
@@ -143,11 +145,23 @@ export default {
       active_staff.value = staff
       role_dialog.value = true
     }
+    // 店舗スタッフ権限変更
     const saveChangeRole = async () => {
       const role = active_staff.value.staff_role
       const staff_id = active_staff.value.employee.staff_id
       await accountApiFunc.apiUpdateStaffRole(staff_id, role)
       role_dialog.value = false
+    }
+    // 店舗スタッフ削除
+    const clickDeleteShopStaff = async (staff) => {
+      active_menu.value = null
+      try {
+        await shopApiFunc.apiDeleteShopStaff(staff.shop_staff.id)
+        alert('店舗従業員を削除しました。')
+      } catch (error) {
+        alert(error)
+      }
+      getShopStaff()
     }
     const closeModal = () => {
       role_dialog.value = false
@@ -162,6 +176,7 @@ export default {
       staffListMenu,
       clickChangeRole,
       saveChangeRole,
+      clickDeleteShopStaff,
       closeModal
     }
   },

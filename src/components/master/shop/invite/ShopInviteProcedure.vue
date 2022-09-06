@@ -29,11 +29,3 @@ export default {
   }
 }
 </script>
-type ShopStaff @model {
-  id: ID!
-  shop_staff_id: String
-  shop_cd: String
-  staff_id: String
-  status: Int
-  delete: Int
-}
