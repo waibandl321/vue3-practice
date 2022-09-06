@@ -7,6 +7,7 @@ import SetupConfirm from '@/components/setup/SetupConfirm'
 import SetupWelcome from '@/components/setup/SetupWelcome'
 import SetupBrand from '@/components/setup/SetupBrand'
 import SetupProfile from '@/components/setup/SetupProfile'
+import SetupInvitation from '@/components/setup/SetupInvitation.vue'
 
 export default [
   {
@@ -55,6 +56,12 @@ export default [
         name: 'setup-confirm',
         component: SetupConfirm,
         meta: { title: '【Setup】確認' }
+      },
+      {
+        path: 'invite',
+        name: 'setup-invite',
+        component: SetupInvitation,
+        meta: { title: '【Setup】登録' }
       }
     ]
   }

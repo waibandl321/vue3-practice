@@ -14,7 +14,6 @@ import companyApiFunc from '@/mixins/api/master/company.js'
 import brandApiFunc from '@/mixins/api/master/brand.js'
 import employeeApiFunc from '@/mixins/api/master/employee.js'
 import accountApiFunc from '@/mixins/api/account.js'
-import invitationApiFunc from '@/mixins/api/invitation.js'
 
 import store from '@/store/index.js'
 import storeAuth from '@/mixins/store/auth'
@@ -57,50 +56,21 @@ export default {
     }
   },
   created () {
-    // 招待コードある場合は、company_cdフックに企業データとブランドデータ取得
-    // associate, staffを自動作成して最終確認画面まで
-    // employeeのstaff_id更新も
+    // 招待ユーザーの場合は、招待用確認画面に飛ばす
     if (store.getters.invitationCd) {
       storeAuth.storeSetCompanyCd(store.getters.invitationCd)
-      this.invitationSave(store.getters.invitationCd)
+      this.$router.push({
+        name: 'setup-invite',
+      })
     }
   },
   methods: {
-    async invitationSave (_invitation_cd) {
-      // _invitation_cd = 企業コード
-      this.loading = true
-      try {
-        this.company = await companyApiFunc.apiGetCompanyFromInvitation(_invitation_cd)
-        // 招待情報取得
-        const invitation = await invitationApiFunc.apiGetInvitation()
-        console.log('招待データ', invitation)
-        // アカウント作成
-        const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-        // アソシエイト作成
-        const associate = await accountApiFunc.apiAssociateCreate(account, this.company)
-        // staff作成
-        const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
-        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation.role_cd)
-        storeAuth.storeSetAssociateStaff(associate, staff)
-        storeAuth.storeSetStaffRole(staff_role)
-        // employee取得
-        const employee = await employeeApiFunc.apiGetEmployeeDetail(invitation.employee_id)
-        // employee更新
-        await employeeApiFunc.apiUpdateEmployee(employee, staff.staff_id, true)
-        this.$router.push('/')
-      } catch (error) {
-        console.log(error);
-      }
-      this.company = null
-      this.brand = null
-      this.loading = false
-    },
     async save () {
       this.loading = true
       try {
         this.company = await companyApiFunc.apiCompanyCreate(this.params.company)
         this.brand = await brandApiFunc.apiBrandCreate(this.params.brand, this.company)
-        await storeAuth.storeSetSetupInfo(this.company, this.brand)
+        storeAuth.storeSetSetupInfo(this.company, this.brand)
         this.afterSave()
       } catch (error) {
         console.log(error)

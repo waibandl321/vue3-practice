@@ -73,6 +73,7 @@ export default {
     async afterSigninMove (user) {
       try {
         const account = await accountApiFunc.getAccount(user)
+        // TODO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
         const associate = await accountApiFunc.getAssociate(account)
         const staff = await accountApiFunc.getStaff(associate)
         // TODO: staff roleもstoreに保存する必要がある
