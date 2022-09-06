@@ -69,12 +69,6 @@ async function apiCreateShopStaff () {
   return await API.graphql({
     query: createShopStaff,
     variables: { input: shop_staff }
-  }).then((res) => {
-    alert(`店舗「${res.data.createShopStaff.shop_cd}」にメンバーを招待しました。`)
-  }).catch((error) => {
-    alert(`店舗へのメンバー招待に失敗しました。`)
-    console.log(error)
-    return null
   })
 }
 

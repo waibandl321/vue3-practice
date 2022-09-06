@@ -13,17 +13,19 @@ export default {
   setup () {
     const router = useRouter()
     const createShopStaff = async () => {
-      const err = await shopApiFunc.apiCreateShopStaff()
-      if(!err) {
+      try {
+        await shopApiFunc.apiCreateShopStaff()
         storeAuth.storeSetInvitationShopCode(null)
+        alert('店舗スタッフを追加しました。')
         router.push({
           name: 'home'
         })
-        return
+      } catch (error) {
+        alert(error)
+        router.push({
+          name: 'master-shop'
+        })
       }
-      router.push({
-        name: 'master-shop'
-      })
     }
     createShopStaff()
   }

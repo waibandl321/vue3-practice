@@ -27,7 +27,7 @@
                     @click="staffListMenu(staff)"
                   ></v-btn>
                   <v-list
-                    v-if="active_menu === staff.staff_id"
+                    v-if="active_menu === staff.shop_staff.staff_id"
                     class="drop-items"
                     border
                   >
@@ -138,7 +138,7 @@ export default {
       if(active_menu.value) {
         active_menu.value = null
       } else {
-        active_menu.value = staff.staff_id
+        active_menu.value = staff.shop_staff.staff_id
       }
     }
     const clickChangeRole = (staff) => {
@@ -161,7 +161,6 @@ export default {
       } catch (error) {
         alert(error)
       }
-      getShopStaff()
     }
     const closeModal = () => {
       role_dialog.value = false

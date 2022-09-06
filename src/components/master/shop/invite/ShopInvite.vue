@@ -5,7 +5,7 @@
     <v-card>
       <v-card-title>店舗招待用URL</v-card-title>
       <v-card-text>
-        {{ invite_url }}
+        <a :href="invite_url">{{ invite_url }}</a>
       </v-card-text>
     </v-card>
     <PcFooter :options="footer_options" />
