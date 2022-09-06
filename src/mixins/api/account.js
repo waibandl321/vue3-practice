@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createAccounts, createAssociate, createStaff, createStaffRole } from '@/graphql/mutations'
-import { listAccounts, listAssociates, listStaff } from '@/graphql/queries'
+import { listAccounts, listAssociates, listStaff, listStaffRoles } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 
 async function apiAccountCreate (user) {
@@ -101,6 +101,7 @@ async function getStaff (associate) {
   return result.data.listStaff.items[0]
 }
 
+// スタッフリール
 async function apiSetupStaffRoleCreate (staff, invitation_role = null) {
   const staff_role = {
     role_cd: invitation_role ?? 'admin',
@@ -120,6 +121,19 @@ async function apiSetupStaffRoleCreate (staff, invitation_role = null) {
   })
 }
 
+async function apiGetStaffRole (staff_id) {
+  const filter = {
+    staff_id: {
+      eq: staff_id
+    }
+  }
+  const result = await API.graphql({
+    query: listStaffRoles,
+    variables: { filter: filter }
+  })
+  return result.data.listStaffRoles.items[0]
+}
+
 export default {
   apiAccountCreate,
   apiAssociateCreate,
@@ -128,5 +142,6 @@ export default {
   getStaff,
   getAssociate,
 
-  apiSetupStaffRoleCreate
+  apiSetupStaffRoleCreate,
+  apiGetStaffRole
 }

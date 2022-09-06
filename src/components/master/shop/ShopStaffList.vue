@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    {{ members }}
+    {{ items }}
     <v-card>
-      <v-card-title>{{ params.viewer.shop_name }} 従業員一覧</v-card-title>
+      <v-card-title>「{{ params.viewer.shop_name }}」 従業員一覧</v-card-title>
       <v-table height="50vh">
         <thead>
           <tr>
@@ -13,11 +13,11 @@
         </thead>
         <tbody>
           <tr
-            v-for="staff in dummy_staff"
-            :key="staff.staff_id"
+            v-for="staff in items"
+            :key="staff.employee.id"
           >
-            <td>{{ staff.employee_name }}</td>
-            <td>{{ staff.role_cd }}</td>
+            <td>{{ staff.employee.last_name }}{{ staff.employee.first_name }}</td>
+            <td>{{ staff.staff_role.role_cd }}</td>
             <td>
               <div class="drop-menu">
                 <v-btn
@@ -58,15 +58,18 @@
         <v-card-title>権限変更</v-card-title>
         <v-card-item>
           <v-card-subtitle>氏名</v-card-subtitle>
-          <v-card-text>{{ active_staff.employee_name }}</v-card-text>
+          <v-card-text>
+            {{ active_staff.employee.last_name }}
+            {{ active_staff.employee.first_name }}
+          </v-card-text>
         </v-card-item>
         <v-card-item>
           <v-card-subtitle>権限</v-card-subtitle>
           <v-select
-            v-model="active_staff.role_cd"
+            v-model="active_staff.staff_role.role_cd"
             :items="params.roles"
             item-title="role_name"
-            :item-value="role_cd"
+            item-value="role_cd"
           ></v-select>
         </v-card-item>
         <v-card-actions class="justify-end">
@@ -90,6 +93,8 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
 import shopApiFunc from '@/mixins/api/master/shop'
+import employeeApiFunc from '@/mixins/api/master/employee'
+import accountApiFunc from '@/mixins/api/account'
 export default {
   name: 'shop-invite',
   components: {
@@ -100,51 +105,63 @@ export default {
     changeMode: Function
   },
   setup (props) {
-    const members = ref([])
+    // 店舗従業員取得
+    const items = ref([])
+    let members = []
     const getShopStaff = async () => {
-      members.value = await shopApiFunc.apiGetShopStaffList(props.params.viewer.company_shop_cd)
+      try {
+        members = await shopApiFunc.apiGetShopStaffList(props.params.viewer.company_shop_cd)
+        members.forEach( async (member) => {
+          const item = {}
+          item.employee = await employeeApiFunc.apiGetEmployeeRelateStaffId(member.staff_id)
+          item.staff_role = await accountApiFunc.apiGetStaffRole(member.staff_id)
+          items.value.push(item)
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
     getShopStaff()
-    return {
-      members
+
+    const footer_options = {
+      back: [
+        { text: '店舗一覧へ戻る', callback: props.changeMode }
+      ]
     }
-  },
-  data () {
-    return {
-      dummy_staff: [
-        { staff_id: '001', role_cd: "officer", employee_name: '開発太郎' },
-        { staff_id: '002', role_cd: "staff", employee_name: '反町隆' },
-      ],
-      
-      active_menu: null,
-      role_dialog: false,
-      active_staff: {},
-      footer_options: {
-        back: [
-          { text: '店舗一覧へ戻る', callback: this.changeMode }
-        ]
-      }
-    }
-  },
-  methods: {
-    staffListMenu (staff) {
-      if(this.active_menu) {
-        this.active_menu = null
+
+    const active_menu = ref(null)
+    const role_dialog = ref(false)
+    const active_staff = ref({})
+    const staffListMenu = (staff) => {
+      if(active_menu.value) {
+        active_menu.value = null
       } else {
-        this.active_menu = staff.staff_id
+        active_menu.value = staff.staff_id
       }
-    },
-    clickChangeRole (staff) {
-      this.active_staff = staff
-      this.role_dialog = true
-    },
-    saveChangeRole() {
-      this.role_dialog = false
-    },
-    closeModal() {
-      this.role_dialog = false
-    },
-  }
+    }
+    const clickChangeRole = (staff) => {
+      active_staff.value = staff
+      role_dialog.value = true
+    }
+    const saveChangeRole = () => {
+      role_dialog.value = false
+    }
+    const closeModal = () => {
+      role_dialog.value = false
+    }
+
+    return {
+      items,
+      footer_options,
+      active_menu,
+      role_dialog,
+      active_staff,
+      staffListMenu,
+      clickChangeRole,
+      saveChangeRole,
+      closeModal
+    }
+  },
 }
 </script>
 <style scoped>

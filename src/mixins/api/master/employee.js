@@ -80,7 +80,7 @@ async function apiGetEmployeeRelateStaffId (staff_id) {
     query: listEmployees,
     variables: { filter: filter }
   })
-  return results.data.listEmployees.items
+  return results.data.listEmployees.items[0]
 }
 
 async function apiGetEmployeeDetail (employee_id) {
