@@ -29,7 +29,7 @@
               <td>{{ item.shop_name }}</td>
               <td>{{ item.area_cd }}</td>
               <td>{{ item.brand_cd }}</td>
-              <th>
+              <td>
                 <div class="drop-menu">
                   <v-btn
                       icon="mdi-dots-vertical"
@@ -43,20 +43,36 @@
                       border
                     >
                       <v-list-item>
-                        <v-btn variant="text" color="primary" block>店舗参加用QRを表示</v-btn>
+                        <v-btn
+                          variant="text"
+                          color="primary"
+                          block
+                          @click.stop="clickInviteShop(item)"
+                        >店舗参加用QRを表示</v-btn>
                       </v-list-item>
                       <v-list-item>
-                        <v-btn variant="text" color="primary" block> スタッフグループ </v-btn>
+                        <v-btn variant="text"
+                          color="primary"
+                          block
+                          @click.stop="clickStaffGroup(item)"
+                        > スタッフグループ </v-btn>
                       </v-list-item>
                       <v-list-item>
-                        <v-btn variant="text" color="primary" block> 従業員一覧 </v-btn>
+                        <v-btn 
+                          variant="text"
+                          color="primary"
+                          block
+                          @click.stop="clickStaffList(item)"
+                        > 従業員一覧 </v-btn>
                       </v-list-item>
                       <v-list-item>
-                        <v-btn variant="text" color="primary" block> 店舗削除 </v-btn>
+                        <v-btn variant="text"
+                          color="primary"
+                          block> 店舗削除 </v-btn>
                       </v-list-item>
                     </v-list>
                 </div>
-              </th>
+              </td>
             </tr>
           </tbody>
         </v-table>
@@ -115,6 +131,21 @@ export default {
       this.params.viewer = item
       this.changeMode('view')
     },
+    clickInviteShop(shop) {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.viewer = shop
+      this.changeMode('invite')
+    },
+    clickStaffGroup(shop) {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.viewer = shop
+      this.changeMode('staff-group-list')
+    },
+    clickStaffList(shop) {
+      // eslint-disable-next-line vue/no-mutating-props
+      this.params.viewer = shop
+      this.changeMode('staff-list')
+    },
     clickNew () {
       // eslint-disable-next-line vue/no-mutating-props
       this.params.editor = {
@@ -146,5 +177,6 @@ export default {
   width: 200px;
   position: absolute;
   right: 0;
+  z-index: 2;
 }
   </style>

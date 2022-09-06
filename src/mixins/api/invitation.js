@@ -68,11 +68,11 @@ function generateInvitationObject (employee, invitation) {
     invitation_id: uuid.v4(),
     send_to: invitation.send_to
   }
-  result.url = createInvitationUrl(result)
+  result.url = createEmployeeInvitationUrl(result)
   return result
 }
 // 招待URL生成
-function createInvitationUrl (data) {
+function createEmployeeInvitationUrl (data) {
   let basepath = "http://localhost:8080?ivc="
   basepath += data.company_cd
   // TODO: 暗号化予定
@@ -81,6 +81,13 @@ function createInvitationUrl (data) {
   // if(data.shop_cd !== "admin") {
   //   basepath += '&ivc_shop=' + data.shop_cd
   // }
+  return basepath
+}
+
+function createShopInvitationUrl(shop) {
+  let basepath = "http://localhost:8080?ivs="
+  basepath += shop.company_shop_cd
+
   return basepath
 }
 
@@ -102,5 +109,6 @@ async function apiGetInvitation () {
 export default {
   apiCreateInvitationEmployee,
   apiCreateInvitation,
-  apiGetInvitation
+  apiGetInvitation,
+  createShopInvitationUrl
 }
