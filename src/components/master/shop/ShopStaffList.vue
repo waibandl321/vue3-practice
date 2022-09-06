@@ -156,8 +156,10 @@ export default {
     const clickDeleteShopStaff = async (staff) => {
       active_menu.value = null
       try {
-        await shopApiFunc.apiDeleteShopStaff(staff.shop_staff.id)
-        alert('店舗従業員を削除しました。')
+        await shopApiFunc.apiDeleteShopStaff(staff.shop_staff.id).then(() => {
+          alert('店舗従業員を削除しました。')
+        })
+        items.value = items.value.filter(v => v.shop_staff.staff_id !== staff.shop_staff.staff_id)
       } catch (error) {
         alert(error)
       }
