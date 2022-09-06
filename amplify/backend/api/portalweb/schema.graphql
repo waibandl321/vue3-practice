@@ -153,7 +153,7 @@ type Shop @model {
 type ShopTime @model {
   id: ID!
   shop_time_id: String
-  shop_cd: String
+  company_shop_cd: String
   day_cd: String
   holiday: Int
   start_time: String
@@ -164,7 +164,7 @@ type ShopTime @model {
 type ShopStaff @model {
   id: ID!
   shop_staff_id: String
-  shop_cd: String
+  company_shop_cd: String
   staff_id: String
   status: Int
   delete: Int
@@ -173,7 +173,7 @@ type ShopStaff @model {
 type ShopStaffGroup @model {
   id: ID!
   staff_group_cd: String
-  shop_cd: String
+  company_shop_cd: String
   group_name: String
   staff_id: String
 }

@@ -81,7 +81,7 @@ async function apiCreateShopStaff () {
 function generateShopStaffObject () {
   return {
     shop_staff_id: uuid.v4(),
-    shop_cd: store.getters.invitationShopCode,
+    company_shop_cd: store.getters.invitationShopCode,
     staff_id: store.getters.staff.staff_id,
     status: 0,
     delete: 0
@@ -90,7 +90,7 @@ function generateShopStaffObject () {
 
 async function apiGetShopStaffList(company_shop_cd) {
   const filter = {
-    shop_cd: {
+    company_shop_cd: {
       eq: company_shop_cd
     }
   }

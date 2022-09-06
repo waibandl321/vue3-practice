@@ -669,7 +669,7 @@ export const onCreateShopTime = /* GraphQL */ `
     onCreateShopTime(filter: $filter) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -685,7 +685,7 @@ export const onUpdateShopTime = /* GraphQL */ `
     onUpdateShopTime(filter: $filter) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -701,7 +701,7 @@ export const onDeleteShopTime = /* GraphQL */ `
     onDeleteShopTime(filter: $filter) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -719,7 +719,7 @@ export const onCreateShopStaff = /* GraphQL */ `
     onCreateShopStaff(filter: $filter) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -735,7 +735,7 @@ export const onUpdateShopStaff = /* GraphQL */ `
     onUpdateShopStaff(filter: $filter) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -751,7 +751,7 @@ export const onDeleteShopStaff = /* GraphQL */ `
     onDeleteShopStaff(filter: $filter) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -767,7 +767,7 @@ export const onCreateShopStaffGroup = /* GraphQL */ `
     onCreateShopStaffGroup(filter: $filter) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt
@@ -782,7 +782,7 @@ export const onUpdateShopStaffGroup = /* GraphQL */ `
     onUpdateShopStaffGroup(filter: $filter) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt
@@ -797,7 +797,7 @@ export const onDeleteShopStaffGroup = /* GraphQL */ `
     onDeleteShopStaffGroup(filter: $filter) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt

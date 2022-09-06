@@ -523,7 +523,7 @@ export const getShopTime = /* GraphQL */ `
     getShopTime(id: $id) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -544,7 +544,7 @@ export const listShopTimes = /* GraphQL */ `
       items {
         id
         shop_time_id
-        shop_cd
+        company_shop_cd
         day_cd
         holiday
         start_time
@@ -562,7 +562,7 @@ export const getShopStaff = /* GraphQL */ `
     getShopStaff(id: $id) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -581,7 +581,7 @@ export const listShopStaffs = /* GraphQL */ `
       items {
         id
         shop_staff_id
-        shop_cd
+        company_shop_cd
         staff_id
         status
         delete
@@ -597,7 +597,7 @@ export const getShopStaffGroup = /* GraphQL */ `
     getShopStaffGroup(id: $id) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt
@@ -615,7 +615,7 @@ export const listShopStaffGroups = /* GraphQL */ `
       items {
         id
         staff_group_cd
-        shop_cd
+        company_shop_cd
         group_name
         staff_id
         createdAt

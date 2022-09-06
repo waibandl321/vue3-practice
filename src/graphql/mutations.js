@@ -765,7 +765,7 @@ export const createShopTime = /* GraphQL */ `
     createShopTime(input: $input, condition: $condition) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -784,7 +784,7 @@ export const updateShopTime = /* GraphQL */ `
     updateShopTime(input: $input, condition: $condition) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -803,7 +803,7 @@ export const deleteShopTime = /* GraphQL */ `
     deleteShopTime(input: $input, condition: $condition) {
       id
       shop_time_id
-      shop_cd
+      company_shop_cd
       day_cd
       holiday
       start_time
@@ -822,7 +822,7 @@ export const createShopStaff = /* GraphQL */ `
     createShopStaff(input: $input, condition: $condition) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -839,7 +839,7 @@ export const updateShopStaff = /* GraphQL */ `
     updateShopStaff(input: $input, condition: $condition) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -856,7 +856,7 @@ export const deleteShopStaff = /* GraphQL */ `
     deleteShopStaff(input: $input, condition: $condition) {
       id
       shop_staff_id
-      shop_cd
+      company_shop_cd
       staff_id
       status
       delete
@@ -873,7 +873,7 @@ export const createShopStaffGroup = /* GraphQL */ `
     createShopStaffGroup(input: $input, condition: $condition) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt
@@ -889,7 +889,7 @@ export const updateShopStaffGroup = /* GraphQL */ `
     updateShopStaffGroup(input: $input, condition: $condition) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt
@@ -905,7 +905,7 @@ export const deleteShopStaffGroup = /* GraphQL */ `
     deleteShopStaffGroup(input: $input, condition: $condition) {
       id
       staff_group_cd
-      shop_cd
+      company_shop_cd
       group_name
       staff_id
       createdAt
