@@ -9,3 +9,8 @@ export default {
   name: 'App'
 }
 </script>
+<style>
+.im-container {
+  padding-bottom: 120px;
+}
+</style>

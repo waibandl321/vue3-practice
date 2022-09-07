@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <v-container style="padding-bottom: 100px;">
+  <v-container class="im-container">
     <div>
       店舗編集<br>
       {{ params.editor }}

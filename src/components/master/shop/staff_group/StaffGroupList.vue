@@ -61,6 +61,8 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from 'vue'
 import shopApiFunc from '@/mixins/api/master/shop.js'
+// import employeeApiFunc from '@/mixins/api/master/employee'
+// import accountApiFunc from '@/mixins/api/account'
 export default {
   name: 'staff-group-list',
   components: {
@@ -76,8 +78,8 @@ export default {
     const staff_group_create = ref(false)
     const clickNewStaffGroup = () => {
       staff_group_create.value = true
-    }
-    
+    }    
+
     // スタッフグループ
     const staff_group_name = ref('')
     const groups = ref([])
@@ -124,6 +126,7 @@ export default {
         { text: '店舗一覧へ戻る', callback: backFunc }
       ]
     }
+
     return {
       staff_group_create,
       staff_group_name,

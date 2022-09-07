@@ -15,7 +15,11 @@
         <v-card-text>{{ viewer.group_name }}</v-card-text>
       </v-card-item>
       <v-card-item>
-        <v-card-subtitle>スタッフ</v-card-subtitle>
+        <v-card-subtitle>作成者スタッフID</v-card-subtitle>
+        <v-card-text>{{ viewer.staff_id }}</v-card-text>
+      </v-card-item>
+      <v-card-item>
+        <v-card-subtitle>参加スタッフ</v-card-subtitle>
         <v-card-text>
           <v-card class="pa-4">スタッフ名</v-card>
         </v-card-text>

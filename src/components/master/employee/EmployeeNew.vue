@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <v-container style="padding-bottom: 100px;">
+  <v-container class="im-container">
     <v-card-title>従業員情報 編集</v-card-title>
     {{ params.editor }}
     {{ invitation }}

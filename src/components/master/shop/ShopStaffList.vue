@@ -1,8 +1,13 @@
 <template>
-  <v-container>
+  <v-container class="im-container">
     {{ items }}
     <v-card>
       <v-card-title>「{{ params.viewer.shop_name }}」 従業員一覧</v-card-title>
+      <v-progress-circular
+          v-if="loading"
+          indeterminate
+          color="primary"
+      ></v-progress-circular>
       <v-table height="50vh">
         <thead>
           <tr>
@@ -27,7 +32,7 @@
                     @click="staffListMenu(staff)"
                   ></v-btn>
                   <v-list
-                    v-if="active_menu === staff.shop_staff.staff_id"
+                    v-if="active_menu === staff.staff_id"
                     class="drop-items"
                     border
                   >
@@ -94,8 +99,8 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
 import shopApiFunc from '@/mixins/api/master/shop'
-import employeeApiFunc from '@/mixins/api/master/employee'
 import accountApiFunc from '@/mixins/api/account'
+import shopFunc from './shop'
 export default {
   name: 'shop-invite',
   components: {
@@ -106,24 +111,15 @@ export default {
     changeMode: Function
   },
   setup (props) {
+    const loading = ref(false)
     // 店舗従業員取得
     const items = ref([])
-    let members = []
-    const getShopStaff = async () => {
-      try {
-        members = await shopApiFunc.apiGetShopStaffList(props.params.viewer.company_shop_cd)
-        members.forEach( async (member) => {
-          const item = {}
-          item.shop_staff = member
-          item.employee = await employeeApiFunc.apiGetEmployeeRelateStaffId(member.staff_id)
-          item.staff_role = await accountApiFunc.apiGetStaffRole(member.staff_id)
-          items.value.push(item)
-        })
-      } catch (error) {
-        console.log(error)
-      }
+    const getShopStaffList = async () => {
+      loading.value = true
+      items.value = await shopFunc.getShopStaff(props.params.viewer)
+      loading.value = false
     }
-    getShopStaff()
+    getShopStaffList()
 
     const footer_options = {
       back: [
@@ -138,7 +134,7 @@ export default {
       if(active_menu.value) {
         active_menu.value = null
       } else {
-        active_menu.value = staff.shop_staff.staff_id
+        active_menu.value = staff.staff_id
       }
     }
     const clickChangeRole = (staff) => {
@@ -151,24 +147,27 @@ export default {
       const staff_id = active_staff.value.employee.staff_id
       await accountApiFunc.apiUpdateStaffRole(staff_id, role)
       role_dialog.value = false
+      active_menu.value = null
     }
     // 店舗スタッフ削除
     const clickDeleteShopStaff = async (staff) => {
       active_menu.value = null
       try {
-        await shopApiFunc.apiDeleteShopStaff(staff.shop_staff.id).then(() => {
+        await shopApiFunc.apiDeleteShopStaff(staff.id).then(() => {
           alert('店舗従業員を削除しました。')
         })
-        items.value = items.value.filter(v => v.shop_staff.staff_id !== staff.shop_staff.staff_id)
+        items.value = items.value.filter(v => v.staff_id !== staff.staff_id)
       } catch (error) {
         alert(error)
       }
     }
     const closeModal = () => {
       role_dialog.value = false
+      active_menu.value = null
     }
 
     return {
+      loading,
       items,
       footer_options,
       active_menu,
