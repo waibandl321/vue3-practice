@@ -1,6 +1,13 @@
 <template>
   <v-container>
-    {{ params.viewer }}
+    <div>
+      店舗<br>
+      {{ params.viewer }}
+    </div>
+    <div class="mt-4">
+      スタッフグループ<br>
+      {{ editor }}
+    </div>
     <v-card-title>{{ params.viewer.shop_name }} スタッフグループ名</v-card-title>
     <v-card class="mt-4">
       <v-card-item>
@@ -36,28 +43,30 @@ export default {
     PcFooter
   },
   props: {
+    editor: Object,
     params: Object,
-    changeMode: Function
+    changeModeStaffGroup: Function
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: 'スタッフグループ一覧へ', callback: this.backFunc }
-        ],
-        next: [
-          { text: '保存', callback: this.saveStaffGroup }
-        ]
-      }
-    }
-  },
-  methods: {
-    saveStaffGroup () {
+  setup (props) {
+    const saveStaffGroup = () => {
       alert('スタッフグループ保存処理')
-      this.changeMode('staff-group-list')
-    },
-    backFunc() {
-      this.changeMode('staff-group-list')
+      props.changeModeStaffGroup('staff-group-list')
+    }
+    const backFunc = () => {
+      props.changeModeStaffGroup('staff-group-list')
+    }
+    const footer_options = {
+      back: [
+        { text: 'スタッフグループ一覧へ', callback: backFunc }
+      ],
+      next: [
+        { text: '保存', callback: saveStaffGroup }
+      ]
+    }
+    return {
+      footer_options,
+      backFunc,
+      saveStaffGroup
     }
   }
 }

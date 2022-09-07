@@ -1,8 +1,11 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
   <v-container style="padding-bottom: 100px;">
+    <div>
+      店舗編集<br>
+      {{ params.editor }}
+    </div>
     <v-card-title>店舗登録</v-card-title>
-    {{ params.editor }}
     <v-card-item>
         <v-card-subtitle>
           店舗コード
@@ -92,29 +95,27 @@ export default {
     changeMode: Function,
     params: Object
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ],
-        next: [
-          { text: '保存', callback: this.save }
-        ]
-      }
-    }
-  },
-  methods: {
-    async save () {
-      // データ保存処理
-      if(this.params.is_new) {
-        await shopApiFunc.apiCreateShop(this.params.editor)
+  setup (props) {
+    const save = async () => {
+      if(props.params.is_new) {
+        await shopApiFunc.apiCreateShop(props.params.editor)
       } else {
-        await shopApiFunc.apiUpdateShop(this.params.editor)
+        await shopApiFunc.apiUpdateShop(props.params.editor)
       }
       // eslint-disable-next-line vue/no-mutating-props
-      this.params.is_new = false
-      this.changeMode('list')
+      props.params.is_new = false
+      props.changeMode('list')
+    }
+    const footer_options = {
+      back: [
+        { text: '一覧へ戻る', callback: props.changeMode }
+      ],
+      next: [
+        { text: '保存', callback: save }
+      ]
+    }
+    return {
+      footer_options
     }
   }
 }

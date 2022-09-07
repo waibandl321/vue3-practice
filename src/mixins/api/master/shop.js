@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
-import { createShop, updateShop, createShopStaff, deleteShopStaff } from '@/graphql/mutations'
-import { listShops, listShopStaffs } from '@/graphql/queries'
+import { createShop, updateShop, createShopStaff, deleteShopStaff, createShopStaffGroup, deleteShopStaffGroup } from '@/graphql/mutations'
+import { listShops, listShopStaffs, listShopStaffGroups } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
@@ -71,7 +71,6 @@ async function apiCreateShopStaff () {
     variables: { input: shop_staff }
   })
 }
-
 function generateShopStaffObject () {
   return {
     shop_staff_id: uuid.v4(),
@@ -81,7 +80,6 @@ function generateShopStaffObject () {
     delete: 0
   }
 }
-
 async function apiGetShopStaffList(company_shop_cd) {
   const filter = {
     company_shop_cd: {
@@ -94,7 +92,6 @@ async function apiGetShopStaffList(company_shop_cd) {
   })
   return results.data.listShopStaffs.items
 }
-
 async function apiDeleteShopStaff (id) {
   const filter = {
     id: id,
@@ -104,12 +101,54 @@ async function apiDeleteShopStaff (id) {
     variables: {input: filter}
   });
 }
+// スタッフグループ
+async function apiCreateShopStaffGroup (shop, staff_group_name) {
+  const shop_staff_group = generateCreateShopStaffObject(shop, staff_group_name)
+  return await API.graphql({
+    query: createShopStaffGroup,
+    variables: { input: shop_staff_group }
+  })
+}
+function generateCreateShopStaffObject (shop, staff_group_name) {
+  return {
+    staff_group_cd: uuid.v4(),
+    company_shop_cd: shop.company_shop_cd,
+    group_name: staff_group_name,
+    staff_id: store.getters.staff.staff_id
+  }
+}
+async function apiGetShopStaffGroup (shop) {
+  const filter = {
+    company_shop_cd: {
+      eq: shop.company_shop_cd
+    }
+  }
+  const results = await API.graphql({
+    query: listShopStaffGroups,
+    variables: { filter: filter }
+  })
+  return results.data.listShopStaffGroups.items
+}
+async function apiDeleteShopStaffGroup (shop_staff_group) {
+  const filter = {
+    id: shop_staff_group.id,
+  }
+  return await API.graphql({
+    query: deleteShopStaffGroup,
+    variables: {input: filter}
+  });
+}
 
 export default {
   apiCreateShop,
   apiUpdateShop,
   apiGetShops,
   apiCreateShopStaff,
+  // 店舗スタッフ
   apiGetShopStaffList,
-  apiDeleteShopStaff
+  apiDeleteShopStaff,
+  // スタッフグループ
+  apiCreateShopStaffGroup,
+  apiGetShopStaffGroup,
+  apiDeleteShopStaffGroup
 }

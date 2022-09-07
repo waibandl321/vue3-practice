@@ -4,7 +4,6 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ items }}
       <div>
         <v-table
           fixed-header
@@ -98,7 +97,9 @@ export default {
   components: { MasterLeftMenu },
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
+    setViewer: Function,
+    setEditor: Function,
   },
   setup () {
     const items = ref([])
@@ -127,38 +128,23 @@ export default {
   },
   methods: {
     recordClick (item) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = item
+      this.setViewer(item)
       this.changeMode('view')
     },
     clickInviteShop(shop) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = shop
+      this.setViewer(shop)
       this.changeMode('invite')
     },
     clickStaffGroup(shop) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = shop
-      this.changeMode('staff-group-list')
+      this.setViewer(shop)
+      this.changeMode('staff-group')
     },
     clickStaffList(shop) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = shop
+      this.setViewer(shop)
       this.changeMode('staff-list')
     },
     clickNew () {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.editor = {
-        shop_cd: "",
-        shop_name: "",
-        shop_name_kana: "",
-        brand_cd: "",
-        area_cd: "",
-        address: "",
-        phone: "",
-        status: 0,
-        delete: 0
-      }
+      this.setEditor(null, true)
       this.changeMode('edit', this.is_new)
     }
   }

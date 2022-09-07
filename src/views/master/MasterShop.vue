@@ -4,11 +4,14 @@
     <ShopList
       v-if="mode === 'list'"
       :changeMode="changeMode"
+      :setViewer="setViewer"
+      :setEditor="setEditor"
       :params="params"
     />
     <ShopDetail
       v-if="mode === 'view'"
       :changeMode="changeMode"
+      :setEditor="setEditor"
       :params="params"
     />
     <ShopEdit
@@ -29,18 +32,8 @@
       :changeMode="changeMode"
       :params="params"
     />
-    <StaffGroupList
-      v-if="mode === 'staff-group-list'"
-      :changeMode="changeMode"
-      :params="params"
-    />
-    <StaffGroupDetail
-      v-if="mode === 'staff-group-detail'"
-      :changeMode="changeMode"
-      :params="params"
-    />
-    <StaffGroupEdit
-      v-if="mode === 'staff-group-edit'"
+    <StaffGroupIndex
+      v-if="mode === 'staff-group'"
       :changeMode="changeMode"
       :params="params"
     />
@@ -58,11 +51,9 @@ import ShopList from '@/components/master/shop/ShopList.vue'
 import ShopEdit from '@/components/master/shop/ShopEdit.vue'
 import ShopDetail from '../../components/master/shop/ShopDetail.vue'
 import ShopInvite from '@/components/master/shop/invite/ShopInvite.vue'
-import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
-import StaffGroupList from '@/components/master/shop/staff_group/StaffGroupList.vue'
-import StaffGroupDetail from '@/components/master/shop/staff_group/StaffGroupDetail.vue'
-import StaffGroupEdit from '@/components/master/shop/staff_group/StaffGroupEdit.vue'
 import ShopInviteProcedure from '@/components/master/shop/invite/ShopInviteProcedure.vue'
+import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
+import StaffGroupIndex from '@/components/master/shop/staff_group/StaffGroup.vue'
 
 
 export default {
@@ -74,11 +65,9 @@ export default {
     ShopDetail,
     ShopInvite,
     ShopStaffList,
-    StaffGroupList,
-    StaffGroupDetail,
-    StaffGroupEdit,
-    ShopInviteProcedure
-  },
+    ShopInviteProcedure,
+    StaffGroupIndex
+},
   data () {
     return {
       mode: 'list',
@@ -108,6 +97,26 @@ export default {
         this.params.is_new = true
       }
       this.mode = _mode
+    },
+    setViewer (item) {
+      this.params.viewer = item
+    },
+    setEditor (item, is_new = false) {
+      if(is_new) {
+        this.params.editor = {
+          shop_cd: "",
+          shop_name: "",
+          shop_name_kana: "",
+          brand_cd: "",
+          area_cd: "",
+          address: "",
+          phone: "",
+          status: 0,
+          delete: 0
+        }
+        return;
+      }
+      this.params.editor = item
     }
   }
 }

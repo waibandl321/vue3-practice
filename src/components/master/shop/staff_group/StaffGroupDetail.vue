@@ -1,11 +1,18 @@
 <template>
   <v-container>
+    <div>
+    店舗<br>
     {{ params.viewer }}
-    <v-card-title>{{ params.viewer.shop_name }} スタッフグループ名</v-card-title>
+    </div>
+    <div class="mt-4">
+      スタッフグループ<br>
+    {{ viewer }}
+    </div>
+    <v-card-title>{{ params.viewer.shop_name }} スタッフグループ詳細</v-card-title>
     <v-card class="mt-4">
       <v-card-item>
         <v-card-subtitle>スタッフグループ名</v-card-subtitle>
-        <v-card-text>スタッフグループ名</v-card-text>
+        <v-card-text>{{ viewer.group_name }}</v-card-text>
       </v-card-item>
       <v-card-item>
         <v-card-subtitle>スタッフ</v-card-subtitle>
@@ -19,8 +26,6 @@
 </template>
 
 <script>
-// import { ref } from '@vue/reactivity'
-// import invitationApiFunc from '@/mixins/api/invitation.js'
 import PcFooter from '@/components/common/PcFooter.vue'
 export default {
   name: 'staff-group-detail',
@@ -28,27 +33,32 @@ export default {
     PcFooter
   },
   props: {
+    viewer: Object,
     params: Object,
-    changeMode: Function
+    changeModeStaffGroup: Function,
+    setEditor: Function
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: 'スタッフグループ一覧へ', callback: this.backFunc }
-        ],
-        next: [
-          { text: 'スタッフグループ編集', callback: this.editStaffGroup }
-        ]
-      }
+  setup (props) {
+    const editStaffGroup = () => {
+      props.setEditor(props.viewer)
+      props.changeModeStaffGroup('staff-group-edit')
     }
-  },
-  methods: {
-    editStaffGroup () {
-      this.changeMode('staff-group-edit')
-    },
-    backFunc() {
-      this.changeMode('staff-group-list')
+    const backFunc = () => {
+      props.changeModeStaffGroup('staff-group-list')
+    }
+    const footer_options = {
+      back: [
+        { text: 'スタッフグループ一覧へ', callback: backFunc }
+      ],
+      next: [
+        { text: 'スタッフグループ編集', callback: editStaffGroup }
+      ]
+    }
+
+    return {
+      footer_options,
+      editStaffGroup,
+      backFunc
     }
   }
 }
