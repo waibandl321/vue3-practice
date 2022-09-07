@@ -805,6 +805,45 @@ export const onDeleteShopStaffGroup = /* GraphQL */ `
     }
   }
 `;
+export const onCreateShopStaffGroupStaff = /* GraphQL */ `
+  subscription OnCreateShopStaffGroupStaff(
+    $filter: ModelSubscriptionShopStaffGroupStaffFilterInput
+  ) {
+    onCreateShopStaffGroupStaff(filter: $filter) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateShopStaffGroupStaff = /* GraphQL */ `
+  subscription OnUpdateShopStaffGroupStaff(
+    $filter: ModelSubscriptionShopStaffGroupStaffFilterInput
+  ) {
+    onUpdateShopStaffGroupStaff(filter: $filter) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteShopStaffGroupStaff = /* GraphQL */ `
+  subscription OnDeleteShopStaffGroupStaff(
+    $filter: ModelSubscriptionShopStaffGroupStaffFilterInput
+  ) {
+    onDeleteShopStaffGroupStaff(filter: $filter) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateRole = /* GraphQL */ `
   subscription OnCreateRole($filter: ModelSubscriptionRoleFilterInput) {
     onCreateRole(filter: $filter) {

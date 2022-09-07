@@ -625,6 +625,39 @@ export const listShopStaffGroups = /* GraphQL */ `
     }
   }
 `;
+export const getShopStaffGroupStaff = /* GraphQL */ `
+  query GetShopStaffGroupStaff($id: ID!) {
+    getShopStaffGroupStaff(id: $id) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listShopStaffGroupStaffs = /* GraphQL */ `
+  query ListShopStaffGroupStaffs(
+    $filter: ModelShopStaffGroupStaffFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listShopStaffGroupStaffs(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        staff_group_cd
+        shop_staff_id
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getRole = /* GraphQL */ `
   query GetRole($id: ID!) {
     getRole(id: $id) {

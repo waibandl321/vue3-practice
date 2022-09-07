@@ -913,6 +913,48 @@ export const deleteShopStaffGroup = /* GraphQL */ `
     }
   }
 `;
+export const createShopStaffGroupStaff = /* GraphQL */ `
+  mutation CreateShopStaffGroupStaff(
+    $input: CreateShopStaffGroupStaffInput!
+    $condition: ModelShopStaffGroupStaffConditionInput
+  ) {
+    createShopStaffGroupStaff(input: $input, condition: $condition) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateShopStaffGroupStaff = /* GraphQL */ `
+  mutation UpdateShopStaffGroupStaff(
+    $input: UpdateShopStaffGroupStaffInput!
+    $condition: ModelShopStaffGroupStaffConditionInput
+  ) {
+    updateShopStaffGroupStaff(input: $input, condition: $condition) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteShopStaffGroupStaff = /* GraphQL */ `
+  mutation DeleteShopStaffGroupStaff(
+    $input: DeleteShopStaffGroupStaffInput!
+    $condition: ModelShopStaffGroupStaffConditionInput
+  ) {
+    deleteShopStaffGroupStaff(input: $input, condition: $condition) {
+      id
+      staff_group_cd
+      shop_staff_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createRole = /* GraphQL */ `
   mutation CreateRole(
     $input: CreateRoleInput!
