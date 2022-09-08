@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createShop, updateShop, createShopStaff, deleteShopStaff, createShopStaffGroup, 
-  deleteShopStaffGroup, createShopStaffGroupStaff, deleteShopStaffGroupStaff } from '@/graphql/mutations'
+  deleteShopStaffGroup, createShopStaffGroupStaff, updateShopStaffGroup, deleteShopStaffGroupStaff } from '@/graphql/mutations'
 import { listShops, listShopStaffs, listShopStaffGroups, listShopStaffGroupStaffs } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
@@ -118,6 +118,24 @@ function generateCreateShopStaffObject (shop, staff_group_name) {
     staff_id: store.getters.staff.staff_id
   }
 }
+// スタッフグループ更新
+async function apiUpdateShopStaffGroup (shop, staff_group) {
+  const item = generateUpdateShopStaffObject(shop, staff_group)
+
+  await API.graphql({
+    query: updateShopStaffGroup,
+    variables: { input: item }
+  })
+}
+function generateUpdateShopStaffObject (shop, staff_group) {
+  return {
+    id: staff_group.id,
+    staff_group_cd: staff_group.staff_group_cd,
+    company_shop_cd: shop.company_shop_cd,
+    group_name: staff_group.group_name,
+    // staff_id: store.getters.staff.staff_id
+  }
+}
 // スタッフグループ取得
 async function apiGetShopStaffGroup (shop) {
   const filter = {
@@ -189,6 +207,7 @@ export default {
   apiDeleteShopStaff,
   // スタッフグループ
   apiCreateShopStaffGroup,
+  apiUpdateShopStaffGroup,
   apiGetShopStaffGroup,
   apiDeleteShopStaffGroup,
   // スタッフグループ所属メンバー

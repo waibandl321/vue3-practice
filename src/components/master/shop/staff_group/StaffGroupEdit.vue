@@ -61,6 +61,7 @@
         <v-table>
           <thead>
             <tr>
+              <th>ID</th>
               <th>氏名</th>
               <th></th>
             </tr>
@@ -71,6 +72,7 @@
               :key="staff.id"
             >
               <td>{{ staff.id }}</td>
+              <td>{{ staff.employee.last_name }}{{ staff.employee.first_name }}</td>
               <td>
                 <v-checkbox
                   v-model="add_staff_value"
@@ -118,18 +120,7 @@ export default {
   },
   setup (props) {
     const loading = ref(false)
-    
-    const updateStaffGroup = () => {
-      alert('スタッフグループ保存処理')
-      // store初期化
-      storeFunc.storeSetStaffGroupStaffs(null)
-      props.changeModeStaffGroup('staff-group-list')
-    }
-    const backFunc = () => {
-      // store初期化
-      storeFunc.storeSetStaffGroupStaffs(null)
-      props.changeModeStaffGroup('staff-group-list')
-    }
+
     // 店舗スタッフ追加
     const shop_staffs = ref([])
     const staff_group_staffs = ref([])
@@ -139,7 +130,7 @@ export default {
     staff_group_staffs.value = storeFunc.storeGetStaffGroupStaffs()
     
     // 店舗従業員取得
-    const getStaff = async () => {
+    const getShopStaffs = async () => {
       const selected = []
       if(staff_group_staffs.value.length > 0) {
         for (const item of staff_group_staffs.value) {
@@ -181,7 +172,7 @@ export default {
     }
     const clickStaffAdd = async () => {
       staff_select_modal.value = true
-      getStaff()
+      getShopStaffs()
     }
     // スタッフグループ所属メンバー削除
     const deleteStaffGroupStaff = async (staff) => {
@@ -196,6 +187,25 @@ export default {
         alert(error)
         console.log(error);
       }
+    }
+    // スタッフグループ更新
+    const updateStaffGroup = async () => {
+      try {
+        await shopApiFunc.apiUpdateShopStaffGroup(props.params.viewer, props.editor)
+        // store初期化
+        storeFunc.storeSetStaffGroupStaffs(null)
+        alert('スタッフグループを更新しました。')
+      } catch (error) {
+        alert(error)
+        console.log(error);
+      }
+      props.changeModeStaffGroup('staff-group-list')
+    }
+    // スタッフグループ一覧に戻る
+    const backFunc = () => {
+      // store初期化
+      storeFunc.storeSetStaffGroupStaffs(null)
+      props.changeModeStaffGroup('staff-group-list')
     }
     // フッターオプション
     const footer_options = {
