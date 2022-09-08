@@ -68,12 +68,12 @@ export default {
       const area_cd = props.params.viewer.area_cd
       return props.params.areas.find(v => v.area_cd === area_cd).area_name
     })
-
+    // 編集画面へ遷移
     const changeModeEdit = () => {
       props.setEditor(props.params.viewer)
       props.changeMode('edit')
     }
-
+    // フッターオプション
     const footer_options = {
       back: [
         { text: '一覧へ戻る', callback: props.changeMode }

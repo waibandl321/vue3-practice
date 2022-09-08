@@ -96,6 +96,7 @@ export default {
     params: Object
   },
   setup (props) {
+    // 店舗情報保存
     const save = async () => {
       if(props.params.is_new) {
         await shopApiFunc.apiCreateShop(props.params.editor)
@@ -106,6 +107,7 @@ export default {
       props.params.is_new = false
       props.changeMode('list')
     }
+    // フッターオプション
     const footer_options = {
       back: [
         { text: '一覧へ戻る', callback: props.changeMode }
