@@ -58,20 +58,23 @@ export default {
     setEditor: Function
   },
   setup (props) {
+    // スタッフグループ所属メンバー取得（MEMO: 編集で使うのでvuexに保存する）
     const staff_group_staffs = ref([])
     const getStaffGroupStaff = async () => {
       staff_group_staffs.value = await shopApiFunc.apiGetStaffGroupStaff(props.viewer)
       storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
     }
     getStaffGroupStaff()
-
+    // 編集モード切り替え
     const editStaffGroup = async () => {
       props.changeModeStaffGroup('staff-group-edit')
       props.setEditor(props.viewer)
     }
+    // スタッフグループ一覧へ
     const backFunc = () => {
       props.changeModeStaffGroup('staff-group-list')
     }
+    // フッターオプション
     const footer_options = {
       back: [
         { text: 'スタッフグループ一覧へ', callback: backFunc }

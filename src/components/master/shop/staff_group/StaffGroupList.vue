@@ -18,7 +18,7 @@
           <v-btn
             icon="mdi-delete"
             color="primary"
-            @click.stop="clickDeleteStaffGroup(group)"
+            @click.stop="deleteStaffGroup(group)"
           ></v-btn>
         </span>
       </v-card-actions>
@@ -29,10 +29,10 @@
         color="primary"
         icon="mdi-plus"
         size="x-large"
-        @click="clickNewStaffGroup()"
+        @click="staff_group_create_modal = true"
       ></v-btn>
     </div>
-    <v-dialog v-model="staff_group_create">
+    <v-dialog v-model="staff_group_create_modal">
       <v-card width="500">
         <v-card-title>スタッフグループ作成</v-card-title>
         <v-card-item>
@@ -44,7 +44,7 @@
         <v-card-actions class="justify-end">
           <v-btn
             variant="outlined"
-            @click="staff_group_create = false"
+            @click="staff_group_create_modal = false"
           >キャンセル</v-btn>
           <v-btn
             color="primary"
@@ -61,8 +61,7 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from 'vue'
 import shopApiFunc from '@/mixins/api/master/shop.js'
-// import employeeApiFunc from '@/mixins/api/master/employee'
-// import accountApiFunc from '@/mixins/api/account'
+
 export default {
   name: 'staff-group-list',
   components: {
@@ -75,49 +74,47 @@ export default {
     setViewer: Function
   },
   setup (props) {
-    const staff_group_create = ref(false)
-    const clickNewStaffGroup = () => {
-      staff_group_create.value = true
-    }    
-
-    // スタッフグループ
-    const staff_group_name = ref('')
+    const staff_group_create_modal = ref(false)
+    // スタッフグループ一覧取得
     const groups = ref([])
-    const createStaffGroup = async () => {
-      try {
-        const shop = props.params.viewer
-        await shopApiFunc.apiCreateShopStaffGroup(shop, staff_group_name.value).then((res) => {
-          alert('スタッフグループを作成しました')
-          groups.value.push(res.data.createShopStaffGroup)
-        })
-      } catch (error) {
-        alert(error);
-        console.log(error);
-      }
-      staff_group_create.value = false
-    }
     const getStaffGroup = async () => {
       const shop = props.params.viewer
       groups.value = await shopApiFunc.apiGetShopStaffGroup(shop)
     }
     getStaffGroup()
-    const clickDeleteStaffGroup = async (staff_group) => {
+    // スタッフグループ作成
+    const staff_group_name = ref('')
+    const createStaffGroup = async () => {
+      try {
+        const shop = props.params.viewer
+        await shopApiFunc.apiCreateShopStaffGroup(shop, staff_group_name.value).then((res) => {
+          groups.value.push(res.data.createShopStaffGroup)
+          alert('スタッフグループを作成しました')
+        })
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+      staff_group_create_modal.value = false
+    }
+    // スタッフグループ削除
+    const deleteStaffGroup = async (staff_group) => {
       try {
         await shopApiFunc.apiDeleteShopStaffGroup(staff_group).then(() => {
-          alert(`スタッフグループ${staff_group.group_name}を削除しました。`)
           groups.value = groups.value.filter(v => v.id !== staff_group.id)
+          alert(`スタッフグループ${staff_group.group_name}を削除しました。`)
         })
       } catch (error) {
         console.log(error);
         alert(error)
       }
     }
-    // スタッフグループ詳細
+    // スタッフグループ詳細へ
     const viewStaffGroup = (group) => {
       props.setViewer(group)
       props.changeModeStaffGroup('staff-group-detail')
     }
-    // フッター関連
+    // スタッフグループ一覧へ
     const backFunc = () => {
       props.changeMode('list')
     }
@@ -128,13 +125,12 @@ export default {
     }
 
     return {
-      staff_group_create,
+      staff_group_create_modal,
       staff_group_name,
       groups,
       footer_options,
-      clickNewStaffGroup,
       createStaffGroup,
-      clickDeleteStaffGroup,
+      deleteStaffGroup,
       viewStaffGroup,
       backFunc
     }

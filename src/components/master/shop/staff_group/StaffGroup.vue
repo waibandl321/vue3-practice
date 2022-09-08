@@ -35,16 +35,18 @@ export default {
     changeMode: Function
   },
   setup () {
+    // 表示モード切り替え
     const mode = ref('staff-group-list')
-    const viewer_staff_group = ref({})
-    const editor_staff_group = ref({})
-
     const changeModeStaffGroup = (_mode) => {
       mode.value = _mode
     }
+    // 詳細データセット
+    const viewer_staff_group = ref({})
     const setViewer = (item) => {
       viewer_staff_group.value = item
     }
+    // 編集データセット
+    const editor_staff_group = ref({})
     const setEditor = (item) => {
       editor_staff_group.value = item
     }

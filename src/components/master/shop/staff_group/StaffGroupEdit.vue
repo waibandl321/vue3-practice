@@ -119,17 +119,13 @@ export default {
     changeModeStaffGroup: Function
   },
   setup (props) {
-    const loading = ref(false)
-
-    // 店舗スタッフ追加
-    const shop_staffs = ref([])
+    // スタッフグループ所属メンバー取得（vuexから）
     const staff_group_staffs = ref([])
-    const staff_select_modal = ref(false)
-    const add_staff_value = ref([])
-    
     staff_group_staffs.value = storeFunc.storeGetStaffGroupStaffs()
     
     // 店舗従業員取得
+    const loading = ref(false)
+    const shop_staffs = ref([])
     const getShopStaffs = async () => {
       const selected = []
       if(staff_group_staffs.value.length > 0) {
@@ -145,6 +141,8 @@ export default {
     }
     
     // スタッフグループメンバー追加
+    const add_staff_value = ref([])
+    const staff_select_modal = ref(false)
     const saveGroupStaffAdd = async () => {
       const staff_group = props.editor
       try {
