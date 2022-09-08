@@ -1,6 +1,7 @@
 import { API } from 'aws-amplify'
-import { createShop, updateShop, createShopStaff, deleteShopStaff, createShopStaffGroup, deleteShopStaffGroup } from '@/graphql/mutations'
-import { listShops, listShopStaffs, listShopStaffGroups } from '@/graphql/queries'
+import { createShop, updateShop, createShopStaff, deleteShopStaff, createShopStaffGroup, 
+  deleteShopStaffGroup, createShopStaffGroupStaff, deleteShopStaffGroupStaff } from '@/graphql/mutations'
+import { listShops, listShopStaffs, listShopStaffGroups, listShopStaffGroupStaffs } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
@@ -101,7 +102,7 @@ async function apiDeleteShopStaff (id) {
     variables: {input: filter}
   });
 }
-// スタッフグループ
+// スタッフグループ作成
 async function apiCreateShopStaffGroup (shop, staff_group_name) {
   const shop_staff_group = generateCreateShopStaffObject(shop, staff_group_name)
   return await API.graphql({
@@ -117,6 +118,7 @@ function generateCreateShopStaffObject (shop, staff_group_name) {
     staff_id: store.getters.staff.staff_id
   }
 }
+// スタッフグループ取得
 async function apiGetShopStaffGroup (shop) {
   const filter = {
     company_shop_cd: {
@@ -129,12 +131,50 @@ async function apiGetShopStaffGroup (shop) {
   })
   return results.data.listShopStaffGroups.items
 }
+// スタッフグループ削除
 async function apiDeleteShopStaffGroup (shop_staff_group) {
   const filter = {
     id: shop_staff_group.id,
   }
   return await API.graphql({
     query: deleteShopStaffGroup,
+    variables: {input: filter}
+  });
+}
+// スタッフグループ所属メンバー登録
+async function apiCreateStaffGroupStaff (staff_group, shop_staff_id) {
+  const data = generateStaffGroupStaffObject(staff_group, shop_staff_id)
+  return await API.graphql({
+    query: createShopStaffGroupStaff,
+    variables: { input: data }
+  })
+}
+function generateStaffGroupStaffObject (staff_group, shop_staff_id) {
+  return {
+    staff_group_cd: staff_group.staff_group_cd,
+    shop_staff_id: shop_staff_id
+  }
+}
+// スタッフグループ所属メンバー取得
+async function apiGetStaffGroupStaff (staff_group) {
+  const filter = {
+    staff_group_cd: {
+      eq: staff_group.staff_group_cd
+    }
+  }
+  const results = await API.graphql({
+    query: listShopStaffGroupStaffs,
+    variables: { filter: filter }
+  })
+  return results.data.listShopStaffGroupStaffs.items
+}
+// スタッフグループ所属メンバー削除
+async function apiDeleteStaffGroupStaff (staff) {
+  const filter = {
+    id: staff.id,
+  }
+  return await API.graphql({
+    query: deleteShopStaffGroupStaff,
     variables: {input: filter}
   });
 }
@@ -150,5 +190,9 @@ export default {
   // スタッフグループ
   apiCreateShopStaffGroup,
   apiGetShopStaffGroup,
-  apiDeleteShopStaffGroup
+  apiDeleteShopStaffGroup,
+  // スタッフグループ所属メンバー
+  apiCreateStaffGroupStaff,
+  apiGetStaffGroupStaff,
+  apiDeleteStaffGroupStaff
 }

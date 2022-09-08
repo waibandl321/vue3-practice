@@ -29,17 +29,27 @@
             @click="clickStaffAdd()"
           >追加</v-btn>
         </v-card-text>
-        <v-row>
-          <v-col>
-            <v-card flat border class="pa-4">スタッフ名</v-card>
-          </v-col>
-          <v-col>
-            <v-card flat border class="pa-4">スタッフ名</v-card>
+        <v-row v-show="staff_group_staffs.length !== 0">
+          <v-col
+            v-for="staff in staff_group_staffs"
+            :key="staff.id"
+            cols="6"
+          >
+            <v-card flat border class="pa-4">
+              {{ staff.shop_staff_id }}
+              <v-btn
+                icon="mdi-delete"
+                variant="text"
+                size="small"
+                color="error"
+                @click="deleteStaffGroupStaff(staff)"
+              ></v-btn>
+            </v-card>
           </v-col>
         </v-row>
       </v-card-item>
     </v-card>
-    <!-- スタッフ追加 -->
+    <!-- スタッフ追加モーダル -->
     <v-dialog v-model="staff_select_modal">
       <v-card width="500">
         <v-card-title>スタッフ選択</v-card-title>
@@ -80,7 +90,7 @@
           <v-btn
             color="primary"
             variant="outlined"
-            @click="saveAddStaff()"
+            @click="saveGroupStaffAdd()"
           >追加</v-btn>
         </v-card-actions>
       </v-card>
@@ -93,6 +103,8 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
 import shopFunc from '../shop'
+import shopApiFunc from '@/mixins/api/master/shop.js'
+import storeFunc from '@/mixins/store/auth'
 
 export default {
   name: 'staff-group-detail',
@@ -107,32 +119,83 @@ export default {
   setup (props) {
     const loading = ref(false)
     
-    const saveStaffGroup = () => {
+    const updateStaffGroup = () => {
       alert('スタッフグループ保存処理')
+      // store初期化
+      storeFunc.storeSetStaffGroupStaffs(null)
       props.changeModeStaffGroup('staff-group-list')
     }
     const backFunc = () => {
+      // store初期化
+      storeFunc.storeSetStaffGroupStaffs(null)
       props.changeModeStaffGroup('staff-group-list')
     }
     // 店舗スタッフ追加
     const shop_staffs = ref([])
+    const staff_group_staffs = ref([])
     const staff_select_modal = ref(false)
     const add_staff_value = ref([])
+    
+    staff_group_staffs.value = storeFunc.storeGetStaffGroupStaffs()
+    
+    // 店舗従業員取得
     const getStaff = async () => {
+      const selected = []
+      if(staff_group_staffs.value.length > 0) {
+        for (const item of staff_group_staffs.value) {
+          selected.push(item.shop_staff_id)
+        }
+      }
+      
       loading.value = true
       shop_staffs.value = await shopFunc.getShopStaff(props.params.viewer)
+      shop_staffs.value = shop_staffs.value.filter(v => !selected.includes(v.id))
       loading.value = false
+    }
+    
+    // スタッフグループメンバー追加
+    const saveGroupStaffAdd = async () => {
+      const staff_group = props.editor
+      try {
+        for (const staff of add_staff_value.value) {
+          await shopApiFunc.apiCreateStaffGroupStaff(staff_group, staff)
+          .then((res) => {
+            staff_group_staffs.value.push(
+              res.data.createShopStaffGroupStaff
+            )
+            storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
+          })
+        }
+        alert('スタッフグループにメンバーを追加しました')
+      } catch (error) {
+        console.log(error)
+        alert(error)
+      }
+      add_staff_value.value = []
+      shop_staffs.value = []
+      staff_select_modal.value = false
     }
     const closeStaffSelect = () => {
       staff_select_modal.value = false
       shop_staffs.value = []
     }
-    const saveAddStaff = () => {
-      console.log(add_staff_value.value);
-    }
     const clickStaffAdd = async () => {
       staff_select_modal.value = true
       getStaff()
+    }
+    // スタッフグループ所属メンバー削除
+    const deleteStaffGroupStaff = async (staff) => {
+      try {
+        await shopApiFunc.apiDeleteStaffGroupStaff(staff)
+        staff_group_staffs.value = staff_group_staffs.value.filter(
+          v => v.id !== staff.id
+        )
+        storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
+        alert('メンバーを削除しました')
+      } catch (error) {
+        alert(error)
+        console.log(error);
+      }
     }
     // フッターオプション
     const footer_options = {
@@ -140,19 +203,21 @@ export default {
         { text: 'スタッフグループ一覧へ', callback: backFunc }
       ],
       next: [
-        { text: '保存', callback: saveStaffGroup }
+        { text: '保存', callback: updateStaffGroup }
       ]
     }
     return {
+      staff_group_staffs,
       loading,
       shop_staffs,
       footer_options,
       staff_select_modal,
       add_staff_value,
       backFunc,
-      saveStaffGroup,
+      updateStaffGroup,
       closeStaffSelect,
-      saveAddStaff,
+      saveGroupStaffAdd,
+      deleteStaffGroupStaff,
       clickStaffAdd
     }
   }

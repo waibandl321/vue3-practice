@@ -50,5 +50,14 @@ export default {
   // 店舗招待
   storeSetInvitationShopCode (invitation_shop_cd) {
     store.commit('mSetInvitationShopCode', invitation_shop_cd)
+  },
+  // 店舗
+  
+  // スタッフグループ従業員
+  storeSetStaffGroupStaffs (staffs) {
+    store.commit('mSetStaffGroupStaffs', staffs)
+  },
+  storeGetStaffGroupStaffs () {
+    return store.getters.staffGroupStaffs
   }
 }

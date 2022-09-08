@@ -28,7 +28,9 @@ export default createStore({
     invitation_send_to: null,
     invitation_employee_id: null,
     // 店舗招待
-    invitation_shop_cd: null
+    invitation_shop_cd: null,
+    // スタッフグループ
+    staff_group_staffs: null
   },
   getters: {
     cognitoUser (state) {
@@ -76,6 +78,10 @@ export default createStore({
     // 店舗招待
     invitationShopCode (state) {
       return state.invitation_shop_cd
+    },
+    // スタッフグループ
+    staffGroupStaffs (state) {
+      return state.staff_group_staffs
     }
   },
   mutations: {
@@ -139,7 +145,11 @@ export default createStore({
     // 店舗招待
     mSetInvitationShopCode (state, invitation_shop_cd) {
       state.invitation_shop_cd = invitation_shop_cd
+    },
+    mSetStaffGroupStaffs (state, staffs) {
+      state.staff_group_staffs = staffs
     }
+
   },
   actions: {
   },

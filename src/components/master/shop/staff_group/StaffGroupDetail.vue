@@ -20,9 +20,21 @@
       </v-card-item>
       <v-card-item>
         <v-card-subtitle>参加スタッフ</v-card-subtitle>
-        <v-card-text>
-          <v-card class="pa-4">スタッフ名</v-card>
-        </v-card-text>
+        <v-row>
+          <v-col
+              v-for="staff in staff_group_staffs"
+              :key="staff.id"
+              cols="6"
+          >
+            <v-card
+              class="pa-4"
+              border
+              flat
+            >
+              {{ staff.shop_staff_id }}
+            </v-card>
+          </v-col>
+        </v-row>
       </v-card-item>
     </v-card>
     <PcFooter :options="footer_options" />
@@ -31,6 +43,9 @@
 
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
+import shopApiFunc from '@/mixins/api/master/shop.js'
+import storeFunc from '@/mixins/store/auth'
+import { ref } from '@vue/reactivity'
 export default {
   name: 'staff-group-detail',
   components: {
@@ -43,9 +58,16 @@ export default {
     setEditor: Function
   },
   setup (props) {
-    const editStaffGroup = () => {
-      props.setEditor(props.viewer)
+    const staff_group_staffs = ref([])
+    const getStaffGroupStaff = async () => {
+      staff_group_staffs.value = await shopApiFunc.apiGetStaffGroupStaff(props.viewer)
+      storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
+    }
+    getStaffGroupStaff()
+
+    const editStaffGroup = async () => {
       props.changeModeStaffGroup('staff-group-edit')
+      props.setEditor(props.viewer)
     }
     const backFunc = () => {
       props.changeModeStaffGroup('staff-group-list')
@@ -61,6 +83,7 @@ export default {
 
     return {
       footer_options,
+      staff_group_staffs,
       editStaffGroup,
       backFunc
     }
