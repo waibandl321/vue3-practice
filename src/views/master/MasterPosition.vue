@@ -24,32 +24,34 @@ import Header from '@/components/common/PcHeader.vue'
 import PositionList from '@/components/master/position/PositionList.vue'
 import PositionDetail from '@/components/master/position/PositionDetail.vue'
 import PositionEdit from '@/components/master/position/PositionEdit.vue'
-  
-  export default {
-    name: 'master-position',
-    components: {
+import { ref } from '@vue/reactivity'
+
+export default {
+  name: 'master-position',
+  components: {
     Header,
     PositionList,
     PositionDetail,
     PositionEdit
-},
-    data () {
-      return {
-        mode: 'list',
-        params: {
-          viewer: {},
-          editor: {},
-          is_new: false
-        }
+  },
+  setup () {
+    const mode = ref('list')
+    const params = ref({
+      viewer: {},
+      editor: {},
+      is_new: false
+    })
+    const changeMode = (_mode, is_new = false) => {
+      if(is_new) {
+        params.value.is_new = true
       }
-    },
-    methods: {
-      changeMode (_mode, is_new = false) {
-        if(is_new) {
-          this.params.is_new = true
-        }
-        this.mode = _mode
-      }
+      mode.value = _mode
     }
-  }
-  </script>
+    return {
+      mode,
+      params,
+      changeMode
+    }
+  },
+}
+</script>

@@ -24,6 +24,7 @@ import Header from '@/components/common/PcHeader.vue'
 import CompanyList from '@/components/master/company/CompanyList.vue'
 import CompanyDetail from '@/components/master/company/CompanyDetail.vue'
 import CompanyEdit from '@/components/master/company/CompanyEdit.vue'
+import { ref } from '@vue/reactivity'
 
 export default {
   name: 'master-company',
@@ -33,19 +34,20 @@ export default {
     CompanyDetail,
     CompanyEdit
   },
-  data () {
+  setup () {
+    const mode = ref('list')
+    const params = ref({
+      viewer: {},
+      editor: {}
+    })
+    const changeMode = (_mode) => {
+      mode.value = _mode
+    }
     return {
-      mode: 'list',
-      params: {
-        viewer: {},
-        editor: {}
-      }
+      mode,
+      params,
+      changeMode
     }
   },
-  methods: {
-    changeMode (_mode) {
-      this.mode = _mode
-    }
-  }
 }
 </script>

@@ -54,6 +54,7 @@ import ShopInvite from '@/components/master/shop/invite/ShopInvite.vue'
 import ShopInviteProcedure from '@/components/master/shop/invite/ShopInviteProcedure.vue'
 import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
 import StaffGroupIndex from '@/components/master/shop/staff_group/StaffGroup.vue'
+import { ref } from '@vue/reactivity'
 
 
 export default {
@@ -67,43 +68,45 @@ export default {
     ShopStaffList,
     ShopInviteProcedure,
     StaffGroupIndex
-},
-  data () {
-    return {
-      mode: 'list',
-      params: {
-        viewer: {},
-        editor: {},
-        is_new: false,
-
-        brands: [],
-        areas: [],
-        roles: []
-      }
-    }
   },
-  async created () {
+  setup () {
+    const mode = ref('list')
+    // props初期値
+    const params = ref({
+      viewer: {},
+      editor: {},
+      is_new: false,
+      brands: [],
+      areas: [],
+      roles: []
+    })
+    // 招待遷移
     if (store.getters.invitationShopCode) {
-      this.mode = 'invite-procedure'
+      mode.value = 'invite-procedure'
       return;
     }
-    this.params.brands = await brandApiFunc.apiGetBrand()
-    this.params.areas = await areaApiFunc.apiGetArea()
-    this.params.roles = roleFunc.getSystemRoleList()
-  },
-  methods: {
-    changeMode (_mode, is_new = false) {
+    // 店舗以外のマスタデータ読み込み
+    const init = async () => {
+      params.value.brands = await brandApiFunc.apiGetBrand()
+      params.value.areas = await areaApiFunc.apiGetArea()
+      params.value.roles = roleFunc.getSystemRoleList()
+    }
+    init()
+    // 表示モード切り替え
+    const changeMode = (_mode, is_new = false) => {
       if(is_new) {
-        this.params.is_new = true
+        params.value.is_new = true
       }
-      this.mode = _mode
-    },
-    setViewer (item) {
-      this.params.viewer = item
-    },
-    setEditor (item, is_new = false) {
+      mode.value = _mode
+    }
+    // 詳細データセット
+    const setViewer = (item) => {
+      params.value.viewer = item
+    }
+    // 編集・新規データセット
+    const setEditor = (item, is_new = false) => {
       if(is_new) {
-        this.params.editor = {
+        params.value.editor = {
           shop_cd: "",
           shop_name: "",
           shop_name_kana: "",
@@ -116,7 +119,14 @@ export default {
         }
         return;
       }
-      this.params.editor = item
+      params.value.editor = item
+    }
+    return {
+      mode,
+      params,
+      changeMode,
+      setViewer,
+      setEditor
     }
   }
 }

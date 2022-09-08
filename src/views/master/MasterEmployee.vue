@@ -30,6 +30,8 @@ import EmployeeList from '@/components/master/employee/EmployeeList.vue'
 import EmployeeDetail from '@/components/master/employee/EmployeeDetail.vue'
 import EmployeeEdit from '@/components/master/employee/EmployeeEdit.vue'
 import EmployeeNew from '@/components/master/employee/EmployeeNew.vue'
+import { ref } from '@vue/reactivity'
+
 export default {
   name: 'master-employee',
   components: {
@@ -39,20 +41,20 @@ export default {
     EmployeeEdit,
     EmployeeNew
   },
-  data () {
+  setup () {
+    const mode = ref('list')
+    const params = ref({
+      viewer: {},
+      editor: {}
+    })
+    const changeMode = (_mode) => {
+      mode.value = _mode
+    }
     return {
-      mode: 'list',
-      params: {
-        viewer: {},
-        editor: {},
-        loading: false
-      }
+      mode,
+      params,
+      changeMode
     }
   },
-  methods: {
-    changeMode (_mode) {
-      this.mode = _mode
-    }
-  }
 }
 </script>

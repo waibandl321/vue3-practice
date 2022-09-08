@@ -10,15 +10,18 @@
 <script>
 import Header from '@/components/common/PcHeader.vue'
 import RoleList from '@/components/master/role/RoleList.vue'
+import { ref } from '@vue/reactivity'
+
 export default {
   name: 'master-role',
   components: {
     Header,
     RoleList
   },
-  data () {
+  setup () {
+    const mode = ref('list')
     return {
-      mode: 'list'
+      mode
     }
   }
 }
