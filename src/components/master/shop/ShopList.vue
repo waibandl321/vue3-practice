@@ -54,7 +54,7 @@
                           color="primary"
                           block
                           @click.stop="clickStaffGroup(item)"
-                        > スタッフグループ </v-btn>
+                        >スタッフグループ</v-btn>
                       </v-list-item>
                       <v-list-item>
                         <v-btn 
@@ -62,12 +62,13 @@
                           color="primary"
                           block
                           @click.stop="clickStaffList(item)"
-                        > 従業員一覧 </v-btn>
+                        >従業員一覧</v-btn>
                       </v-list-item>
                       <v-list-item>
                         <v-btn variant="text"
                           color="primary"
-                          block> 店舗削除 </v-btn>
+                          block
+                        >店舗削除</v-btn>
                       </v-list-item>
                     </v-list>
                 </div>
@@ -101,51 +102,59 @@ export default {
     setViewer: Function,
     setEditor: Function,
   },
-  setup () {
+  setup (props) {
+    // 店舗一覧取得
     const items = ref([])
     const getShopList = async () => {
       items.value = await shopApiFunc.apiGetShops()
     }
     getShopList()
-
+    // リストクリックで詳細へ
+    const recordClick = (item) => {
+      props.setViewer(item)
+      props.changeMode('view')
+    }
+    // リストメニュー展開
     const list_menu = ref(null)
     const clickListMenu = (shop_cd) => {
       if(list_menu.value) {
-        list_menu.value = null
+        list_menu.value = !list_menu.value
       } else {
         list_menu.value = shop_cd
       }
     }
-
+    // 店舗参加用QR表示
+    const clickInviteShop = (shop) => {
+      props.setViewer(shop)
+      props.changeMode('invite')
+    } 
+    // スタッフグループ画面へ
+    const clickStaffGroup = (shop) => {
+      props.setViewer(shop)
+      props.changeMode('staff-group')
+    }
+    // 店舗従業員一覧へ
+    const clickStaffList = (shop) => {
+      props.setViewer(shop)
+      props.changeMode('staff-list')
+    }
+    // 新規店舗登録
     const is_new = true
+    const clickNew = () => {
+      props.setEditor(null, is_new)
+      props.changeMode('edit', is_new)
+    }
 
     return {
       items,
       is_new,
       list_menu,
-      clickListMenu
-    }
-  },
-  methods: {
-    recordClick (item) {
-      this.setViewer(item)
-      this.changeMode('view')
-    },
-    clickInviteShop(shop) {
-      this.setViewer(shop)
-      this.changeMode('invite')
-    },
-    clickStaffGroup(shop) {
-      this.setViewer(shop)
-      this.changeMode('staff-group')
-    },
-    clickStaffList(shop) {
-      this.setViewer(shop)
-      this.changeMode('staff-list')
-    },
-    clickNew () {
-      this.setEditor(null, true)
-      this.changeMode('edit', this.is_new)
+      clickListMenu,
+      clickInviteShop,
+      clickStaffGroup,
+      clickStaffList,
+      recordClick,
+      clickNew
     }
   }
 }
