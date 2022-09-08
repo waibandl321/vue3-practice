@@ -38,7 +38,7 @@ function generateBrandObject (brand, company = null) {
     company_brand_cd: brand.company_brand_cd ?? uuid.v4(),
     brand_name: brand.brand_name,
     brand_cd: brand.brand_cd,
-    exchange_time: brand.exchange_time ?? '24:00',
+    exchange_time: brand.exchange_time ?? '24時',
     company_cd: company ? company.company_cd : store.getters.companyCd,
     status: 0,
     delete: 0

@@ -122,7 +122,7 @@ function generateCreateShopStaffObject (shop, staff_group_name) {
 async function apiUpdateShopStaffGroup (shop, staff_group) {
   const item = generateUpdateShopStaffObject(shop, staff_group)
 
-  await API.graphql({
+  return await API.graphql({
     query: updateShopStaffGroup,
     variables: { input: item }
   })

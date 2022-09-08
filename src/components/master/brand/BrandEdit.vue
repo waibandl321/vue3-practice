@@ -27,10 +27,10 @@
         <v-card-subtitle>
           （V-Manage）日付変更時間
         </v-card-subtitle>
-        <v-text-field
+        <v-select
           v-model="params.editor.exchange_time"
-          hide-details="auto"
-          ></v-text-field>
+          :items="time_select"
+        ></v-select>
       </v-card-item>
     <PcFooter :options="footer_options" />
   </v-container>
@@ -40,6 +40,7 @@
 import utilsMixin from '@/mixins/utils/utils.js'
 import PcFooter from '@/components/common/PcFooter.vue'
 import brandApiFunc from '@/mixins/api/master/brand.js'
+import { computed } from '@vue/runtime-core'
 
 export default {
   name: 'brand-edit',
@@ -48,6 +49,18 @@ export default {
   props: {
     changeMode: Function,
     params: Object
+  },
+  setup () {
+    const time_select = computed(() => {
+      const items = []
+      for (let i = 24; i < 36; i++) {
+        items.push(i + '時')
+      }
+      return items
+    })
+    return {
+      time_select
+    }
   },
   data () {
     return {

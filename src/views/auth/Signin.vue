@@ -61,7 +61,6 @@ export default {
       try {
         const user = await Auth.signIn(this.auth.email, this.auth.password)
         if (user) {
-          storeAuth.storeSetAuthUser(user)
           this.afterSigninMove(user)
         }
       } catch (error) {
@@ -76,11 +75,13 @@ export default {
         // TODO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
         const associate = await accountApiFunc.getAssociate(account)
         const staff = await accountApiFunc.getStaff(associate)
-        // TODO: staff roleもstoreに保存する必要がある
+        const role = await accountApiFunc.apiGetStaffRole(staff.staff_id)
         const brand = await brandFunc._apiGetBrand(staff.company_cd)
 
+        storeAuth.storeSetAuthUser(user)
         storeAuth.storeSetAccount(account)
         storeAuth.storeSetAssociateStaff(associate, staff)
+        storeAuth.storeSetStaffRole(role)
         storeAuth.storeSetCompanyCd(staff.company_cd)
         storeAuth.storeSetCompanyGroupCd(staff.company_group_cd)
         // TODO: 複数のブランドある場合どうするか
