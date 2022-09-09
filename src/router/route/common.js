@@ -1,7 +1,7 @@
 import Home from '@/views/Home.vue'
 import ChatView from '@/views/common/ChatView.vue'
 import FileView from '@/views/common/FileView.vue'
-import ForumView from '@/views/common/ForumView.vue'
+import ForumIndex from '@/views/common/ForumIndex.vue'
 import NotificationView from '@/views/common/NotificationView.vue'
 
 export default [
@@ -24,9 +24,9 @@ export default [
     meta: { title: 'チャット' }
   },
   {
-    name: 'forum-view',
+    name: 'forum-index',
     path: '/forum',
-    component: ForumView,
+    component: ForumIndex,
     meta: { title: '掲示板' }
   },
   {
