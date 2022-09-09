@@ -716,3 +716,474 @@ export const listPolicies = /* GraphQL */ `
     }
   }
 `;
+export const getFileDirTop = /* GraphQL */ `
+  query GetFileDirTop($id: ID!) {
+    getFileDirTop(id: $id) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFileDirTops = /* GraphQL */ `
+  query ListFileDirTops(
+    $filter: ModelFileDirTopFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFileDirTops(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        organization_id
+        function_cd
+        dir_id
+        company_cd
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getFileDir = /* GraphQL */ `
+  query GetFileDir($id: ID!) {
+    getFileDir(id: $id) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFileDirs = /* GraphQL */ `
+  query ListFileDirs(
+    $filter: ModelFileDirFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFileDirs(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        dir_id
+        dir_name
+        parent_dir_id
+        permission
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getFileStore = /* GraphQL */ `
+  query GetFileStore($id: ID!) {
+    getFileStore(id: $id) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFileStores = /* GraphQL */ `
+  query ListFileStores(
+    $filter: ModelFileStoreFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFileStores(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        company_cd
+        dir_id
+        function_cd
+        file_name
+        file_size
+        owner_id
+        data_url
+        store_type
+        status
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getForum = /* GraphQL */ `
+  query GetForum($id: ID!) {
+    getForum(id: $id) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForums = /* GraphQL */ `
+  query ListForums(
+    $filter: ModelForumFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForums(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        forum_id
+        forum_name
+        company_cd
+        company_group_cd
+        owner_id
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getForumPost = /* GraphQL */ `
+  query GetForumPost($id: ID!) {
+    getForumPost(id: $id) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForumPosts = /* GraphQL */ `
+  query ListForumPosts(
+    $filter: ModelForumPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForumPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        post_key
+        forum_id
+        title
+        post_text
+        attached
+        url_links
+        status
+        importance
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getForumFile = /* GraphQL */ `
+  query GetForumFile($id: ID!) {
+    getForumFile(id: $id) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForumFiles = /* GraphQL */ `
+  query ListForumFiles(
+    $filter: ModelForumFileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForumFiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        post_key
+        sort_number
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getForumUrl = /* GraphQL */ `
+  query GetForumUrl($id: ID!) {
+    getForumUrl(id: $id) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForumUrls = /* GraphQL */ `
+  query ListForumUrls(
+    $filter: ModelForumUrlFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForumUrls(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        post_key
+        sort_number
+        url_key
+        url_value
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChat = /* GraphQL */ `
+  query GetChat($id: ID!) {
+    getChat(id: $id) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChats = /* GraphQL */ `
+  query ListChats(
+    $filter: ModelChatFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChats(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        chat_id
+        chat_name
+        company_cd
+        company_group_cd
+        owner_id
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChatRoom = /* GraphQL */ `
+  query GetChatRoom($id: ID!) {
+    getChatRoom(id: $id) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChatRooms = /* GraphQL */ `
+  query ListChatRooms(
+    $filter: ModelChatRoomFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatRooms(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        room_id
+        room_name
+        room_type
+        send_notice
+        owner_staff_id
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChatRoomMember = /* GraphQL */ `
+  query GetChatRoomMember($id: ID!) {
+    getChatRoomMember(id: $id) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChatRoomMembers = /* GraphQL */ `
+  query ListChatRoomMembers(
+    $filter: ModelChatRoomMemberFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatRoomMembers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        room_id
+        member_id
+        send_notice
+        room_name
+        ignore
+        last_access
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChatPost = /* GraphQL */ `
+  query GetChatPost($id: ID!) {
+    getChatPost(id: $id) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChatPosts = /* GraphQL */ `
+  query ListChatPosts(
+    $filter: ModelChatPostFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        chat_key
+        room_id
+        attached
+        post_text
+        url_links
+        poster_ids
+        mentions
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChatFile = /* GraphQL */ `
+  query GetChatFile($id: ID!) {
+    getChatFile(id: $id) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChatFiles = /* GraphQL */ `
+  query ListChatFiles(
+    $filter: ModelChatFileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatFiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        chat_key
+        sort_number
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getChatUrl = /* GraphQL */ `
+  query GetChatUrl($id: ID!) {
+    getChatUrl(id: $id) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listChatUrls = /* GraphQL */ `
+  query ListChatUrls(
+    $filter: ModelChatUrlFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listChatUrls(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        chat_key
+        sort_number
+        url_key
+        url_value
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

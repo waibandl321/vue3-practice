@@ -199,7 +199,7 @@ type FileDirTop @model {
   organization_id: String
   function_cd: String
   dir_id: String
-  company_id: String
+  company_cd: String
 }
 type FileDir @model {
   id: ID!

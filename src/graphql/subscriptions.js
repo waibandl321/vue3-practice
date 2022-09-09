@@ -910,3 +910,603 @@ export const onDeletePolicy = /* GraphQL */ `
     }
   }
 `;
+export const onCreateFileDirTop = /* GraphQL */ `
+  subscription OnCreateFileDirTop(
+    $filter: ModelSubscriptionFileDirTopFilterInput
+  ) {
+    onCreateFileDirTop(filter: $filter) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFileDirTop = /* GraphQL */ `
+  subscription OnUpdateFileDirTop(
+    $filter: ModelSubscriptionFileDirTopFilterInput
+  ) {
+    onUpdateFileDirTop(filter: $filter) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFileDirTop = /* GraphQL */ `
+  subscription OnDeleteFileDirTop(
+    $filter: ModelSubscriptionFileDirTopFilterInput
+  ) {
+    onDeleteFileDirTop(filter: $filter) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFileDir = /* GraphQL */ `
+  subscription OnCreateFileDir($filter: ModelSubscriptionFileDirFilterInput) {
+    onCreateFileDir(filter: $filter) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFileDir = /* GraphQL */ `
+  subscription OnUpdateFileDir($filter: ModelSubscriptionFileDirFilterInput) {
+    onUpdateFileDir(filter: $filter) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFileDir = /* GraphQL */ `
+  subscription OnDeleteFileDir($filter: ModelSubscriptionFileDirFilterInput) {
+    onDeleteFileDir(filter: $filter) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFileStore = /* GraphQL */ `
+  subscription OnCreateFileStore(
+    $filter: ModelSubscriptionFileStoreFilterInput
+  ) {
+    onCreateFileStore(filter: $filter) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFileStore = /* GraphQL */ `
+  subscription OnUpdateFileStore(
+    $filter: ModelSubscriptionFileStoreFilterInput
+  ) {
+    onUpdateFileStore(filter: $filter) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFileStore = /* GraphQL */ `
+  subscription OnDeleteFileStore(
+    $filter: ModelSubscriptionFileStoreFilterInput
+  ) {
+    onDeleteFileStore(filter: $filter) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateForum = /* GraphQL */ `
+  subscription OnCreateForum($filter: ModelSubscriptionForumFilterInput) {
+    onCreateForum(filter: $filter) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateForum = /* GraphQL */ `
+  subscription OnUpdateForum($filter: ModelSubscriptionForumFilterInput) {
+    onUpdateForum(filter: $filter) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteForum = /* GraphQL */ `
+  subscription OnDeleteForum($filter: ModelSubscriptionForumFilterInput) {
+    onDeleteForum(filter: $filter) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateForumPost = /* GraphQL */ `
+  subscription OnCreateForumPost(
+    $filter: ModelSubscriptionForumPostFilterInput
+  ) {
+    onCreateForumPost(filter: $filter) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateForumPost = /* GraphQL */ `
+  subscription OnUpdateForumPost(
+    $filter: ModelSubscriptionForumPostFilterInput
+  ) {
+    onUpdateForumPost(filter: $filter) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteForumPost = /* GraphQL */ `
+  subscription OnDeleteForumPost(
+    $filter: ModelSubscriptionForumPostFilterInput
+  ) {
+    onDeleteForumPost(filter: $filter) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateForumFile = /* GraphQL */ `
+  subscription OnCreateForumFile(
+    $filter: ModelSubscriptionForumFileFilterInput
+  ) {
+    onCreateForumFile(filter: $filter) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateForumFile = /* GraphQL */ `
+  subscription OnUpdateForumFile(
+    $filter: ModelSubscriptionForumFileFilterInput
+  ) {
+    onUpdateForumFile(filter: $filter) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteForumFile = /* GraphQL */ `
+  subscription OnDeleteForumFile(
+    $filter: ModelSubscriptionForumFileFilterInput
+  ) {
+    onDeleteForumFile(filter: $filter) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateForumUrl = /* GraphQL */ `
+  subscription OnCreateForumUrl($filter: ModelSubscriptionForumUrlFilterInput) {
+    onCreateForumUrl(filter: $filter) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateForumUrl = /* GraphQL */ `
+  subscription OnUpdateForumUrl($filter: ModelSubscriptionForumUrlFilterInput) {
+    onUpdateForumUrl(filter: $filter) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteForumUrl = /* GraphQL */ `
+  subscription OnDeleteForumUrl($filter: ModelSubscriptionForumUrlFilterInput) {
+    onDeleteForumUrl(filter: $filter) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateChat = /* GraphQL */ `
+  subscription OnCreateChat($filter: ModelSubscriptionChatFilterInput) {
+    onCreateChat(filter: $filter) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateChat = /* GraphQL */ `
+  subscription OnUpdateChat($filter: ModelSubscriptionChatFilterInput) {
+    onUpdateChat(filter: $filter) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteChat = /* GraphQL */ `
+  subscription OnDeleteChat($filter: ModelSubscriptionChatFilterInput) {
+    onDeleteChat(filter: $filter) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateChatRoom = /* GraphQL */ `
+  subscription OnCreateChatRoom($filter: ModelSubscriptionChatRoomFilterInput) {
+    onCreateChatRoom(filter: $filter) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateChatRoom = /* GraphQL */ `
+  subscription OnUpdateChatRoom($filter: ModelSubscriptionChatRoomFilterInput) {
+    onUpdateChatRoom(filter: $filter) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteChatRoom = /* GraphQL */ `
+  subscription OnDeleteChatRoom($filter: ModelSubscriptionChatRoomFilterInput) {
+    onDeleteChatRoom(filter: $filter) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateChatRoomMember = /* GraphQL */ `
+  subscription OnCreateChatRoomMember(
+    $filter: ModelSubscriptionChatRoomMemberFilterInput
+  ) {
+    onCreateChatRoomMember(filter: $filter) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateChatRoomMember = /* GraphQL */ `
+  subscription OnUpdateChatRoomMember(
+    $filter: ModelSubscriptionChatRoomMemberFilterInput
+  ) {
+    onUpdateChatRoomMember(filter: $filter) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteChatRoomMember = /* GraphQL */ `
+  subscription OnDeleteChatRoomMember(
+    $filter: ModelSubscriptionChatRoomMemberFilterInput
+  ) {
+    onDeleteChatRoomMember(filter: $filter) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateChatPost = /* GraphQL */ `
+  subscription OnCreateChatPost($filter: ModelSubscriptionChatPostFilterInput) {
+    onCreateChatPost(filter: $filter) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateChatPost = /* GraphQL */ `
+  subscription OnUpdateChatPost($filter: ModelSubscriptionChatPostFilterInput) {
+    onUpdateChatPost(filter: $filter) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteChatPost = /* GraphQL */ `
+  subscription OnDeleteChatPost($filter: ModelSubscriptionChatPostFilterInput) {
+    onDeleteChatPost(filter: $filter) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateChatFile = /* GraphQL */ `
+  subscription OnCreateChatFile($filter: ModelSubscriptionChatFileFilterInput) {
+    onCreateChatFile(filter: $filter) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateChatFile = /* GraphQL */ `
+  subscription OnUpdateChatFile($filter: ModelSubscriptionChatFileFilterInput) {
+    onUpdateChatFile(filter: $filter) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteChatFile = /* GraphQL */ `
+  subscription OnDeleteChatFile($filter: ModelSubscriptionChatFileFilterInput) {
+    onDeleteChatFile(filter: $filter) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateChatUrl = /* GraphQL */ `
+  subscription OnCreateChatUrl($filter: ModelSubscriptionChatUrlFilterInput) {
+    onCreateChatUrl(filter: $filter) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateChatUrl = /* GraphQL */ `
+  subscription OnUpdateChatUrl($filter: ModelSubscriptionChatUrlFilterInput) {
+    onUpdateChatUrl(filter: $filter) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteChatUrl = /* GraphQL */ `
+  subscription OnDeleteChatUrl($filter: ModelSubscriptionChatUrlFilterInput) {
+    onDeleteChatUrl(filter: $filter) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;

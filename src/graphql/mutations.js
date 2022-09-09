@@ -1039,3 +1039,690 @@ export const deletePolicy = /* GraphQL */ `
     }
   }
 `;
+export const createFileDirTop = /* GraphQL */ `
+  mutation CreateFileDirTop(
+    $input: CreateFileDirTopInput!
+    $condition: ModelFileDirTopConditionInput
+  ) {
+    createFileDirTop(input: $input, condition: $condition) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFileDirTop = /* GraphQL */ `
+  mutation UpdateFileDirTop(
+    $input: UpdateFileDirTopInput!
+    $condition: ModelFileDirTopConditionInput
+  ) {
+    updateFileDirTop(input: $input, condition: $condition) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFileDirTop = /* GraphQL */ `
+  mutation DeleteFileDirTop(
+    $input: DeleteFileDirTopInput!
+    $condition: ModelFileDirTopConditionInput
+  ) {
+    deleteFileDirTop(input: $input, condition: $condition) {
+      id
+      organization_id
+      function_cd
+      dir_id
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createFileDir = /* GraphQL */ `
+  mutation CreateFileDir(
+    $input: CreateFileDirInput!
+    $condition: ModelFileDirConditionInput
+  ) {
+    createFileDir(input: $input, condition: $condition) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFileDir = /* GraphQL */ `
+  mutation UpdateFileDir(
+    $input: UpdateFileDirInput!
+    $condition: ModelFileDirConditionInput
+  ) {
+    updateFileDir(input: $input, condition: $condition) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFileDir = /* GraphQL */ `
+  mutation DeleteFileDir(
+    $input: DeleteFileDirInput!
+    $condition: ModelFileDirConditionInput
+  ) {
+    deleteFileDir(input: $input, condition: $condition) {
+      id
+      dir_id
+      dir_name
+      parent_dir_id
+      permission
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createFileStore = /* GraphQL */ `
+  mutation CreateFileStore(
+    $input: CreateFileStoreInput!
+    $condition: ModelFileStoreConditionInput
+  ) {
+    createFileStore(input: $input, condition: $condition) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFileStore = /* GraphQL */ `
+  mutation UpdateFileStore(
+    $input: UpdateFileStoreInput!
+    $condition: ModelFileStoreConditionInput
+  ) {
+    updateFileStore(input: $input, condition: $condition) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFileStore = /* GraphQL */ `
+  mutation DeleteFileStore(
+    $input: DeleteFileStoreInput!
+    $condition: ModelFileStoreConditionInput
+  ) {
+    deleteFileStore(input: $input, condition: $condition) {
+      id
+      company_cd
+      dir_id
+      function_cd
+      file_name
+      file_size
+      owner_id
+      data_url
+      store_type
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createForum = /* GraphQL */ `
+  mutation CreateForum(
+    $input: CreateForumInput!
+    $condition: ModelForumConditionInput
+  ) {
+    createForum(input: $input, condition: $condition) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForum = /* GraphQL */ `
+  mutation UpdateForum(
+    $input: UpdateForumInput!
+    $condition: ModelForumConditionInput
+  ) {
+    updateForum(input: $input, condition: $condition) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForum = /* GraphQL */ `
+  mutation DeleteForum(
+    $input: DeleteForumInput!
+    $condition: ModelForumConditionInput
+  ) {
+    deleteForum(input: $input, condition: $condition) {
+      id
+      forum_id
+      forum_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createForumPost = /* GraphQL */ `
+  mutation CreateForumPost(
+    $input: CreateForumPostInput!
+    $condition: ModelForumPostConditionInput
+  ) {
+    createForumPost(input: $input, condition: $condition) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForumPost = /* GraphQL */ `
+  mutation UpdateForumPost(
+    $input: UpdateForumPostInput!
+    $condition: ModelForumPostConditionInput
+  ) {
+    updateForumPost(input: $input, condition: $condition) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForumPost = /* GraphQL */ `
+  mutation DeleteForumPost(
+    $input: DeleteForumPostInput!
+    $condition: ModelForumPostConditionInput
+  ) {
+    deleteForumPost(input: $input, condition: $condition) {
+      id
+      post_key
+      forum_id
+      title
+      post_text
+      attached
+      url_links
+      status
+      importance
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createForumFile = /* GraphQL */ `
+  mutation CreateForumFile(
+    $input: CreateForumFileInput!
+    $condition: ModelForumFileConditionInput
+  ) {
+    createForumFile(input: $input, condition: $condition) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForumFile = /* GraphQL */ `
+  mutation UpdateForumFile(
+    $input: UpdateForumFileInput!
+    $condition: ModelForumFileConditionInput
+  ) {
+    updateForumFile(input: $input, condition: $condition) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForumFile = /* GraphQL */ `
+  mutation DeleteForumFile(
+    $input: DeleteForumFileInput!
+    $condition: ModelForumFileConditionInput
+  ) {
+    deleteForumFile(input: $input, condition: $condition) {
+      id
+      post_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createForumUrl = /* GraphQL */ `
+  mutation CreateForumUrl(
+    $input: CreateForumUrlInput!
+    $condition: ModelForumUrlConditionInput
+  ) {
+    createForumUrl(input: $input, condition: $condition) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForumUrl = /* GraphQL */ `
+  mutation UpdateForumUrl(
+    $input: UpdateForumUrlInput!
+    $condition: ModelForumUrlConditionInput
+  ) {
+    updateForumUrl(input: $input, condition: $condition) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForumUrl = /* GraphQL */ `
+  mutation DeleteForumUrl(
+    $input: DeleteForumUrlInput!
+    $condition: ModelForumUrlConditionInput
+  ) {
+    deleteForumUrl(input: $input, condition: $condition) {
+      id
+      post_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChat = /* GraphQL */ `
+  mutation CreateChat(
+    $input: CreateChatInput!
+    $condition: ModelChatConditionInput
+  ) {
+    createChat(input: $input, condition: $condition) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChat = /* GraphQL */ `
+  mutation UpdateChat(
+    $input: UpdateChatInput!
+    $condition: ModelChatConditionInput
+  ) {
+    updateChat(input: $input, condition: $condition) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChat = /* GraphQL */ `
+  mutation DeleteChat(
+    $input: DeleteChatInput!
+    $condition: ModelChatConditionInput
+  ) {
+    deleteChat(input: $input, condition: $condition) {
+      id
+      chat_id
+      chat_name
+      company_cd
+      company_group_cd
+      owner_id
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChatRoom = /* GraphQL */ `
+  mutation CreateChatRoom(
+    $input: CreateChatRoomInput!
+    $condition: ModelChatRoomConditionInput
+  ) {
+    createChatRoom(input: $input, condition: $condition) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChatRoom = /* GraphQL */ `
+  mutation UpdateChatRoom(
+    $input: UpdateChatRoomInput!
+    $condition: ModelChatRoomConditionInput
+  ) {
+    updateChatRoom(input: $input, condition: $condition) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChatRoom = /* GraphQL */ `
+  mutation DeleteChatRoom(
+    $input: DeleteChatRoomInput!
+    $condition: ModelChatRoomConditionInput
+  ) {
+    deleteChatRoom(input: $input, condition: $condition) {
+      id
+      room_id
+      room_name
+      room_type
+      send_notice
+      owner_staff_id
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChatRoomMember = /* GraphQL */ `
+  mutation CreateChatRoomMember(
+    $input: CreateChatRoomMemberInput!
+    $condition: ModelChatRoomMemberConditionInput
+  ) {
+    createChatRoomMember(input: $input, condition: $condition) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChatRoomMember = /* GraphQL */ `
+  mutation UpdateChatRoomMember(
+    $input: UpdateChatRoomMemberInput!
+    $condition: ModelChatRoomMemberConditionInput
+  ) {
+    updateChatRoomMember(input: $input, condition: $condition) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChatRoomMember = /* GraphQL */ `
+  mutation DeleteChatRoomMember(
+    $input: DeleteChatRoomMemberInput!
+    $condition: ModelChatRoomMemberConditionInput
+  ) {
+    deleteChatRoomMember(input: $input, condition: $condition) {
+      id
+      room_id
+      member_id
+      send_notice
+      room_name
+      ignore
+      last_access
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChatPost = /* GraphQL */ `
+  mutation CreateChatPost(
+    $input: CreateChatPostInput!
+    $condition: ModelChatPostConditionInput
+  ) {
+    createChatPost(input: $input, condition: $condition) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChatPost = /* GraphQL */ `
+  mutation UpdateChatPost(
+    $input: UpdateChatPostInput!
+    $condition: ModelChatPostConditionInput
+  ) {
+    updateChatPost(input: $input, condition: $condition) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChatPost = /* GraphQL */ `
+  mutation DeleteChatPost(
+    $input: DeleteChatPostInput!
+    $condition: ModelChatPostConditionInput
+  ) {
+    deleteChatPost(input: $input, condition: $condition) {
+      id
+      chat_key
+      room_id
+      attached
+      post_text
+      url_links
+      poster_ids
+      mentions
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChatFile = /* GraphQL */ `
+  mutation CreateChatFile(
+    $input: CreateChatFileInput!
+    $condition: ModelChatFileConditionInput
+  ) {
+    createChatFile(input: $input, condition: $condition) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChatFile = /* GraphQL */ `
+  mutation UpdateChatFile(
+    $input: UpdateChatFileInput!
+    $condition: ModelChatFileConditionInput
+  ) {
+    updateChatFile(input: $input, condition: $condition) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChatFile = /* GraphQL */ `
+  mutation DeleteChatFile(
+    $input: DeleteChatFileInput!
+    $condition: ModelChatFileConditionInput
+  ) {
+    deleteChatFile(input: $input, condition: $condition) {
+      id
+      chat_key
+      sort_number
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createChatUrl = /* GraphQL */ `
+  mutation CreateChatUrl(
+    $input: CreateChatUrlInput!
+    $condition: ModelChatUrlConditionInput
+  ) {
+    createChatUrl(input: $input, condition: $condition) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateChatUrl = /* GraphQL */ `
+  mutation UpdateChatUrl(
+    $input: UpdateChatUrlInput!
+    $condition: ModelChatUrlConditionInput
+  ) {
+    updateChatUrl(input: $input, condition: $condition) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteChatUrl = /* GraphQL */ `
+  mutation DeleteChatUrl(
+    $input: DeleteChatUrlInput!
+    $condition: ModelChatUrlConditionInput
+  ) {
+    deleteChatUrl(input: $input, condition: $condition) {
+      id
+      chat_key
+      sort_number
+      url_key
+      url_value
+      createdAt
+      updatedAt
+    }
+  }
+`;
