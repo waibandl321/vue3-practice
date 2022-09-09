@@ -13,10 +13,10 @@
         </template>
         <v-list>
           <v-list-item link>
-            <v-list-item-title>ファイルを選択</v-list-item-title>
+            ファイルを選択
           </v-list-item>
           <v-list-item link>
-            <v-list-item-title>ファイル管理から選択</v-list-item-title>
+            ファイル管理から選択
           </v-list-item>
         </v-list>
       </v-menu>
@@ -77,10 +77,10 @@
         </template>
         <v-list>
           <v-list-item link>
-            <v-list-item-title>ファイルを選択</v-list-item-title>
+            ファイルを選択
           </v-list-item>
           <v-list-item link>
-            <v-list-item-title>ファイル管理から選択</v-list-item-title>
+            ファイル管理から選択
           </v-list-item>
         </v-list>
       </v-menu>

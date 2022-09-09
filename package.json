@@ -11,6 +11,7 @@
     "@aws-amplify/ui-components": "^1.9.6",
     "@aws-amplify/ui-vue": "^2.4.19",
     "@mdi/font": "5.9.55",
+    "@vuepic/vue-datepicker": "^3.4.7",
     "aws-amplify": "^4.3.34",
     "core-js": "^3.8.3",
     "crypto-js": "^4.1.1",
