@@ -90,6 +90,7 @@ export default {
         storeAuth.storeSetAssociateStaff(associate, staff)
         storeAuth.storeSetStaffRole(staff_role)
         await employeeApiFunc.apiEmployeeCreate(this.params.profile)
+        // TODO: ファイル、掲示板、チャットの最上位カラムを追加しなければならない
         this.$router.push('/')
       } catch (error) {
         console.log(error)

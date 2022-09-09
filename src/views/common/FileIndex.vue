@@ -21,6 +21,7 @@ import FileList from '@/components/common/file/FileList.vue';
 import FileListTrash from '@/components/common/file/FileListTrash.vue';
 import FileCapacity from '@/components/common/file/FileCapacity.vue';
 import FileSearch from '@/components/common/file/FileSearch.vue';
+
 export default {
   name: 'file-index',
   components: {

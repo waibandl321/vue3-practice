@@ -18,6 +18,7 @@ export default createStore({
     account: null,
     associate_id: null,
     brand_cd: null,
+    company: null,
     company_cd: null,
     company_group_cd: null,
     shop_cd: null,
@@ -52,6 +53,9 @@ export default createStore({
     },
     associateId (state) {
       return state.associate_id
+    },
+    company (state) {
+      return state.company
     },
     companyCd (state) {
       return state.company_cd

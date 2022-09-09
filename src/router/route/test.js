@@ -2,6 +2,7 @@ import Test from '@/views/test/TestIndex.vue'
 import AmplifyTodo from '@/components/test/amplify/AmplifyTodo.vue'
 import InvitationTest from '@/components/test/invitation/InvitationList.vue'
 import LoginUserInfo from '@/components/test/login/UserInfo'
+import InitChatForumFile from '@/components/test/functions/InitChatForumFile.vue'
 export default [
   {
     path: '/test/',
@@ -24,6 +25,12 @@ export default [
         component: LoginUserInfo,
         name: 'login-user-info',
         meta: { title: '【テスト】ログイン中ユーザーの詳細情報' }
+      },
+      {
+        path: 'init-chat-forum-file',
+        component: InitChatForumFile,
+        name: 'init-chat-forum-file',
+        meta: { title: '【テスト】初期データ登録 チャット、掲示板、ファイル管理' }
       }
     ]
   }
