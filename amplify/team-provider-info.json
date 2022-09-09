@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "portalweb1c9d506d": {}
+      },
+      "function": {
+        "S3Trigger16204360": {
+          "deploymentBucketName": "amplify-portalweb-dev-115524-deployment",
+          "s3Key": "amplify-builds/S3Trigger16204360-7930396e577177415566-build.zip"
+        }
       }
     }
   }

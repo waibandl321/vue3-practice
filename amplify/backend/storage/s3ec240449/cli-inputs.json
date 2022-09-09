@@ -1,0 +1,14 @@
+{
+  "resourceName": "s3ec240449",
+  "policyUUID": "ec240449",
+  "bucketName": "portalweb06f15c33a1864ec3ae3fa8f004b18875",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "S3Trigger16204360",
+  "groupAccess": {}
+}
