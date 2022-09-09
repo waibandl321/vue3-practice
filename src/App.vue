@@ -13,4 +13,11 @@ export default {
 .im-container {
   padding-bottom: 120px;
 }
+.short-td {
+  min-width: 56px;
+  max-width: 56px;
+  width: 56px;
+  text-align: center;
+}
+
 </style>
