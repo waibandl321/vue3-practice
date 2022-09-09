@@ -7,7 +7,7 @@
       <v-app-bar-nav-icon @click="clickMenuIcon()"></v-app-bar-nav-icon>
     </template>
     <v-app-bar-title>
-      <v-btn to="/">ポータル</v-btn>
+      <v-btn to="/">ホーム</v-btn>
     </v-app-bar-title>
     <v-btn to="/auth/signout">サインアウト</v-btn>
     <template v-for="(item, idx) in header_icons" :key="idx">
@@ -30,7 +30,7 @@ export default {
       header_icons: [
         { icon: 'mdi-bell', path: '/notification' },
         { icon: 'mdi-chat', path: '/chat' },
-        { icon: 'mdi-note', path: '/forum' },
+        { icon: 'mdi-forum', path: '/forum' },
         { icon: 'mdi-folder', path: '/file' }
       ]
     }
