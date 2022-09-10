@@ -28,13 +28,23 @@
         </v-list>
       </v-menu>
       <!-- パンくずリスト -->
-      <v-breadcrumbs
+      <div class="d-flex">
+        <v-btn
+          v-for="(b, idxb) in breadcrumbs"
+          :key="idxb"
+          variant="text"
+          size="small"
+          @click="dddd(b)"
+          :disabled="judgeCurrentDir(b)"
+        >{{ b.title }}</v-btn>
+      </div>
+      <!-- <v-breadcrumbs
         :items="breadcrumbs"
       >
         <template v-slot:divider>
           <v-icon icon="mdi-chevron-right"></v-icon>
         </template>
-      </v-breadcrumbs>
+      </v-breadcrumbs> -->
     </div>
     <!-- リスト -->
     <div class="text-right">
@@ -76,7 +86,10 @@
               hide-details="auto"
             ></v-checkbox>
           </td>
-          <td>{{ dir.dir_name }}</td>
+          <td>
+            <v-icon>mdi-folder</v-icon>
+            <span class="ml-2">{{ dir.dir_name }}</span>
+          </td>
           <td>-</td>
           <td>{{ dir.updatedAt }}</td>
           <td>-</td>
@@ -271,6 +284,7 @@ export default {
     const create_new_folder = ref(false);
     const new_dir = ref("");
     const saveNewFolder = async () => {
+      // TODO: 同じフォルダ名の場合チェック
       try {
         await fileApiFunc.apiCreateFileDir(
           current_dir.value,
@@ -312,10 +326,14 @@ export default {
         title: dir.dir_name,
         dir: dir
       })
-      init(current_dir.value)
+      init()
     }
-    const dddd = (data) => {
-      console.log(data);
+    const dddd = (item) => {
+      current_dir.value = item.dir
+      init()
+    }
+    const judgeCurrentDir = (breadcrumb) => {
+      return current_dir.value.id === breadcrumb.dir.id
     }
     // 選択
     const is_selected_items = ref([])
@@ -332,6 +350,7 @@ export default {
       // パンくず
       breadcrumbs,
       dddd,
+      judgeCurrentDir,
       // 選択
       is_selected_items,
       is_selected_all,
