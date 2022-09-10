@@ -37,6 +37,9 @@ export default {
   storeSetStaffRole (staff_role) {
     store.commit('mSetStaffRole', staff_role.role_cd)
   },
+  storeGetCompanyCd () {
+    return store.getters.companyCd
+  },
   // 招待
   storeSetInvitationCode (invitation_cd) {
     store.commit('mSetInvitationCode', invitation_cd)

@@ -30,6 +30,7 @@ export default {
       { key: 'invitation-check', to: '/test/invitation-check', text: '【テスト】招待チェック' },
       { key: 'login-user-info', to: '/test/login-user-info', text: '【テスト】ログイン中ユーザーの詳細情報' },
       { key: 'init-chat-forum-file', to: '/test/init-chat-forum-file', text: '【テスト】初期データ登録 チャット、掲示板、ファイル管理' },
+      { key: 'file-upload', to: '/test/file-upload', text: '【テスト】ファイルアップロード' },
     ]
     // expose to template
     return {

@@ -1,0 +1,102 @@
+<template>
+  <PcHeader />
+  <v-main>
+    <v-container>
+      <v-alert
+        v-if="finish_message"
+        closable
+      >{{ finish_message }}</v-alert>
+      <v-card class="mt-10">
+        <v-card-title>フォルダ作成</v-card-title>
+      </v-card>
+      <v-card class="mt-10">
+        <v-card-title>S3ファイルアップロード</v-card-title>
+        <v-card-text>
+          <v-file-input
+            v-model="upload_file"
+            label="File input"
+            clearable
+          ></v-file-input>
+          <v-btn
+            color="primary"
+            :disabled="upload_file.length === 0"
+            @click="uploadFiles"
+          >アップロード</v-btn>
+        </v-card-text>
+      </v-card>
+      <v-card class="mt-10">
+        <v-card-title>S3ファイル取得</v-card-title>
+        <v-card-text>
+          {{ items }}
+        </v-card-text>
+      </v-card>
+      <OverlayLoading v-if="loading" />
+    </v-container>
+  </v-main>
+</template>
+<script>
+import { ref } from '@vue/reactivity'
+import Storage from '@aws-amplify/storage'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
+import storeAuth from '@/mixins/store/auth'
+import PcHeader from '@/components/common/PcHeader.vue'
+
+
+export default {
+  name: "file-upload",
+  setup() {
+      const finish_message = ref("")
+      const loading = ref(false);
+      
+      // ファイルアップロード
+      const upload_file = ref([]);
+      const uploadFiles = async () => {
+        finish_message.value = ""
+        loading.value = true
+          try {
+            // Public levelでのアップロード
+            await Storage.put(
+              // 企業CDがディレクトリ名になる
+              storeAuth.storeGetCompanyCd() + '/' + upload_file.value[0].name,
+              upload_file.value[0],
+              {
+                progressCallback() {
+                  loading.value = false
+                  finish_message.value = "ファイルをアップロードしました。"
+                },
+            }).then(async (res) => {
+              console.log('s3 URL:', await getS3Object(res));
+            })
+          }
+          catch (error) {
+            console.log('file upload exception error', error);
+            finish_message.value = error
+          }
+        loading.value = false
+
+        // S3のURLを取得
+        async function getS3Object (res) {
+          return await Storage.get(res.key)
+        }
+      };
+      // ファイル取得
+      const items = ref([])
+      const getFiles = async () => {
+        try {
+          items.value = await Storage.list(storeAuth.storeGetCompanyCd())
+        } catch (error) {
+          console.log('get file exception err:', error);
+        }
+      }
+      getFiles()
+      return {
+        loading,
+        finish_message,
+        upload_file,
+        items,
+        uploadFiles
+      };
+  },
+  components: { OverlayLoading, PcHeader }
+}
+</script>
