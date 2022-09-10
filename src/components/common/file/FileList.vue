@@ -34,7 +34,7 @@
           :key="idxb"
           variant="text"
           size="small"
-          @click="dddd(b)"
+          @click="clickBreadcrumb(b)"
           :disabled="judgeCurrentDir(b)"
         >{{ b.title }}</v-btn>
       </div>
@@ -328,8 +328,14 @@ export default {
       })
       init()
     }
-    const dddd = (item) => {
+    const clickBreadcrumb = (item) => {
       current_dir.value = item.dir
+      // パンくず最適化
+      breadcrumbs.value = breadcrumbs.value.filter(v => 
+        v.dir.organization_id ||
+        v.dir.dir_id === item.dir.dir_id ||
+        v.dir.parent_dir_id === item.dir.parent_dir_id
+      )
       init()
     }
     const judgeCurrentDir = (breadcrumb) => {
@@ -349,7 +355,7 @@ export default {
       saveNewFolder,
       // パンくず
       breadcrumbs,
-      dddd,
+      clickBreadcrumb,
       judgeCurrentDir,
       // 選択
       is_selected_items,
