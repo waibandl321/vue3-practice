@@ -334,6 +334,7 @@ export default {
       breadcrumbs.value = breadcrumbs.value.filter(v => 
         v.dir.organization_id ||
         v.dir.dir_id === item.dir.dir_id ||
+        v.dir.dir_id === item.dir.parent_dir_id ||
         v.dir.parent_dir_id === item.dir.parent_dir_id
       )
       init()
