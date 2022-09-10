@@ -21,7 +21,7 @@ import PcHeader from '@/components/common/PcHeader.vue';
 import companyApiFunc from '@/mixins/api/master/company.js'
 import chatApiFunc from '@/mixins/api/func/chat.js'
 import forumApiFunc from '@/mixins/api/func/forum.js'
-// import fileApiFunc from '@/mixins/api/func/file.js'
+import fileApiFunc from '@/mixins/api/func/file.js'
 import { ref } from '@vue/reactivity';
 export default {
   name: "init-chat-forum-file",
@@ -49,16 +49,16 @@ export default {
         console.log(error);
       }
     }
-    // const initFile = async () => {
-    //   try {
-    //     await fileApiFunc.apiCreateFile(...company.value)
-    //     alert('ファイル管理を登録しました')
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+    const initFile = async () => {
+      try {
+        await fileApiFunc.apiCreateFile(...company.value)
+        alert('ファイル管理 TOPディレクトリを登録しました')
+      } catch (error) {
+        console.log(error);
+      }
+    }
     const arr = [
-      // { key: "file", callback: initFile, text: "ファイル管理 初期データ登録" },
+      { key: "file", callback: initFile, text: "ファイル管理 初期データ登録" },
       { key: "forum", callback: initForum, text: "掲示板 初期データ登録" },
       { key: "chat", callback: initChat, text: "チャット 初期データ登録" },
     ]

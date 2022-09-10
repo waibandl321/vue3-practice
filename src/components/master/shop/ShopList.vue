@@ -168,10 +168,4 @@ export default {
 .drop-menu {
   position: relative;
 }
-.drop-items {
-  width: 200px;
-  position: absolute;
-  right: 0;
-  z-index: 2;
-}
   </style>

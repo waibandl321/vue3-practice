@@ -11,7 +11,11 @@
     </v-app-bar-title>
     <v-btn to="/auth/signout">サインアウト</v-btn>
     <template v-for="(item, idx) in header_icons" :key="idx">
-      <v-btn :icon="item.icon" :to="item.path"></v-btn>
+      <v-btn
+        :icon="item.icon"
+        :to="item.path"
+        :title="item.title"
+      ></v-btn>
     </template>
     <v-btn icon="mdi-dots-vertical"></v-btn>
   </v-app-bar>
@@ -28,10 +32,10 @@ export default {
     return {
       side_menu: false,
       header_icons: [
-        { icon: 'mdi-bell', path: '/notification' },
-        { icon: 'mdi-chat', path: '/chat' },
-        { icon: 'mdi-forum', path: '/forum' },
-        { icon: 'mdi-folder', path: '/file' }
+        { icon: 'mdi-bell', path: '/notification', title: 'お知らせ' },
+        { icon: 'mdi-chat', path: '/chat', title: 'チャット' },
+        { icon: 'mdi-forum', path: '/forum', title: '掲示板' },
+        { icon: 'mdi-folder', path: '/file', title: 'ファイル管理' }
       ]
     }
   },
