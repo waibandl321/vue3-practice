@@ -139,7 +139,7 @@
           <td>{{ file.staff_id }}</td>
           <td>{{ file.updatedAt }}</td>
           <td>{{ file.file_size }} byte</td>
-          <td class="short-td">
+          <td class="short-td px-0">
             <div class="drop-menu">
               <v-menu>
                 <template v-slot:activator="{ props }">
@@ -160,8 +160,9 @@
                   <v-list-item
                     density="compact"
                     link
+                    @click="moveTrashbox(file)"
                   >
-                    削除
+                    ゴミ箱に移動
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -311,15 +312,27 @@ export default {
     };
 
     // フォルダ削除
-    const deleteDir = async (item) => {
+    const deleteDir = async (dir) => {
+      loading.value = true;
       try {
-        await fileApiFunc.apiDeleteDirItem(item);
-        alert("フォルダを削除しました。");
+        // MEMO: フォルダ直下のファイル&フォルダをゴミ箱に移動する
+        const dir_files = await fileApiFunc.apiGetFileList(dir)
+        if(dir_files.length > 0) {
+          for (const file of dir_files) {
+            // ファイルをゴミ箱に移動
+            await fileApiFunc.apiMoveTrashbox(file)
+          }
+        }
+        // ディレクトリもゴミ箱に移動
+        await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
+        
+        alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
         init();
       }
       catch (error) {
         console.log("delete item error:", error);
       }
+      loading.value = false;
     };
     // ファイルアップロード
     const upload_file = ref([]);
@@ -335,6 +348,15 @@ export default {
         console.log('file upload exception', error);
       }
       loading.value = false;
+    }
+    const moveTrashbox = async (item) => {
+      try {
+        await fileApiFunc.apiMoveTrashbox(item)
+        alert('ファイルをゴミ箱に移動しました。')
+        init()
+      } catch (error) {
+        console.log('file move trashbox error', error);
+      }
     }
     // パンくずリスト
     const breadcrumbs = ref([])
@@ -383,6 +405,8 @@ export default {
       // アップロード
       upload_file,
       uploadFile,
+      // 削除
+      moveTrashbox,
       // パンくず
       breadcrumbs,
       clickBreadcrumb,

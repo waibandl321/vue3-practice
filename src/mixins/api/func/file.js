@@ -1,10 +1,14 @@
 import { API } from 'aws-amplify'
-import { createFileDirTop, createFileDir, deleteFileDir, createFileStore } from '@/graphql/mutations'
+import { createFileDirTop, createFileDir, updateFileDir, deleteFileDir,
+  createFileStore, updateFileStore } from '@/graphql/mutations'
 import { listFileDirTops, listFileDirs, listFileStores } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
 export default {
+  getDeleteFlag () {
+    return true
+  },
   async apiCreateFile (company) {
     const fileDirTop = this.generateFileDirTopObject(company)
     return await API.graphql({
@@ -45,6 +49,7 @@ export default {
       dir_id: uuid.v4(),
       dir_name: dir_name,
       parent_dir_id: current_dir.dir_id,
+      status: 0
     }
   },
   async apiGetFileDirList (current_dir) {
@@ -62,7 +67,7 @@ export default {
   // フォルダ削除
   // MEMO: 紐づくファイルも削除する
   // MEMO: チャットや掲示板に紐づくファイルも削除する
-  async apiDeleteDirItem(item) {
+  async apiDeleteDir(item) {
     const filter = {
       id: item.id,
     }
@@ -70,6 +75,19 @@ export default {
       query: deleteFileDir,
       variables: {input: filter}
     });
+  },
+  async apiUpdateDir (_dir, delete_flag = false) {
+    const dir = {
+      id: _dir.id,
+      dir_name: _dir.dir_name
+    }
+    if(delete_flag) {
+      dir.status = 1
+    }
+    return await API.graphql({
+      query: updateFileDir,
+      variables: { input: dir }
+    })
   },
   // ファイルアップロード
   async apiCreateUploadFile (current_dir, _file, data_url, func_cd = null) {
@@ -98,6 +116,9 @@ export default {
     const filter = {
       dir_id: {
         eq: current_dir.dir_id
+      },
+      status: {
+        eq: 0
       }
     }
     const results = await API.graphql({
@@ -105,5 +126,31 @@ export default {
       variables: { filter: filter }
     })
     return results.data.listFileStores.items
-  }
+  },
+  async apiMoveTrashbox (item) {
+    const file = {
+      id: item.id,
+      status: 1
+    }
+    return await API.graphql({
+      query: updateFileStore,
+      variables: { input: file }
+    })
+  },
+  async apiGetTrashboxFileList (current_dir) {
+    const filter = {
+      dir_id: {
+        eq: current_dir.dir_id
+      },
+      status: {
+        eq: 1
+      }
+    }
+    const results = await API.graphql({
+      query: listFileStores,
+      variables: { filter: filter }
+    })
+    return results.data.listFileStores.items
+  },
+  
 }
