@@ -195,8 +195,10 @@
     </div>
     <!-- input -->
     <v-file-input
+      v-model="upload_file"
       class="d-none"
       ref="triggerFileInput"
+      @change="uploadFile()"
     ></v-file-input>
     <!-- フォルダ作成 -->
     <v-dialog v-model="create_new_folder">
@@ -230,6 +232,7 @@
 <script>
 import { ref } from '@vue/reactivity'
 import fileApiFunc from '@/mixins/api/func/file'
+import storageFunc from '@/mixins/storage/storage.js'
 import OverlayLoading from '../OverlayLoading.vue'
 
 export default {
@@ -310,6 +313,21 @@ export default {
         console.log("delete item error:", error);
       }
     };
+    // ファイルアップロード
+    const upload_file = ref([]);
+    const uploadFile = async () => {
+      loading.value = true;
+      try {
+        const file = upload_file.value[0]
+        const data_url = await storageFunc.storageUploadFile(file)
+        await fileApiFunc.apiCreateUploadFile(current_dir.value, file, data_url)
+        alert('ファイルをアップロードしました。')
+        upload_file.value = []
+      } catch (error) {
+        console.log('file upload exception', error);
+      }
+      loading.value = false;
+    }
     // パンくずリスト
     const breadcrumbs = ref([])
     const initBreadcrumbs = () => {
@@ -354,6 +372,9 @@ export default {
       create_new_folder,
       new_dir,
       saveNewFolder,
+      // アップロード
+      upload_file,
+      uploadFile,
       // パンくず
       breadcrumbs,
       clickBreadcrumb,

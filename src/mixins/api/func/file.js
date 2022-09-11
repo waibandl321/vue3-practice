@@ -1,5 +1,5 @@
 import { API } from 'aws-amplify'
-import { createFileDirTop, createFileDir, deleteFileDir } from '@/graphql/mutations'
+import { createFileDirTop, createFileDir, deleteFileDir, createFileStore } from '@/graphql/mutations'
 import { listFileDirTops, listFileDirs } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
@@ -71,4 +71,26 @@ export default {
       variables: {input: filter}
     });
   },
+  // ファイルアップロード
+  async apiCreateUploadFile (current_dir, _file, data_url, func_cd = null) {
+    const fileObj = this.generateUploadFileObject(current_dir, _file, data_url, func_cd)
+    return await API.graphql({
+      query: createFileStore,
+      variables: { input: fileObj }
+    })
+  },
+  generateUploadFileObject (current_dir, _file, data_url, func_cd) {
+    return {
+      company_cd: store.getters.companyCd,
+      dir_id: current_dir.dir_id,
+      function_cd: func_cd,
+      file_name: _file.name,
+      file_size: _file.size,
+      owner_id: store.getters.staff.staff_id,
+      data_url: data_url,
+      store_type: 0,
+      status: 0,
+      delete: 0,
+    }
+  }
 }
