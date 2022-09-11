@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createFileDirTop, createFileDir, deleteFileDir, createFileStore } from '@/graphql/mutations'
-import { listFileDirTops, listFileDirs } from '@/graphql/queries'
+import { listFileDirTops, listFileDirs, listFileStores } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
@@ -92,5 +92,18 @@ export default {
       status: 0,
       delete: 0,
     }
+  },
+  // ファイル一覧取得
+  async apiGetFileList (current_dir) {
+    const filter = {
+      dir_id: {
+        eq: current_dir.dir_id
+      }
+    }
+    const results = await API.graphql({
+      query: listFileStores,
+      variables: { filter: filter }
+    })
+    return results.data.listFileStores.items
   }
 }

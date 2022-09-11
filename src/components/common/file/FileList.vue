@@ -6,6 +6,9 @@
     <div>現在のディレクトリ<br>
     {{ current_dir }}
     </div>
+    <div>ファイル一覧<br>
+    {{ items.files }}
+    </div>
     <!-- パンくず -->
     <div class="d-flex align-center">
       <v-menu>
@@ -122,17 +125,20 @@
           </td>
         </tr>
         <!-- ファイル -->
-        <tr>
+        <tr
+          v-for="(file, idxF) in items.files"
+          :key="idxF"
+        >
           <td class="short-td px-0">
             <v-checkbox
               v-model="is_selected_items"
               hide-details="auto"
             ></v-checkbox>
           </td>
-          <td>hogehoge.jpg</td>
-          <td>開発 太郎</td>
-          <td>2022/09/10</td>
-          <td>125KB</td>
+          <td>{{ file.file_name }}</td>
+          <td>{{ file.staff_id }}</td>
+          <td>{{ file.updatedAt }}</td>
+          <td>{{ file.file_size }} byte</td>
           <td class="short-td">
             <div class="drop-menu">
               <v-menu>
@@ -268,7 +274,7 @@ export default {
     // ファイル一覧取得
     const getDirFiles = async () => {
       try {
-        console.log("ファイル取得");
+        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
       }
       catch (error) {
         console.log("get files error:", error);
@@ -277,6 +283,8 @@ export default {
     // データ読み込み
     const init = async () => {
       loading.value = true;
+      items.value.files = []
+      items.value.dirs = []
       await getDir();
       await getDirFiles();
       loading.value = false;
