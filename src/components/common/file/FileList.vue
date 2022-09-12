@@ -57,6 +57,11 @@
         append-icon="mdi-delete"
       >削除</v-btn>
     </div>
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+      color="green"
+    ></v-progress-linear>
     <v-table
       fixed-header
       height="500px"
@@ -76,7 +81,7 @@
           <th class="short-td px-0"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-show="!loading">
         <!-- ディレクトリ -->
         <tr
           v-for="(dir, idxD) in items.dirs"
@@ -234,79 +239,61 @@
       </v-card>
     </v-dialog>
   </div>
-  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import { ref } from '@vue/reactivity'
 import fileApiFunc from '@/mixins/api/func/file'
 import storageFunc from '@/mixins/storage/storage.js'
-import OverlayLoading from '../OverlayLoading.vue'
 
 export default {
   name: "file-list",
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
   },
   setup(props) {
     const loading = ref(false);
     
     // 初回読み込み時 最上位ディレクトリをセット
     const current_dir = ref({})
-    const initDir = () => {
+    const initCurrentDir = () => {
       current_dir.value = props.params.dir_top
     }
-    initDir()
-    
+    initCurrentDir()
     // フォルダ、ファイル初期化
     const items = ref({
       dirs: [],
       files: []
     });
-    // ディレクトリ取得
-    const getDir = async () => {
+    // ディレクトリ・ファイル 初期データセット
+    const init = async () => {
+      loading.value = true;
+      items.value.dirs = []
+      items.value.files = []
       try {
         items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
-      }
-      catch (error) {
-        console.log("get dirs error:", error);
-      }
-    };
-    // ファイル一覧取得
-    const getDirFiles = async () => {
-      try {
         items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+      } catch (error) {
+        console.log("get files & dirs exception error", error);
       }
-      catch (error) {
-        console.log("get files error:", error);
-      }
-    };
-    // データ読み込み
-    const init = async () => {
-      console.log();
-      loading.value = true;
-      items.value.files = []
-      items.value.dirs = []
-      await getDir();
-      await getDirFiles();
       loading.value = false;
     };
-    init();
+    init()
 
     // 新規フォルダ作成
     const create_new_folder = ref(false);
     const new_dir = ref("");
     const saveNewFolder = async () => {
       loading.value = true;
-      // TODO: 同じフォルダ名の場合チェック
+      // TODO: 同じフォルダ名チェックする
       try {
         await fileApiFunc.apiCreateFileDir(
           current_dir.value,
           new_dir.value,
         );
+        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
         alert("フォルダを作成しました。");
-        init()
       }
       catch (error) {
         console.log("create folder error:", error);
@@ -317,7 +304,7 @@ export default {
 
     // フォルダ削除
     const deleteDir = async (dir) => {
-      // loading.value = true;
+      loading.value = true;
       try {
         // MEMO: フォルダ直下のファイル&フォルダをゴミ箱に移動する
         // const dir_files = await fileApiFunc.apiGetFileList(dir)
@@ -327,26 +314,20 @@ export default {
         //     await fileApiFunc.apiMoveTrashbox(file)
         //   }
         // }
-        // ディレクトリもゴミ箱に移動
-        const results = []
-        // TODO: 別関数に切り出す
+        // TODO: 別関数に切り出す && 共通化
         // 第一階層
-        results.push(dir)
         await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
         // 第二階層
         for (const level1 of props.params.dirs) {
           if (dir.dir_id === level1.parent_dir_id) {
-            results.push(level1)
             await fileApiFunc.apiUpdateDir(level1, fileApiFunc.getDeleteFlag());
             // 第三階層
             for (const level2 of props.params.dirs) {
               if (level1.dir_id === level2.parent_dir_id) {
-                results.push(level2)
                 await fileApiFunc.apiUpdateDir(level2, fileApiFunc.getDeleteFlag());
                 // 第四階層
                 for (const level3 of props.params.dirs) {
                   if (level2.dir_id === level3.parent_dir_id) {
-                    results.push(level3)
                     await fileApiFunc.apiUpdateDir(level3, fileApiFunc.getDeleteFlag());
                   }
                 }
@@ -354,16 +335,13 @@ export default {
             }
           }
         }
-        console.log(results);
-        // await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
-        
-        // alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
-        init();
+        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
+        alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
       }
       catch (error) {
         console.log("delete item error:", error);
       }
-      // loading.value = false;
+      loading.value = false;
     };
     // ファイルアップロード
     const upload_file = ref([]);
@@ -373,19 +351,20 @@ export default {
         const file = upload_file.value[0]
         const data_url = await storageFunc.storageUploadFile(file)
         await fileApiFunc.apiCreateUploadFile(current_dir.value, file, data_url)
-        upload_file.value = []
+        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
         alert('ファイルをアップロードしました。')
-        await getDirFiles()
       } catch (error) {
         console.log('file upload exception', error);
       }
+      upload_file.value = []
       loading.value = false;
     }
+    // ファイル削除
     const moveTrashbox = async (item) => {
       try {
         await fileApiFunc.apiMoveTrashbox(item)
+        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
         alert('ファイルをゴミ箱に移動しました。')
-        init()
       } catch (error) {
         console.log('file move trashbox error', error);
       }
@@ -400,7 +379,7 @@ export default {
       breadcrumbs.value.push(top_dir)
     }
     initBreadcrumbs();
-    const moveDir = (dir) => {
+    const moveDir = async (dir) => {
       current_dir.value = dir
       breadcrumbs.value.push({
         title: dir.dir_name,
@@ -408,7 +387,7 @@ export default {
       })
       init()
     }
-    const clickBreadcrumb = (item) => {
+    const clickBreadcrumb = async (item) => {
       current_dir.value = item.dir
       // パンくず最適化
       breadcrumbs.value = breadcrumbs.value.filter(v => 
@@ -451,8 +430,7 @@ export default {
       moveDir
       
     };
-  },
-  components: { OverlayLoading }
+  }
 }
 </script>
 <style scoped>

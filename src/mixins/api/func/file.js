@@ -60,6 +60,9 @@ export default {
     const filter = {
       company_cd: {
         eq: store.getters.companyCd
+      },
+      status: {
+        eq: 0
       }
     }
     const results = await API.graphql({
@@ -153,6 +156,9 @@ export default {
       company_cd: {
         eq: store.getters.companyCd
       },
+      status: {
+        eq: 0
+      }
     }
     const results = await API.graphql({
       query: listFileStores,
