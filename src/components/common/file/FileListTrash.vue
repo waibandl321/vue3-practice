@@ -1,11 +1,5 @@
 <template>
   <div class="pa-6">
-    <div>TOPディレクトリ<br>
-      {{ params.dir_top }}
-    </div>
-    <div>現在のディレクトリ<br>
-    {{ current_dir }}
-    </div>
     <!-- パンくず -->
     <div class="d-flex align-center">
       <v-menu>

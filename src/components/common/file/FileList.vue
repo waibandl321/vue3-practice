@@ -1,14 +1,5 @@
 <template>
   <div class="pa-6">
-    <div>TOPディレクトリ<br>
-      {{ params.dir_top }}
-    </div>
-    <div>現在のディレクトリ<br>
-    {{ current_dir }}
-    </div>
-    <!-- <div>ファイル一覧<br>
-    {{ items.files }}
-    </div> -->
     <!-- パンくず -->
     <div class="d-flex align-center">
       <v-menu>
@@ -160,6 +151,7 @@
                   <v-list-item
                     density="compact"
                     link
+                    @click="downloadFile(file)"
                   >
                     ダウンロード
                   </v-list-item>
@@ -183,6 +175,7 @@
         <template v-slot:activator="{ props }">
           <v-btn
             v-bind="props"
+            z-index="2"
             color="primary"
             icon="mdi-plus"
             size="x-large"
@@ -366,6 +359,13 @@ export default {
       upload_file.value = []
       loading.value = false;
     }
+    // ファイルダウンロード
+    const downloadFile = async (file) => {
+      const a = document.createElement('a');
+      a.href = file.data_url;
+      a.download = file.file_name || 'download';
+      a.click();
+    }
     // ファイル論理削除
     const moveTrashbox = async (item) => {
       loading.value = true;
@@ -425,6 +425,8 @@ export default {
       // アップロード
       upload_file,
       uploadFile,
+      // ダウンロード
+      downloadFile,
       // 削除
       moveTrashbox,
       // パンくず
