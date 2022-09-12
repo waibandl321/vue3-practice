@@ -206,6 +206,8 @@ type FileDir @model {
   dir_id: String
   dir_name: String
   parent_dir_id: String
+  company_cd: String
+  status: Int
   permission: Int
 }
 type FileStore @model {

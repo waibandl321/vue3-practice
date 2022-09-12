@@ -1097,6 +1097,8 @@ export const createFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt
@@ -1113,6 +1115,8 @@ export const updateFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt
@@ -1129,6 +1133,8 @@ export const deleteFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt

@@ -49,9 +49,24 @@ export default {
       dir_id: uuid.v4(),
       dir_name: dir_name,
       parent_dir_id: current_dir.dir_id,
-      status: 0
+      status: 0,
+      company_cd: store.getters.companyCd
     }
   },
+  // 全てのディレクトリを取得
+  async apiGetAllDir () {
+    const filter = {
+      company_cd: {
+        eq: store.getters.companyCd
+      }
+    }
+    const results = await API.graphql({
+      query: listFileDirs,
+      variables: { filter: filter }
+    })
+    return results.data.listFileDirs.items
+  },
+  // 現在のディレクトリに紐づくフォルダを取得
   async apiGetFileDirList (current_dir) {
     const filter = {
       parent_dir_id: {
@@ -111,7 +126,7 @@ export default {
       delete: 0,
     }
   },
-  // ファイル一覧取得
+  // 現在のディレクトリに紐付くファイル一覧を取得
   async apiGetFileList (current_dir) {
     const filter = {
       dir_id: {
@@ -120,6 +135,19 @@ export default {
       status: {
         eq: 0
       }
+    }
+    const results = await API.graphql({
+      query: listFileStores,
+      variables: { filter: filter }
+    })
+    return results.data.listFileStores.items
+  },
+  // 全てのファイルを取得
+  async apiGetAllFiles () {
+    const filter = {
+      company_cd: {
+        eq: store.getters.companyCd
+      },
     }
     const results = await API.graphql({
       query: listFileStores,

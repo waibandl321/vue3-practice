@@ -41,15 +41,19 @@ export default {
     const mode = ref('list')
     const loading = ref(false)
     const params = ref({
-      dir_top: {}
+      dir_top: {},
+      dirs: [],
+      files: []
     })
     // 最上位ディレクトリ取得
-    const getDirTop = async () => {
+    const init = async () => {
       loading.value = true
       params.value.dir_top = await fileApiFunc.apiGetDirTop()
+      params.value.dirs = await fileApiFunc.apiGetAllDir()
+      params.value.files = await fileApiFunc.apiGetAllFiles()
       loading.value = false
     }
-    getDirTop()
+    init()
     // 表示モード切り替え
     const changeMode = (_mode) => {
       mode.value = _mode

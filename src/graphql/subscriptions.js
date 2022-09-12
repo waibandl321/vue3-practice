@@ -962,6 +962,8 @@ export const onCreateFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt
@@ -975,6 +977,8 @@ export const onUpdateFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt
@@ -988,6 +992,8 @@ export const onDeleteFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt

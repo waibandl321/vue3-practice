@@ -756,6 +756,8 @@ export const getFileDir = /* GraphQL */ `
       dir_id
       dir_name
       parent_dir_id
+      company_cd
+      status
       permission
       createdAt
       updatedAt
@@ -774,6 +776,8 @@ export const listFileDirs = /* GraphQL */ `
         dir_id
         dir_name
         parent_dir_id
+        company_cd
+        status
         permission
         createdAt
         updatedAt
