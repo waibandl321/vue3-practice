@@ -306,29 +306,25 @@ export default {
     const deleteDir = async (dir) => {
       loading.value = true;
       try {
-        // MEMO: フォルダ直下のファイル&フォルダをゴミ箱に移動する
-        // const dir_files = await fileApiFunc.apiGetFileList(dir)
-        // if(dir_files.length > 0) {
-        //   for (const file of dir_files) {
-        //     // ファイルをゴミ箱に移動
-        //     await fileApiFunc.apiMoveTrashbox(file)
-        //   }
-        // }
         // TODO: 別関数に切り出す && 共通化
         // 第一階層
         await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
+        await deleteFiles(dir)
         // 第二階層
         for (const level1 of props.params.dirs) {
           if (dir.dir_id === level1.parent_dir_id) {
             await fileApiFunc.apiUpdateDir(level1, fileApiFunc.getDeleteFlag());
+            await deleteFiles(level1)
             // 第三階層
             for (const level2 of props.params.dirs) {
               if (level1.dir_id === level2.parent_dir_id) {
                 await fileApiFunc.apiUpdateDir(level2, fileApiFunc.getDeleteFlag());
+                await deleteFiles(level2)
                 // 第四階層
                 for (const level3 of props.params.dirs) {
                   if (level2.dir_id === level3.parent_dir_id) {
                     await fileApiFunc.apiUpdateDir(level3, fileApiFunc.getDeleteFlag());
+                    await deleteFiles(level3)
                   }
                 }
               }
@@ -342,7 +338,17 @@ export default {
         console.log("delete item error:", error);
       }
       loading.value = false;
+      // ディレクトリ直下ファイルをゴミ箱へ
+      async function deleteFiles (target_dir) {
+        const dir_files = await fileApiFunc.apiGetFileList(target_dir)
+        if(dir_files.length > 0) {
+          for (const file of dir_files) {
+            await fileApiFunc.apiMoveTrashbox(file)
+          }
+        }
+      }
     };
+    
     // ファイルアップロード
     const upload_file = ref([]);
     const uploadFile = async () => {
