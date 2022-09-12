@@ -1,5 +1,12 @@
 <template>
   <div class="pa-6">
+    <div>TOPディレクトリ<br>
+      {{ params.dir_top }}
+    </div>
+    <div>現在のディレクトリ<br>
+    {{ current_dir }}
+    </div>
+    <!-- パンくず -->
     <div class="d-flex align-center">
       <v-menu>
         <template v-slot:activator="{ props }">
@@ -20,15 +27,19 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-breadcrumbs
-        :items="breadcrumbs"
-        link
-      >
-        <template v-slot:divider>
-          <v-icon icon="mdi-chevron-right"></v-icon>
-        </template>
-      </v-breadcrumbs>
+      <!-- パンくずリスト -->
+      <div class="d-flex">
+        <v-btn
+          v-for="(b, idxb) in breadcrumbs"
+          :key="idxb"
+          variant="text"
+          size="small"
+          @click="clickBreadcrumb(b)"
+          :disabled="judgeCurrentDir(b)"
+        >{{ b.title }}</v-btn>
+      </div>
     </div>
+    <!-- 一括操作 -->
     <div class="text-right">
       <v-btn
         color="primary"
@@ -41,6 +52,12 @@
         append-icon="mdi-delete"
       >完全に削除</v-btn>
     </div>
+    <!-- リスト -->
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+      color="green"
+    ></v-progress-linear>
     <v-table
       fixed-header
       height="500px"
@@ -61,6 +78,48 @@
         </tr>
       </thead>
       <tbody>
+        <!-- ディレクトリ -->
+        <tr
+          v-for="(dir, idxD) in items.dirs"
+          :key="idxD"
+          @click.stop="moveDir(dir)"
+        >
+          <td class="short-td px-0">
+            <v-checkbox
+              v-model="is_selected_items"
+              hide-details="auto"
+            ></v-checkbox>
+          </td>
+          <td>
+            <v-icon>mdi-folder</v-icon>
+            <span class="ml-2">{{ dir.dir_name }}</span>
+          </td>
+          <td>-</td>
+          <td>{{ dir.updatedAt }}</td>
+          <td>-</td>
+          <td class="short-td px-0">
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  variant="text"
+                  v-bind="props"
+                  icon="mdi-dots-vertical"
+                  size="small"
+                ></v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  density="compact"
+                  link
+                  @click="deleteDir(dir)"
+                >
+                  完全に削除
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </td>
+        </tr>
+        <!-- ファイル -->
         <tr
           v-for="(file, idxF) in items.files"
           :key="idxF"
@@ -90,15 +149,9 @@
                   <v-list-item
                     density="compact"
                     link
+                    @click="execDelete(file)"
                   >
-                    ダウンロード
-                  </v-list-item>
-                  <v-list-item
-                    density="compact"
-                    link
-                    @click="moveTrashbox(file)"
-                  >
-                    ゴミ箱に移動
+                    完全に削除
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -107,7 +160,6 @@
         </tr>
       </tbody>
     </v-table>
-    <OverlayLoading v-if="loading" />
   </div>
 </template>
 
@@ -115,112 +167,116 @@
 import { ref } from '@vue/reactivity'
 import fileApiFunc from '@/mixins/api/func/file'
 import storageFunc from '@/mixins/storage/storage.js'
-import OverlayLoading from '../OverlayLoading.vue'
 
 export default {
   name: "file-trashbox",
-  components: { OverlayLoading },
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
   },
   setup(props) {
     const loading = ref(false);
     
     // 初回読み込み時 最上位ディレクトリをセット
     const current_dir = ref({})
-    const initDir = () => {
+    const initCurrentDir = () => {
       current_dir.value = props.params.dir_top
     }
-    initDir()
-    
+    initCurrentDir()
     // フォルダ、ファイル初期化
     const items = ref({
       dirs: [],
       files: []
     });
-    // ディレクトリ取得
-    const getDir = async () => {
-      try {
-        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
-      }
-      catch (error) {
-        console.log("get dirs error:", error);
-      }
-    };
-    // ファイル一覧取得
-    const getDirFiles = async () => {
-      try {
-        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
-      }
-      catch (error) {
-        console.log("get files error:", error);
-      }
-    };
-    // データ読み込み
+    // ディレクトリ・ファイル 初期データセット
     const init = async () => {
       loading.value = true;
-      items.value.files = []
       items.value.dirs = []
-      await getDir();
-      await getDirFiles();
+      items.value.files = []
+      try {
+        items.value.dirs = await fileApiFunc.apiGetFileDirList(
+          current_dir.value,
+          fileApiFunc.getTrashboxFlag()
+        );
+        items.value.files = await fileApiFunc.apiGetFileList(
+          current_dir.value,
+          fileApiFunc.getTrashboxFlag()
+        );
+      } catch (error) {
+        console.log("get files & dirs exception error", error);
+      }
       loading.value = false;
     };
-    init();
+    init()
 
-    // 新規フォルダ作成
-    const create_new_folder = ref(false);
-    const new_dir = ref("");
-    const saveNewFolder = async () => {
-      // TODO: 同じフォルダ名の場合チェック
-      try {
-        await fileApiFunc.apiCreateFileDir(
-          current_dir.value,
-          new_dir.value,
-        );
-        alert("フォルダを作成しました。");
-        init();
-      }
-      catch (error) {
-        console.log("create folder error:", error);
-      }
-      create_new_folder.value = false;
-    };
 
-    // フォルダ削除
-    const deleteDir = async (item) => {
+    // フォルダ→ファイル物理削除
+    const deleteDir = async (dir) => {
+      if(!confirm("実行するとデータは復元できません。よろしいですか？")) return;
+      loading.value = true;
       try {
-        await fileApiFunc.apiDeleteDirItem(item);
-        alert("フォルダを削除しました。");
-        init();
+        // TODO: 別関数に切り出す && 共通化
+        // 第一階層
+        await fileApiFunc.apiDeleteDir(dir);
+        await deleteFiles(dir)
+        // 第二階層
+        for (const level1 of props.params.dirs) {
+          if (dir.dir_id === level1.parent_dir_id) {
+            await fileApiFunc.apiDeleteDir(level1);
+            await deleteFiles(level1)
+            // 第三階層
+            for (const level2 of props.params.dirs) {
+              if (level1.dir_id === level2.parent_dir_id) {
+                await fileApiFunc.apiDeleteDir(level2);
+                await deleteFiles(level2)
+                // 第四階層
+                for (const level3 of props.params.dirs) {
+                  if (level2.dir_id === level3.parent_dir_id) {
+                    await fileApiFunc.apiDeleteDir(level3);
+                    await deleteFiles(level3)
+                  }
+                }
+              }
+            }
+          }
+        }
+        init()
+        alert("フォルダを完全に削除しました");
       }
       catch (error) {
         console.log("delete item error:", error);
       }
+      loading.value = false;
+      // ディレクトリ直下ファイル物理削除
+      async function deleteFiles (target_dir) {
+        const dir_files = await fileApiFunc.apiGetFileList(target_dir, fileApiFunc.getTrashboxFlag())
+        if(dir_files.length > 0) {
+          for (const file of dir_files) {
+            await storageFunc.storageDeleteFile(file).then(async () => {
+              await fileApiFunc.apiExecuteDeleteFile(file)
+            })
+          }
+        }
+      }
     };
-    // ファイルアップロード
-    const upload_file = ref([]);
-    const uploadFile = async () => {
+    
+    // ファイル物理削除
+    const execDelete = async (file) => {
+      if(!confirm("実行するとデータは復元できません。よろしいですか？")) return;
       loading.value = true;
       try {
-        const file = upload_file.value[0]
-        const data_url = await storageFunc.storageUploadFile(file)
-        await fileApiFunc.apiCreateUploadFile(current_dir.value, file, data_url)
-        alert('ファイルをアップロードしました。')
-        upload_file.value = []
+        await storageFunc.storageDeleteFile(file).then(async () => {
+          await fileApiFunc.apiExecuteDeleteFile(file)
+        })
+        items.value.files = await fileApiFunc.apiGetFileList(
+          current_dir.value,
+          fileApiFunc.getTrashboxFlag()
+        );
+        alert('ファイルを完全に削除しました。')
       } catch (error) {
-        console.log('file upload exception', error);
+        console.log('file execute delete error', error);
       }
       loading.value = false;
-    }
-    const moveTrashbox = async (item) => {
-      try {
-        await fileApiFunc.apiMoveTrashbox(item)
-        alert('ファイルをゴミ箱に移動しました。')
-        init()
-      } catch (error) {
-        console.log('file move trashbox error', error);
-      }
     }
     // パンくずリスト
     const breadcrumbs = ref([])
@@ -232,7 +288,7 @@ export default {
       breadcrumbs.value.push(top_dir)
     }
     initBreadcrumbs();
-    const moveDir = (dir) => {
+    const moveDir = async (dir) => {
       current_dir.value = dir
       breadcrumbs.value.push({
         title: dir.dir_name,
@@ -240,7 +296,7 @@ export default {
       })
       init()
     }
-    const clickBreadcrumb = (item) => {
+    const clickBreadcrumb = async (item) => {
       current_dir.value = item.dir
       // パンくず最適化
       breadcrumbs.value = breadcrumbs.value.filter(v => 
@@ -262,15 +318,8 @@ export default {
       current_dir,
       // アイテム
       items,
-      // フォルダ作成
-      create_new_folder,
-      new_dir,
-      saveNewFolder,
-      // アップロード
-      upload_file,
-      uploadFile,
       // 削除
-      moveTrashbox,
+      execDelete,
       // パンくず
       breadcrumbs,
       clickBreadcrumb,
@@ -283,6 +332,6 @@ export default {
       moveDir
       
     };
-  },
+  }
 }
 </script>

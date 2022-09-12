@@ -49,7 +49,7 @@
         </template>
       </v-breadcrumbs> -->
     </div>
-    <!-- リスト -->
+    <!-- 一括操作 -->
     <div class="text-right">
       <v-btn
         color="error"
@@ -57,6 +57,7 @@
         append-icon="mdi-delete"
       >削除</v-btn>
     </div>
+    <!-- リスト -->
     <v-progress-linear
       v-if="loading"
       indeterminate
@@ -365,8 +366,9 @@ export default {
       upload_file.value = []
       loading.value = false;
     }
-    // ファイル削除
+    // ファイル論理削除
     const moveTrashbox = async (item) => {
+      loading.value = true;
       try {
         await fileApiFunc.apiMoveTrashbox(item)
         items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
@@ -374,6 +376,7 @@ export default {
       } catch (error) {
         console.log('file move trashbox error', error);
       }
+      loading.value = false;
     }
     // パンくずリスト
     const breadcrumbs = ref([])

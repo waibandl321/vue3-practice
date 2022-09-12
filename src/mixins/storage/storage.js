@@ -13,4 +13,9 @@ export default {
       return await Storage.get(response.key)
     }
   },
+  async storageDeleteFile (file) {
+    return await Storage.remove(
+      storeAuth.storeGetCompanyCd() + '/' + file.file_name,
+    )
+  }
 }

@@ -1,12 +1,15 @@
 import { API } from 'aws-amplify'
 import { createFileDirTop, createFileDir, updateFileDir, deleteFileDir,
-  createFileStore, updateFileStore } from '@/graphql/mutations'
+  createFileStore, updateFileStore, deleteFileStore } from '@/graphql/mutations'
 import { listFileDirTops, listFileDirs, listFileStores } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
 export default {
   getDeleteFlag () {
+    return true
+  },
+  getTrashboxFlag () {
     return true
   },
   async apiCreateFile (company) {
@@ -72,13 +75,13 @@ export default {
     return results.data.listFileDirs.items
   },
   // 現在のディレクトリに紐づくフォルダを取得
-  async apiGetFileDirList (current_dir) {
+  async apiGetFileDirList (current_dir, trashbox_flag = false) {
     const filter = {
       parent_dir_id: {
         eq: current_dir.dir_id
       },
       status: {
-        eq: 0
+        eq: trashbox_flag ? 1 : 0
       }
     }
     const results = await API.graphql({
@@ -135,13 +138,13 @@ export default {
     }
   },
   // 現在のディレクトリに紐付くファイル一覧を取得
-  async apiGetFileList (current_dir) {
+  async apiGetFileList (current_dir, trashbox_flag = false) {
     const filter = {
       dir_id: {
         eq: current_dir.dir_id
       },
       status: {
-        eq: 0
+        eq: trashbox_flag ? 1 : 0
       }
     }
     const results = await API.graphql({
@@ -166,6 +169,7 @@ export default {
     })
     return results.data.listFileStores.items
   },
+  // ファイル論理削除
   async apiMoveTrashbox (item) {
     const file = {
       id: item.id,
@@ -173,6 +177,16 @@ export default {
     }
     return await API.graphql({
       query: updateFileStore,
+      variables: { input: file }
+    })
+  },
+  // ファイル物理削除
+  async apiExecuteDeleteFile (item) {
+    const file = {
+      id: item.id,
+    }
+    return await API.graphql({
+      query: deleteFileStore,
       variables: { input: file }
     })
   },

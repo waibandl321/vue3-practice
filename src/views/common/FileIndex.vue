@@ -54,7 +54,7 @@ export default {
     init()
 
     // 表示モード切り替え
-    const changeMode = (_mode) => {
+    const changeMode = async (_mode) => {
       mode.value = _mode
     }
     return {
