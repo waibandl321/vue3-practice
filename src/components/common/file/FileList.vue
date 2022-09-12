@@ -32,13 +32,6 @@
           :disabled="judgeCurrentDir(b)"
         >{{ b.title }}</v-btn>
       </div>
-      <!-- <v-breadcrumbs
-        :items="breadcrumbs"
-      >
-        <template v-slot:divider>
-          <v-icon icon="mdi-chevron-right"></v-icon>
-        </template>
-      </v-breadcrumbs> -->
     </div>
     <!-- 一括操作 -->
     <div class="text-right">
@@ -46,7 +39,8 @@
         color="error"
         variant="text"
         append-icon="mdi-delete"
-      >削除</v-btn>
+        @click="bulkMoveTrash()"
+      >選択したファイルを削除</v-btn>
     </div>
     <!-- リスト -->
     <v-progress-linear
@@ -64,6 +58,7 @@
             <v-checkbox
               v-model="is_selected_all"
               hide-details="auto"
+              @change="isSelectAll()"
             ></v-checkbox>
           </th>
           <th class="text-left">ファイル・フォルダ名</th>
@@ -81,10 +76,11 @@
           @click.stop="moveDir(dir)"
         >
           <td class="short-td px-0">
-            <v-checkbox
+            <!-- <v-checkbox
               v-model="is_selected_items"
+              :value="dir.id"
               hide-details="auto"
-            ></v-checkbox>
+            ></v-checkbox> -->
           </td>
           <td>
             <v-icon>mdi-folder</v-icon>
@@ -129,6 +125,7 @@
           <td class="short-td px-0">
             <v-checkbox
               v-model="is_selected_items"
+              :value="file"
               hide-details="auto"
             ></v-checkbox>
           </td>
@@ -248,18 +245,16 @@ export default {
   },
   setup(props) {
     const loading = ref(false);
-    
+    const items = ref({
+      dirs: [],
+      files: []
+    });
     // 初回読み込み時 最上位ディレクトリをセット
     const current_dir = ref({})
     const initCurrentDir = () => {
       current_dir.value = props.params.dir_top
     }
     initCurrentDir()
-    // フォルダ、ファイル初期化
-    const items = ref({
-      dirs: [],
-      files: []
-    });
     // ディレクトリ・ファイル 初期データセット
     const init = async () => {
       loading.value = true;
@@ -274,7 +269,6 @@ export default {
       loading.value = false;
     };
     init()
-
     // 新規フォルダ作成
     const create_new_folder = ref(false);
     const new_dir = ref("");
@@ -295,8 +289,7 @@ export default {
       create_new_folder.value = false;
       loading.value = false;
     };
-
-    // フォルダ削除
+    // フォルダ→ファイル削除
     const deleteDir = async (dir) => {
       loading.value = true;
       try {
@@ -342,7 +335,6 @@ export default {
         }
       }
     };
-    
     // ファイルアップロード
     const upload_file = ref([]);
     const uploadFile = async () => {
@@ -388,6 +380,7 @@ export default {
       breadcrumbs.value.push(top_dir)
     }
     initBreadcrumbs();
+    // ディレクトリ移動
     const moveDir = async (dir) => {
       current_dir.value = dir
       breadcrumbs.value.push({
@@ -396,6 +389,7 @@ export default {
       })
       init()
     }
+    // パンくず移動
     const clickBreadcrumb = async (item) => {
       current_dir.value = item.dir
       // パンくず最適化
@@ -407,12 +401,35 @@ export default {
       )
       init()
     }
+    // アクティブディレクトリ判定
     const judgeCurrentDir = (breadcrumb) => {
       return current_dir.value.id === breadcrumb.dir.id
     }
-    // 選択
+    // 一括操作
     const is_selected_items = ref([])
     const is_selected_all = ref(false)
+    const isSelectAll = () => {
+      if(!is_selected_all.value) {
+        is_selected_items.value = []
+        return;
+      }
+      items.value.files.forEach((file) => {
+        is_selected_items.value.push(file)
+      })
+    }
+    const bulkMoveTrash = async () => {
+      loading.value = true
+      try {
+        for (const item of is_selected_items.value) {
+          await fileApiFunc.apiMoveTrashbox(item)
+        }
+        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        alert('選択されたファイルをゴミ箱に移動しました')
+      } catch (error) {
+        console.log("bulk delete file exeptopn error", error);
+      }
+      loading.value = false
+    }
     return {
       loading,
       current_dir,
@@ -433,10 +450,12 @@ export default {
       breadcrumbs,
       clickBreadcrumb,
       judgeCurrentDir,
-      // 選択
+      // 一括操作
       is_selected_items,
       is_selected_all,
-      
+      isSelectAll,
+      bulkMoveTrash,
+
       deleteDir,
       moveDir
       
