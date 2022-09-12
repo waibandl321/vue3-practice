@@ -21,6 +21,7 @@ export default {
       organization_id: company.company_cd,
       function_cd: "file",
       dir_id: uuid.v4(),
+      level: 0,
       company_cd: company.company_cd
     }
   },
@@ -49,6 +50,7 @@ export default {
       dir_id: uuid.v4(),
       dir_name: dir_name,
       parent_dir_id: current_dir.dir_id,
+      level: current_dir.level + 1,
       status: 0,
       company_cd: store.getters.companyCd
     }
@@ -71,6 +73,9 @@ export default {
     const filter = {
       parent_dir_id: {
         eq: current_dir.dir_id
+      },
+      status: {
+        eq: 0
       }
     }
     const results = await API.graphql({

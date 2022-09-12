@@ -118,7 +118,7 @@
                   link
                   @click="deleteDir(dir)"
                 >
-                  削除
+                  ゴミ箱に移動
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -184,6 +184,7 @@
         </template>
         <v-list>
           <v-list-item
+            :disabled="current_dir.level === 3"
             density="compact"
             link
             @click.stop="create_new_folder = !create_new_folder"
@@ -327,32 +328,37 @@ export default {
         //   }
         // }
         // ディレクトリもゴミ箱に移動
-        let all_dir = props.params.dirs
-        let result = {
-          dirs: [],
-          files: []
-        }
-        result.dirs.push(dir)
-        for (const d1 of all_dir) {
-          if (dir.dir_id === d1.parent_dir_id) {
-            result.dirs.push(d1)
-            for (const d2 of all_dir) {
-              if (d1.dir_id === d2.parent_dir_id) {
-                result.dirs.push(d2)
-                for (const d3 of all_dir) {
-                  if (d2.dir_id === d3.parent_dir_id) {
-                    result.dirs.push(d3)
+        const results = []
+        // TODO: 別関数に切り出す
+        // 第一階層
+        results.push(dir)
+        await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
+        // 第二階層
+        for (const level1 of props.params.dirs) {
+          if (dir.dir_id === level1.parent_dir_id) {
+            results.push(level1)
+            await fileApiFunc.apiUpdateDir(level1, fileApiFunc.getDeleteFlag());
+            // 第三階層
+            for (const level2 of props.params.dirs) {
+              if (level1.dir_id === level2.parent_dir_id) {
+                results.push(level2)
+                await fileApiFunc.apiUpdateDir(level2, fileApiFunc.getDeleteFlag());
+                // 第四階層
+                for (const level3 of props.params.dirs) {
+                  if (level2.dir_id === level3.parent_dir_id) {
+                    results.push(level3)
+                    await fileApiFunc.apiUpdateDir(level3, fileApiFunc.getDeleteFlag());
                   }
                 }
               }
             }
           }
         }
-        console.log(result.dirs);
+        console.log(results);
         // await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
         
         // alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
-        // init();
+        init();
       }
       catch (error) {
         console.log("delete item error:", error);

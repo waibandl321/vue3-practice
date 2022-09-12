@@ -723,6 +723,7 @@ export const getFileDirTop = /* GraphQL */ `
       organization_id
       function_cd
       dir_id
+      level
       company_cd
       createdAt
       updatedAt
@@ -741,6 +742,7 @@ export const listFileDirTops = /* GraphQL */ `
         organization_id
         function_cd
         dir_id
+        level
         company_cd
         createdAt
         updatedAt
@@ -757,6 +759,7 @@ export const getFileDir = /* GraphQL */ `
       dir_name
       parent_dir_id
       company_cd
+      level
       status
       permission
       createdAt
@@ -777,6 +780,7 @@ export const listFileDirs = /* GraphQL */ `
         dir_name
         parent_dir_id
         company_cd
+        level
         status
         permission
         createdAt

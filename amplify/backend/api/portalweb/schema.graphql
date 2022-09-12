@@ -199,6 +199,7 @@ type FileDirTop @model {
   organization_id: String
   function_cd: String
   dir_id: String
+  level: Int
   company_cd: String
 }
 type FileDir @model {
@@ -207,6 +208,7 @@ type FileDir @model {
   dir_name: String
   parent_dir_id: String
   company_cd: String
+  level: Int
   status: Int
   permission: Int
 }

@@ -919,6 +919,7 @@ export const onCreateFileDirTop = /* GraphQL */ `
       organization_id
       function_cd
       dir_id
+      level
       company_cd
       createdAt
       updatedAt
@@ -934,6 +935,7 @@ export const onUpdateFileDirTop = /* GraphQL */ `
       organization_id
       function_cd
       dir_id
+      level
       company_cd
       createdAt
       updatedAt
@@ -949,6 +951,7 @@ export const onDeleteFileDirTop = /* GraphQL */ `
       organization_id
       function_cd
       dir_id
+      level
       company_cd
       createdAt
       updatedAt
@@ -963,6 +966,7 @@ export const onCreateFileDir = /* GraphQL */ `
       dir_name
       parent_dir_id
       company_cd
+      level
       status
       permission
       createdAt
@@ -978,6 +982,7 @@ export const onUpdateFileDir = /* GraphQL */ `
       dir_name
       parent_dir_id
       company_cd
+      level
       status
       permission
       createdAt
@@ -993,6 +998,7 @@ export const onDeleteFileDir = /* GraphQL */ `
       dir_name
       parent_dir_id
       company_cd
+      level
       status
       permission
       createdAt
