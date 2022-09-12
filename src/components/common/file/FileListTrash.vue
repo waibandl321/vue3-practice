@@ -44,6 +44,7 @@
         color="error"
         variant="text"
         append-icon="mdi-delete"
+        @click="bulkExecDelete()"
       >完全に削除</v-btn>
     </div>
     <!-- リスト -->
@@ -62,6 +63,7 @@
             <v-checkbox
               v-model="is_selected_all"
               hide-details="auto"
+              @change="isSelectAll()"
             ></v-checkbox>
           </th>
           <th class="text-left">ファイル・フォルダ名</th>
@@ -79,10 +81,10 @@
           @click.stop="moveDir(dir)"
         >
           <td class="short-td px-0">
-            <v-checkbox
+            <!-- <v-checkbox
               v-model="is_selected_items"
               hide-details="auto"
-            ></v-checkbox>
+            ></v-checkbox> -->
           </td>
           <td>
             <v-icon>mdi-folder</v-icon>
@@ -121,6 +123,7 @@
           <td class="short-td px-0">
             <v-checkbox
               v-model="is_selected_items"
+              :value="file"
               hide-details="auto"
             ></v-checkbox>
           </td>
@@ -259,6 +262,7 @@ export default {
       if(!confirm("実行するとデータは復元できません。よろしいですか？")) return;
       loading.value = true;
       try {
+        // TODO: API&storage削除共通化
         await storageFunc.storageDeleteFile(file).then(async () => {
           await fileApiFunc.apiExecuteDeleteFile(file)
         })
@@ -307,6 +311,35 @@ export default {
     // 選択
     const is_selected_items = ref([])
     const is_selected_all = ref(false)
+    const bulkExecDelete = async () => {
+      if(!confirm("実行するとデータは復元できません。よろしいですか？")) return;
+      loading.value = true
+      try {
+        for (const item of is_selected_items.value) {
+          // TODO: API&storage削除共通化
+          await storageFunc.storageDeleteFile(item).then(async () => {
+            await fileApiFunc.apiExecuteDeleteFile(item)
+          })
+        }
+        items.value.files = await fileApiFunc.apiGetFileList(
+          current_dir.value,
+          fileApiFunc.getTrashboxFlag()
+        );
+        alert('選択されたファイルを完全に削除しました')
+      } catch (error) {
+        console.log("bulk delete file exeptopn error", error);
+      }
+      loading.value = false
+    }
+    const isSelectAll = () => {
+      if(!is_selected_all.value) {
+        is_selected_items.value = []
+        return;
+      }
+      items.value.files.forEach((file) => {
+        is_selected_items.value.push(file)
+      })
+    }
     return {
       loading,
       current_dir,
@@ -318,10 +351,12 @@ export default {
       breadcrumbs,
       clickBreadcrumb,
       judgeCurrentDir,
-      // 選択
+      // 一括操作
       is_selected_items,
       is_selected_all,
-      
+      isSelectAll,
+      bulkExecDelete,
+
       deleteDir,
       moveDir
       
