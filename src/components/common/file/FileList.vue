@@ -1,14 +1,14 @@
 <template>
   <div class="pa-6">
     <div>TOPディレクトリ<br>
-      {{ params }}
+      {{ params.dir_top }}
     </div>
     <div>現在のディレクトリ<br>
     {{ current_dir }}
     </div>
-    <div>ファイル一覧<br>
+    <!-- <div>ファイル一覧<br>
     {{ items.files }}
-    </div>
+    </div> -->
     <!-- パンくず -->
     <div class="d-flex align-center">
       <v-menu>
@@ -59,7 +59,7 @@
     </div>
     <v-table
       fixed-header
-      height="300px"
+      height="500px"
     >
       <thead>
         <tr>
@@ -283,6 +283,7 @@ export default {
     };
     // データ読み込み
     const init = async () => {
+      console.log();
       loading.value = true;
       items.value.files = []
       items.value.dirs = []
@@ -296,6 +297,7 @@ export default {
     const create_new_folder = ref(false);
     const new_dir = ref("");
     const saveNewFolder = async () => {
+      loading.value = true;
       // TODO: 同じフォルダ名の場合チェック
       try {
         await fileApiFunc.apiCreateFileDir(
@@ -303,36 +305,59 @@ export default {
           new_dir.value,
         );
         alert("フォルダを作成しました。");
-        init();
+        init()
       }
       catch (error) {
         console.log("create folder error:", error);
       }
       create_new_folder.value = false;
+      loading.value = false;
     };
 
     // フォルダ削除
     const deleteDir = async (dir) => {
-      loading.value = true;
+      // loading.value = true;
       try {
         // MEMO: フォルダ直下のファイル&フォルダをゴミ箱に移動する
-        const dir_files = await fileApiFunc.apiGetFileList(dir)
-        if(dir_files.length > 0) {
-          for (const file of dir_files) {
-            // ファイルをゴミ箱に移動
-            await fileApiFunc.apiMoveTrashbox(file)
+        // const dir_files = await fileApiFunc.apiGetFileList(dir)
+        // if(dir_files.length > 0) {
+        //   for (const file of dir_files) {
+        //     // ファイルをゴミ箱に移動
+        //     await fileApiFunc.apiMoveTrashbox(file)
+        //   }
+        // }
+        // ディレクトリもゴミ箱に移動
+        let all_dir = props.params.dirs
+        let result = {
+          dirs: [],
+          files: []
+        }
+        result.dirs.push(dir)
+        for (const d1 of all_dir) {
+          if (dir.dir_id === d1.parent_dir_id) {
+            result.dirs.push(d1)
+            for (const d2 of all_dir) {
+              if (d1.dir_id === d2.parent_dir_id) {
+                result.dirs.push(d2)
+                for (const d3 of all_dir) {
+                  if (d2.dir_id === d3.parent_dir_id) {
+                    result.dirs.push(d3)
+                  }
+                }
+              }
+            }
           }
         }
-        // ディレクトリもゴミ箱に移動
-        await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
+        console.log(result.dirs);
+        // await fileApiFunc.apiUpdateDir(dir, fileApiFunc.getDeleteFlag());
         
-        alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
-        init();
+        // alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
+        // init();
       }
       catch (error) {
         console.log("delete item error:", error);
       }
-      loading.value = false;
+      // loading.value = false;
     };
     // ファイルアップロード
     const upload_file = ref([]);
@@ -342,8 +367,9 @@ export default {
         const file = upload_file.value[0]
         const data_url = await storageFunc.storageUploadFile(file)
         await fileApiFunc.apiCreateUploadFile(current_dir.value, file, data_url)
-        alert('ファイルをアップロードしました。')
         upload_file.value = []
+        alert('ファイルをアップロードしました。')
+        await getDirFiles()
       } catch (error) {
         console.log('file upload exception', error);
       }

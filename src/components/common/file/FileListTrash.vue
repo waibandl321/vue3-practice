@@ -43,7 +43,7 @@
     </div>
     <v-table
       fixed-header
-      height="300px"
+      height="500px"
     >
       <thead>
         <tr>
