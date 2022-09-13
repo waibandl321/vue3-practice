@@ -97,13 +97,14 @@
                 <v-list-item
                   density="compact"
                   link
+                  @click.stop="updateDir(dir)"
                 >
                   フォルダ名編集
                 </v-list-item>
                 <v-list-item
                   density="compact"
                   link
-                  @click="deleteDir(dir)"
+                  @click.stop="deleteDir(dir)"
                 >
                   ゴミ箱に移動
                 </v-list-item>
@@ -218,8 +219,33 @@
           <v-btn
             variant="outlined"
             color="primary"
-            @click="saveNewFolder()"
+            @click="createNewFolder()"
             :disabled="!new_dir"
+          >作成</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- フォルダ編集 -->
+    <v-dialog v-model="update_dir_modal">
+      <v-card width="500">
+        <v-card-title>フォルダ名変更</v-card-title>
+        <v-divider></v-divider>
+        <v-card-item>
+          <v-card-subtitle>フォルダ名</v-card-subtitle>
+          <v-text-field
+            v-model.trim="dir_editor.dir_name"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-actions class="justify-end">
+          <v-btn 
+            variant="outlined"
+            @click="update_dir_modal = false"
+          >キャンセル</v-btn>
+          <v-btn
+            variant="outlined"
+            color="primary"
+            @click="execUpdateDir()"
+            :disabled="!dir_editor.dir_name"
           >作成</v-btn>
         </v-card-actions>
       </v-card>
@@ -271,7 +297,7 @@ export default {
     // 新規フォルダ作成
     const create_new_folder = ref(false);
     const new_dir = ref("");
-    const saveNewFolder = async () => {
+    const createNewFolder = async () => {
       loading.value = true;
       // TODO: 同じフォルダ名チェックする
       try {
@@ -288,6 +314,23 @@ export default {
       create_new_folder.value = false;
       loading.value = false;
     };
+    // フォルダ更新
+    const update_dir_modal = ref(false)
+    const dir_editor = ref({})
+    const updateDir = async (dir) => {
+      dir_editor.value = dir
+      update_dir_modal.value = true
+    }
+    const execUpdateDir = async () => {
+      try {
+        await fileApiFunc.apiUpdateDir(dir_editor.value)
+        alert('フォルダを更新しました');
+      } catch (error) {
+        console.log('update dir error', error);
+      }
+      dir_editor.value = {}
+      update_dir_modal.value = false
+    }
     // フォルダ→ファイル削除
     const deleteDir = async (dir) => {
       loading.value = true;
@@ -442,7 +485,11 @@ export default {
       // フォルダ
       create_new_folder,
       new_dir,
-      saveNewFolder,
+      createNewFolder,
+      dir_editor,
+      update_dir_modal,
+      updateDir,
+      execUpdateDir,
       deleteDir,
       moveDir,
       // アップロード
