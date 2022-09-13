@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="im-container">
     <v-img src="https://placehold.jp/1200x800.png"></v-img>
     <v-card-item>
       <div>タグ名</div>

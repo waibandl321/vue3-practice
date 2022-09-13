@@ -20,5 +20,8 @@ export default {
       company_group_cd: company.company_group_cd,
       owner_id: store.getters.staff.staff_id,
     }
-  }
+  },
+  create () {},
+  update () {},
+  delete () {}
 }

@@ -42,8 +42,13 @@ export default {
     })
     const changeMode = (_mode, is_new = false) => {
       if(is_new) {
+        params.value.is_new = true
         params.value.editor = {
-          // 初期化
+          title: "",
+          post_text: "",
+          attachments: [],
+          url_links: [],
+          eyecatch: undefined
         }
       }
       mode.value = _mode

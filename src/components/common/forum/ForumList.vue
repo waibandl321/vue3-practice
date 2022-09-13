@@ -21,8 +21,6 @@
         >
           <v-card-item>
             <v-card-subtitle>投稿日</v-card-subtitle>
-            {{ post_start }}<br>
-            {{ post_end }}
             <v-card-actions>
               <Datepicker
                 v-model="post_start"
@@ -85,7 +83,9 @@
                   ></v-btn>
                 </template>
                 <v-list>
-                  <v-list-item link>投稿を削除</v-list-item>
+                  <v-list-item
+                    link
+                  >投稿を削除</v-list-item>
                 </v-list>
               </v-menu>
             </div>
@@ -100,7 +100,7 @@
         <v-card-actions>
           <v-btn
             variant="outlined"
-            @click="viewPost()"
+            @click.stop="viewPost()"
           >
             詳しく見る
           </v-btn>
@@ -137,7 +137,8 @@ export default {
       props.changeMode('detail')
     }
     const newPost = () => {
-      props.changeMode('edit')
+      const is_new = true
+      props.changeMode('edit', is_new)
     }
     const filter_mode = ref(false)
     const post_start = ref()

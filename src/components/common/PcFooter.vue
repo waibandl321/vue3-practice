@@ -11,6 +11,7 @@
       <v-btn
         v-for="(next_option, idx) in options.next"
         :key="idx"
+        :disabled="next_option.disabled"
         @click="clickNext(next_option)"
       >{{ next_option.text }}</v-btn>
     </div>
