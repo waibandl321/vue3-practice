@@ -244,9 +244,14 @@ type ForumPost @model {
   status: Int
   importance: Int
   delete: Int
+  files: [ForumFile] @hasMany(indexName: "byForumPost", fields: ["id"])
+  urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["id"])
+  eyecatch: ForumEyecatch @hasOne
+  tags: [ForumTag] @hasMany(indexName: "byForumPost", fields: ["id"])
 }
 type ForumFile @model {
   id: ID!
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["sort_number"])
   post_key: String
   sort_number: String
   file_id: String
@@ -254,6 +259,7 @@ type ForumFile @model {
 }
 type ForumUrl @model {
   id: ID!
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["sort_number"])
   post_key: String
   sort_number: String
   url_key: String
@@ -267,7 +273,9 @@ type ForumEyecatch @model {
 }
 type ForumTag @model {
   id: ID!
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["sort_number"])
   post_key: String
+  sort_number: String
   forum_tag_name: String
   company_cd: String
 }

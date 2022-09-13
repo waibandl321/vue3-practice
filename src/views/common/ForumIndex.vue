@@ -48,6 +48,7 @@ export default {
           post_text: "",
           attachments: [],
           url_links: [],
+          tags: [],
           eyecatch: undefined
         }
       }

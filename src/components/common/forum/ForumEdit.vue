@@ -29,12 +29,15 @@
         </v-list>
       </v-menu>
       <!-- 選択 or 登録済み -->
-      <div class="mt-2">
+      <div 
+        v-if="editor.eyecatch || eyecatch"
+        class="mt-2"
+      >
         <v-chip
           closable
           @click:close="chip = false"
         >
-          {{ editor.eyecatch ? editor.eyecatch.file_name : eyecatch?.name }}
+          {{ editor.eyecatch ? editor.eyecatch?.file_name : eyecatch?.name }}
         </v-chip>
       </div>
     </v-card-item>
@@ -119,7 +122,7 @@
           >
             お使いのコンピューターから選択
           </v-list-item>
-          <v-list-item 
+          <v-list-item
             density="compact"
             link
           >
@@ -127,9 +130,37 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <template v-if="editor.attachments.length > 0">
+        <div
+          v-for="(attachment, idxA) in editor.attachments"
+          :key="idxA"
+          class="mt-2"
+        >
+          <v-chip
+            closable
+            @click:close="chip = false"
+          >
+            {{ attachment.name }}
+          </v-chip>
+        </div>
+      </template>
     </v-card-item>
     <v-card-item>
       <div class="font-weight-bold">タグ</div>
+      <template v-if="editor.tags.length > 0">
+        <div
+          v-for="(tag, idxT) in editor.tags"
+          :key="idxT"
+          class="mt-2"
+        >
+          <v-chip
+            closable
+            @click:close="chip = false"
+          >
+            {{ tag.name }}
+          </v-chip>
+        </div>
+      </template>
     </v-card-item>
     <footer class="fixed-footer">
     <div class="back">

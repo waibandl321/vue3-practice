@@ -1126,8 +1126,56 @@ export const onCreateForumPost = /* GraphQL */ `
       status
       importance
       delete
+      files {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      eyecatch {
+        id
+        post_key
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      tags {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
+      forumPostEyecatchId
     }
   }
 `;
@@ -1146,8 +1194,56 @@ export const onUpdateForumPost = /* GraphQL */ `
       status
       importance
       delete
+      files {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      eyecatch {
+        id
+        post_key
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      tags {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
+      forumPostEyecatchId
     }
   }
 `;
@@ -1166,8 +1262,56 @@ export const onDeleteForumPost = /* GraphQL */ `
       status
       importance
       delete
+      files {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      eyecatch {
+        id
+        post_key
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      tags {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
+      forumPostEyecatchId
     }
   }
 `;
@@ -1177,6 +1321,7 @@ export const onCreateForumFile = /* GraphQL */ `
   ) {
     onCreateForumFile(filter: $filter) {
       id
+      post_id
       post_key
       sort_number
       file_id
@@ -1192,6 +1337,7 @@ export const onUpdateForumFile = /* GraphQL */ `
   ) {
     onUpdateForumFile(filter: $filter) {
       id
+      post_id
       post_key
       sort_number
       file_id
@@ -1207,6 +1353,7 @@ export const onDeleteForumFile = /* GraphQL */ `
   ) {
     onDeleteForumFile(filter: $filter) {
       id
+      post_id
       post_key
       sort_number
       file_id
@@ -1220,6 +1367,7 @@ export const onCreateForumUrl = /* GraphQL */ `
   subscription OnCreateForumUrl($filter: ModelSubscriptionForumUrlFilterInput) {
     onCreateForumUrl(filter: $filter) {
       id
+      post_id
       post_key
       sort_number
       url_key
@@ -1233,6 +1381,7 @@ export const onUpdateForumUrl = /* GraphQL */ `
   subscription OnUpdateForumUrl($filter: ModelSubscriptionForumUrlFilterInput) {
     onUpdateForumUrl(filter: $filter) {
       id
+      post_id
       post_key
       sort_number
       url_key
@@ -1246,6 +1395,7 @@ export const onDeleteForumUrl = /* GraphQL */ `
   subscription OnDeleteForumUrl($filter: ModelSubscriptionForumUrlFilterInput) {
     onDeleteForumUrl(filter: $filter) {
       id
+      post_id
       post_key
       sort_number
       url_key
@@ -1301,7 +1451,9 @@ export const onCreateForumTag = /* GraphQL */ `
   subscription OnCreateForumTag($filter: ModelSubscriptionForumTagFilterInput) {
     onCreateForumTag(filter: $filter) {
       id
+      post_id
       post_key
+      sort_number
       forum_tag_name
       company_cd
       createdAt
@@ -1313,7 +1465,9 @@ export const onUpdateForumTag = /* GraphQL */ `
   subscription OnUpdateForumTag($filter: ModelSubscriptionForumTagFilterInput) {
     onUpdateForumTag(filter: $filter) {
       id
+      post_id
       post_key
+      sort_number
       forum_tag_name
       company_cd
       createdAt
@@ -1325,7 +1479,9 @@ export const onDeleteForumTag = /* GraphQL */ `
   subscription OnDeleteForumTag($filter: ModelSubscriptionForumTagFilterInput) {
     onDeleteForumTag(filter: $filter) {
       id
+      post_id
       post_key
+      sort_number
       forum_tag_name
       company_cd
       createdAt

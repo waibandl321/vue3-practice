@@ -883,8 +883,56 @@ export const getForumPost = /* GraphQL */ `
       status
       importance
       delete
+      files {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      eyecatch {
+        id
+        post_key
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      tags {
+        items {
+          id
+          post_id
+          post_key
+          sort_number
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
+      forumPostEyecatchId
     }
   }
 `;
@@ -906,8 +954,26 @@ export const listForumPosts = /* GraphQL */ `
         status
         importance
         delete
+        files {
+          nextToken
+        }
+        urls {
+          nextToken
+        }
+        eyecatch {
+          id
+          post_key
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        tags {
+          nextToken
+        }
         createdAt
         updatedAt
+        forumPostEyecatchId
       }
       nextToken
     }
@@ -917,6 +983,7 @@ export const getForumFile = /* GraphQL */ `
   query GetForumFile($id: ID!) {
     getForumFile(id: $id) {
       id
+      post_id
       post_key
       sort_number
       file_id
@@ -935,6 +1002,7 @@ export const listForumFiles = /* GraphQL */ `
     listForumFiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        post_id
         post_key
         sort_number
         file_id
@@ -950,6 +1018,7 @@ export const getForumUrl = /* GraphQL */ `
   query GetForumUrl($id: ID!) {
     getForumUrl(id: $id) {
       id
+      post_id
       post_key
       sort_number
       url_key
@@ -968,6 +1037,7 @@ export const listForumUrls = /* GraphQL */ `
     listForumUrls(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        post_id
         post_key
         sort_number
         url_key
@@ -1014,7 +1084,9 @@ export const getForumTag = /* GraphQL */ `
   query GetForumTag($id: ID!) {
     getForumTag(id: $id) {
       id
+      post_id
       post_key
+      sort_number
       forum_tag_name
       company_cd
       createdAt
@@ -1031,7 +1103,9 @@ export const listForumTags = /* GraphQL */ `
     listForumTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        post_id
         post_key
+        sort_number
         forum_tag_name
         company_cd
         createdAt
