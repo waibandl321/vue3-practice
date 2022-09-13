@@ -75,13 +75,7 @@
           :key="idxD"
           @click.stop="moveDir(dir)"
         >
-          <td class="short-td px-0">
-            <!-- <v-checkbox
-              v-model="is_selected_items"
-              :value="dir.id"
-              hide-details="auto"
-            ></v-checkbox> -->
-          </td>
+          <td class="short-td px-0"></td>
           <td>
             <v-icon>mdi-folder</v-icon>
             <span class="ml-2">{{ dir.dir_name }}</span>
@@ -171,6 +165,7 @@
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
+            :disabled="params.capacity_over"
             v-bind="props"
             z-index="2"
             color="primary"
@@ -242,8 +237,12 @@ export default {
   props: {
     params: Object,
     changeMode: Function,
+    uploadedChange: Function
   },
   setup(props) {
+    // MEMO: 容量計算コンポーネントにてアップロード検知用
+    props.uploadedChange(false)
+    // データ初期化
     const loading = ref(false);
     const items = ref({
       dirs: [],
@@ -338,12 +337,15 @@ export default {
     // ファイルアップロード
     const upload_file = ref([]);
     const uploadFile = async () => {
+      props.uploadedChange(false)
       loading.value = true;
       try {
         const file = upload_file.value[0]
         const data_url = await storageFunc.storageUploadFile(file)
         await fileApiFunc.apiCreateUploadFile(current_dir.value, file, data_url)
         items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        // MEMO: 容量計算コンポーネントにてアップロード検知用
+        props.uploadedChange(true)
         alert('ファイルをアップロードしました。')
       } catch (error) {
         console.log('file upload exception', error);
@@ -408,6 +410,7 @@ export default {
     // 一括操作
     const is_selected_items = ref([])
     const is_selected_all = ref(false)
+    // 一括ファイル選択
     const isSelectAll = () => {
       if(!is_selected_all.value) {
         is_selected_items.value = []
@@ -417,6 +420,7 @@ export default {
         is_selected_items.value.push(file)
       })
     }
+    // 一括ファイル論理削除
     const bulkMoveTrash = async () => {
       loading.value = true
       try {
@@ -435,10 +439,12 @@ export default {
       current_dir,
       // アイテム
       items,
-      // フォルダ作成
+      // フォルダ
       create_new_folder,
       new_dir,
       saveNewFolder,
+      deleteDir,
+      moveDir,
       // アップロード
       upload_file,
       uploadFile,
@@ -455,10 +461,6 @@ export default {
       is_selected_all,
       isSelectAll,
       bulkMoveTrash,
-
-      deleteDir,
-      moveDir
-      
     };
   }
 }

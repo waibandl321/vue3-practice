@@ -39,6 +39,7 @@
         color="primary"
         variant="text"
         append-icon="mdi-backup-restore"
+        @click="bulkRestore()"
       >ゴミ箱から戻す</v-btn>
       <v-btn
         color="error"
@@ -73,19 +74,14 @@
           <th class="short-td px-0"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-show="!loading">
         <!-- ディレクトリ -->
         <tr
           v-for="(dir, idxD) in items.dirs"
           :key="idxD"
           @click.stop="moveDir(dir)"
         >
-          <td class="short-td px-0">
-            <!-- <v-checkbox
-              v-model="is_selected_items"
-              hide-details="auto"
-            ></v-checkbox> -->
-          </td>
+          <td class="short-td px-0"></td>
           <td>
             <v-icon>mdi-folder</v-icon>
             <span class="ml-2">{{ dir.dir_name }}</span>
@@ -146,6 +142,13 @@
                   <v-list-item
                     density="compact"
                     link
+                    @click="restoreFile(file)"
+                  >
+                    ゴミ箱から戻す
+                  </v-list-item>
+                  <v-list-item
+                    density="compact"
+                    link
                     @click="execDelete(file)"
                   >
                     完全に削除
@@ -170,10 +173,12 @@ export default {
   props: {
     params: Object,
     changeMode: Function,
+    uploadedChange: Function
   },
   setup(props) {
+    // MEMO: 容量計算コンポーネントにて物理削除検知用
+    props.uploadedChange(false)
     const loading = ref(false);
-    
     // 初回読み込み時 最上位ディレクトリをセット
     const current_dir = ref({})
     const initCurrentDir = () => {
@@ -244,6 +249,7 @@ export default {
         console.log("delete item error:", error);
       }
       loading.value = false;
+      props.uploadedChange(true)
       // ディレクトリ直下ファイル物理削除
       async function deleteFiles (target_dir) {
         const dir_files = await fileApiFunc.apiGetFileList(target_dir, fileApiFunc.getTrashboxFlag())
@@ -275,6 +281,39 @@ export default {
         console.log('file execute delete error', error);
       }
       loading.value = false;
+      props.uploadedChange(true)
+    }
+    // ゴミ箱から戻す
+    const restoreFile = async (_file) => {
+      loading.value = true;
+      try {
+        await execRestore(_file)
+        alert('ファイルを復元しました。')
+      } catch (error) {
+        console.error('restore file error', error)
+      }
+      loading.value = false;
+    }
+    const bulkRestore = async () => {
+      loading.value = true
+      try {
+        for (const item of is_selected_items.value) {
+          await execRestore(item)
+        }
+        items.value.files = await fileApiFunc.apiGetFileList(
+          current_dir.value,
+          fileApiFunc.getTrashboxFlag()
+        );
+        alert('選択されたファイルを復元しました。')
+      } catch (error) {
+        console.log("bulk delete file exeptopn error", error);
+      }
+      loading.value = false
+    }
+    // 共通 復元API処理
+    async function execRestore (_file) {
+      await fileApiFunc.apiRestoreFile(_file)
+      items.value.files = items.value.files.filter(v => v.id !== _file.id)
     }
     // パンくずリスト
     const breadcrumbs = ref([])
@@ -330,6 +369,7 @@ export default {
         console.log("bulk delete file exeptopn error", error);
       }
       loading.value = false
+      props.uploadedChange(true)
     }
     const isSelectAll = () => {
       if(!is_selected_all.value) {
@@ -347,6 +387,9 @@ export default {
       items,
       // 削除
       execDelete,
+      // restore
+      restoreFile,
+      bulkRestore,
       // パンくず
       breadcrumbs,
       clickBreadcrumb,

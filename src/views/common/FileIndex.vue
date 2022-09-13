@@ -1,17 +1,22 @@
 <template>
   <Header />
   <v-main v-if="!loading">
-    <FileCapacity  />
+    <FileCapacity
+      :params="params"
+      :mutationCapacityOver="mutationCapacityOver"
+    />
     <FileSearch />
     <FileList
       v-if="mode === 'list'"
       :changeMode="changeMode"
       :params="params"
+      :uploadedChange="uploadedChange"
     />
     <FileListTrash
       v-if="mode === 'trash'"
       :changeMode="changeMode"
       :params="params"
+      :uploadedChange="uploadedChange"
     />
   </v-main>
   <OverlayLoading v-else />
@@ -43,6 +48,8 @@ export default {
     const params = ref({
       dir_top: {},
       dirs: [],
+      uploaded_flag: false,
+      capacity_over: false,
     })
     // 最上位ディレクトリ取得
     const init = async () => {
@@ -57,11 +64,24 @@ export default {
     const changeMode = async (_mode) => {
       mode.value = _mode
     }
+
+    // アップロードフラグ
+    const uploadedChange = (flag) => {
+      params.value.uploaded_flag = flag
+    }
+
+    // 容量over
+    const mutationCapacityOver = (flag) => {
+      params.value.capacity_over = flag
+    }
+
     return {
       loading,
       mode,
       params,
-      changeMode
+      changeMode,
+      uploadedChange,
+      mutationCapacityOver
     }
   }
 }
