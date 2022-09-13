@@ -1423,6 +1423,96 @@ export const deleteForumUrl = /* GraphQL */ `
     }
   }
 `;
+export const createForumEyecatch = /* GraphQL */ `
+  mutation CreateForumEyecatch(
+    $input: CreateForumEyecatchInput!
+    $condition: ModelForumEyecatchConditionInput
+  ) {
+    createForumEyecatch(input: $input, condition: $condition) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForumEyecatch = /* GraphQL */ `
+  mutation UpdateForumEyecatch(
+    $input: UpdateForumEyecatchInput!
+    $condition: ModelForumEyecatchConditionInput
+  ) {
+    updateForumEyecatch(input: $input, condition: $condition) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForumEyecatch = /* GraphQL */ `
+  mutation DeleteForumEyecatch(
+    $input: DeleteForumEyecatchInput!
+    $condition: ModelForumEyecatchConditionInput
+  ) {
+    deleteForumEyecatch(input: $input, condition: $condition) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createForumTag = /* GraphQL */ `
+  mutation CreateForumTag(
+    $input: CreateForumTagInput!
+    $condition: ModelForumTagConditionInput
+  ) {
+    createForumTag(input: $input, condition: $condition) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForumTag = /* GraphQL */ `
+  mutation UpdateForumTag(
+    $input: UpdateForumTagInput!
+    $condition: ModelForumTagConditionInput
+  ) {
+    updateForumTag(input: $input, condition: $condition) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForumTag = /* GraphQL */ `
+  mutation DeleteForumTag(
+    $input: DeleteForumTagInput!
+    $condition: ModelForumTagConditionInput
+  ) {
+    deleteForumTag(input: $input, condition: $condition) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createChat = /* GraphQL */ `
   mutation CreateChat(
     $input: CreateChatInput!

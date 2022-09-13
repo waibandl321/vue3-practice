@@ -1255,6 +1255,84 @@ export const onDeleteForumUrl = /* GraphQL */ `
     }
   }
 `;
+export const onCreateForumEyecatch = /* GraphQL */ `
+  subscription OnCreateForumEyecatch(
+    $filter: ModelSubscriptionForumEyecatchFilterInput
+  ) {
+    onCreateForumEyecatch(filter: $filter) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateForumEyecatch = /* GraphQL */ `
+  subscription OnUpdateForumEyecatch(
+    $filter: ModelSubscriptionForumEyecatchFilterInput
+  ) {
+    onUpdateForumEyecatch(filter: $filter) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteForumEyecatch = /* GraphQL */ `
+  subscription OnDeleteForumEyecatch(
+    $filter: ModelSubscriptionForumEyecatchFilterInput
+  ) {
+    onDeleteForumEyecatch(filter: $filter) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateForumTag = /* GraphQL */ `
+  subscription OnCreateForumTag($filter: ModelSubscriptionForumTagFilterInput) {
+    onCreateForumTag(filter: $filter) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateForumTag = /* GraphQL */ `
+  subscription OnUpdateForumTag($filter: ModelSubscriptionForumTagFilterInput) {
+    onUpdateForumTag(filter: $filter) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteForumTag = /* GraphQL */ `
+  subscription OnDeleteForumTag($filter: ModelSubscriptionForumTagFilterInput) {
+    onDeleteForumTag(filter: $filter) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateChat = /* GraphQL */ `
   subscription OnCreateChat($filter: ModelSubscriptionChatFilterInput) {
     onCreateChat(filter: $filter) {

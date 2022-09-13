@@ -259,6 +259,18 @@ type ForumUrl @model {
   url_key: String
   url_value: String
 }
+type ForumEyecatch @model {
+  id: ID!
+  post_key: String
+  file_id: String
+  data_url: String
+}
+type ForumTag @model {
+  id: ID!
+  post_key: String
+  forum_tag_name: String
+  company_cd: String
+}
 type Chat @model {
   id: ID!
   chat_id: String

@@ -979,6 +979,68 @@ export const listForumUrls = /* GraphQL */ `
     }
   }
 `;
+export const getForumEyecatch = /* GraphQL */ `
+  query GetForumEyecatch($id: ID!) {
+    getForumEyecatch(id: $id) {
+      id
+      post_key
+      file_id
+      data_url
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForumEyecatches = /* GraphQL */ `
+  query ListForumEyecatches(
+    $filter: ModelForumEyecatchFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForumEyecatches(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        post_key
+        file_id
+        data_url
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getForumTag = /* GraphQL */ `
+  query GetForumTag($id: ID!) {
+    getForumTag(id: $id) {
+      id
+      post_key
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForumTags = /* GraphQL */ `
+  query ListForumTags(
+    $filter: ModelForumTagFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForumTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        post_key
+        forum_tag_name
+        company_cd
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getChat = /* GraphQL */ `
   query GetChat($id: ID!) {
     getChat(id: $id) {
