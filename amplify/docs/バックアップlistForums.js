@@ -1051,10 +1051,30 @@ export const listForumPosts = /* GraphQL */ `
         importance
         delete
         files {
+          items {
+            id
+            post_id
+            post_key
+            sort_number
+            file_id
+            data_url
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         urls {
           nextToken
+          items {
+            id
+            post_id
+            post_key
+            sort_number
+            url_key
+            url_value
+            createdAt
+            updatedAt
+          }
         }
         eyecatch {
           id
@@ -1066,6 +1086,16 @@ export const listForumPosts = /* GraphQL */ `
         }
         tags {
           nextToken
+          items {
+            id
+            post_id
+            post_key
+            sort_number
+            forum_tag_name
+            company_cd
+            createdAt
+            updatedAt
+          }
         }
         forum {
           id
