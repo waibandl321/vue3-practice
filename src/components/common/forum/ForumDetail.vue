@@ -1,8 +1,10 @@
 <template>
   <v-container class="im-container">
     {{ viewer }}
-    <v-img src="https://placehold.jp/1200x800.png"></v-img>
-    アイキャッチ{{ viewer.post_eyecatch.data_url }}
+    <div class="mt-4">
+      <v-img src="https://placehold.jp/1200x800.png"></v-img>
+      <span v-if="viewer.post_eyecatch">アイキャッチ{{ viewer.post_eyecatch.data_url }}</span>
+    </div>
     <div class="mt-4">
       <v-card-title>{{ viewer.title }}</v-card-title>
       <v-card-subtitle>投稿者 | {{ viewer.updatedAt }}</v-card-subtitle>

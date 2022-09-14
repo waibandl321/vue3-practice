@@ -148,7 +148,6 @@
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
       <div>追加する際は入力後に「セミころん(;)」を押してください</div>
-      selected_tag: {{ editor.tags.items }}<br>
       options: {{ tag_options }}
       <div>
         <Multiselect
@@ -158,6 +157,8 @@
           :searchable="true"
           createTag
           :addTagOn="[';']"
+          :object="true"
+          label="forum_tag_name"
           noOptionsText="タグが登録されていません"
           placeholder="タグを入力して登録できます"
           @tag="handleTagCreate"
@@ -246,12 +247,24 @@ export default {
     // タグ
     const tag_options = ref([])
     const handleTagCreate = (query, select$) => {
-      console.log(select$.options);
+      console.log('handleTagCreate', select$.options);
       tag_options.value.push({
         uid: uuid.v4(),
         forum_tag_name: query
       })
     }
+    const initTagOptions = () => {
+      const tags = ref(editor.value.tags.items)
+      if(tags.value.length > 0) {
+        for (const tag of tags.value) {
+          tag_options.value.push({
+            uid: tag.id,
+            forum_tag_name: tag.forum_tag_name
+          })
+        }
+      }
+    }
+    initTagOptions()
     const createPost = async () => {
       if(props.params.is_new) {
         // 1. S3にファイルアップロード
