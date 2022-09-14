@@ -267,14 +267,13 @@ export default {
     initTagOptions()
     const createPost = async () => {
       if(props.params.is_new) {
-        // 1. S3にファイルアップロード
         loading.value = true
         try {
           // 投稿
           const save_post = await forumApiFunc.createPost(props.params.forum, editor.value)
-          console.log(save_post);
           // // アイキャッチ
           if(editor.value.eyecatch && !editor.value.eyecatch?.file_id){
+            // S3アップロード
             editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
             await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
           }
@@ -282,6 +281,7 @@ export default {
           if(editor.value.files.items.length > 0) {
             for (const attachment of editor.value.files.items) {
               if(attachment.file_id) return;
+              // S3アップロード
               attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
               await forumApiFunc.createFiles(attachment, save_post)
             }

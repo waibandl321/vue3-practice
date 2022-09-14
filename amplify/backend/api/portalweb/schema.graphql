@@ -237,7 +237,7 @@ type Forum @model {
 type ForumPost @model {
   id: ID!
   post_key: String
-  forum_id: ID! @index(name: "byForum")
+  forum_id: ID! @index(name: "byForum", sortKeyFields: ["updatedAt"])
   title: String
   post_text: String
   attached: Int
@@ -245,6 +245,8 @@ type ForumPost @model {
   status: Int
   importance: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
   files: [ForumFile] @hasMany(indexName: "byForumPost", fields: ["id"])
   urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["id"])
   eyecatch: ForumEyecatch @hasOne
@@ -253,19 +255,23 @@ type ForumPost @model {
 }
 type ForumFile @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["sort_number"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
   post_key: String
   sort_number: String
   file_id: String
   data_url: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type ForumUrl @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["sort_number"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
   post_key: String
   sort_number: String
   url_key: String
   url_value: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type ForumEyecatch @model {
   id: ID!
@@ -275,11 +281,13 @@ type ForumEyecatch @model {
 }
 type ForumTag @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["sort_number"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
   post_key: String
   sort_number: String
   forum_tag_name: String
   company_cd: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type Chat @model {
   id: ID!
