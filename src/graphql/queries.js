@@ -882,6 +882,68 @@ export const listForums = /* GraphQL */ `
         company_group_cd
         owner_id
         posts {
+          items {
+            id
+            post_key
+            forum_id
+            title
+            post_text
+            attached
+            url_links
+            status
+            importance
+            delete
+            createdAt
+            updatedAt
+            forumPostEyecatchId
+            files {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                file_id
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            urls {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                url_key
+                url_value
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            eyecatch {
+              id
+              post_key
+              file_id
+              data_url
+              createdAt
+              updatedAt
+            }
+            tags {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                forum_tag_name
+                company_cd
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         createdAt
