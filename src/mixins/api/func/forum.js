@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag } from '@/graphql/mutations'
-import { listForums, listForumPosts } from '@/graphql/queries'
+import { listForums, listForumPosts, getForumPost } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
@@ -36,6 +36,11 @@ export default {
   },
   // 投稿取得
   async getPostList (forum_id) {
+    const _p = await API.graphql({
+      query: getForumPost,
+      variables: { id: '5d4def88-f5b2-4da2-a4d3-34fc64a198a8' }
+    })
+    console.log(_p);
     const filter = {
       forum_id: {
         eq: forum_id
