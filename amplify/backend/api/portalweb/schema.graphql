@@ -233,6 +233,7 @@ type Forum @model {
   company_group_cd: String
   owner_id: String
   posts: [ForumPost] @hasMany(indexName: "byForum", fields: ["forum_id"])
+  tag_options: [ForumTagOption] @hasMany(indexName: "byForum", fields: ["forum_id"])
 }
 type ForumPost @model {
   id: ID!
@@ -249,7 +250,7 @@ type ForumPost @model {
 	updatedAt: AWSDateTime!
   files: [ForumFile] @hasMany(indexName: "byForumPost", fields: ["id"])
   urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["id"])
-  eyecatch: ForumEyecatch @hasOne
+  eyecatch: ForumEyecatch
   tags: [ForumTag] @hasMany(indexName: "byForumPost", fields: ["id"])
   forum: Forum @belongsTo(fields: ["forum_id"])
 }
@@ -284,6 +285,14 @@ type ForumTag @model {
   post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
   post_key: String
   sort_number: String
+  forum_tag_name: String
+  company_cd: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+}
+type ForumTagOption @model {
+  id: ID!
+  forum_id: ID! @index(name: "byForum", sortKeyFields: ["updatedAt"])
   forum_tag_name: String
   company_cd: String
   createdAt: AWSDateTime!

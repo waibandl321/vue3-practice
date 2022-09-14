@@ -2,7 +2,6 @@ import { API } from 'aws-amplify'
 import { createFileDirTop, createFileDir, updateFileDir, deleteFileDir,
   createFileStore, updateFileStore, deleteFileStore } from '@/graphql/mutations'
 import { listFileDirTops, listFileDirs, listFileStores } from '@/graphql/queries'
-import { onCreateFileStore } from '@/graphql/subscriptions'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
@@ -136,14 +135,6 @@ export default {
       status: 0,
       delete: 0,
     }
-  },
-  // アップロード監視
-  apiSubscribeFileStore () {
-    API.graphql({ query: onCreateFileStore }).subscribe({
-      next: (eventData) => {
-        console.log(eventData.value.data.onCreateFileStore);
-      }
-    });
   },
   // 現在のディレクトリに紐付くファイル一覧を取得
   async apiGetFileList (current_dir, trashbox_flag = false) {

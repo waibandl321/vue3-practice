@@ -895,7 +895,6 @@ export const listForums = /* GraphQL */ `
             delete
             createdAt
             updatedAt
-            forumPostEyecatchId
             files {
               items {
                 id

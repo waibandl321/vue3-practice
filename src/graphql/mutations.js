@@ -1239,7 +1239,17 @@ export const createForum = /* GraphQL */ `
           delete
           createdAt
           updatedAt
-          forumPostEyecatchId
+        }
+        nextToken
+      }
+      tag_options {
+        items {
+          id
+          forum_id
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
         }
         nextToken
       }
@@ -1274,7 +1284,17 @@ export const updateForum = /* GraphQL */ `
           delete
           createdAt
           updatedAt
-          forumPostEyecatchId
+        }
+        nextToken
+      }
+      tag_options {
+        items {
+          id
+          forum_id
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
         }
         nextToken
       }
@@ -1309,7 +1329,17 @@ export const deleteForum = /* GraphQL */ `
           delete
           createdAt
           updatedAt
-          forumPostEyecatchId
+        }
+        nextToken
+      }
+      tag_options {
+        items {
+          id
+          forum_id
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
         }
         nextToken
       }
@@ -1334,6 +1364,8 @@ export const createForumPost = /* GraphQL */ `
       status
       importance
       delete
+      createdAt
+      updatedAt
       files {
         items {
           id
@@ -1391,12 +1423,12 @@ export const createForumPost = /* GraphQL */ `
         posts {
           nextToken
         }
+        tag_options {
+          nextToken
+        }
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
-      forumPostEyecatchId
     }
   }
 `;
@@ -1416,6 +1448,8 @@ export const updateForumPost = /* GraphQL */ `
       status
       importance
       delete
+      createdAt
+      updatedAt
       files {
         items {
           id
@@ -1473,12 +1507,12 @@ export const updateForumPost = /* GraphQL */ `
         posts {
           nextToken
         }
+        tag_options {
+          nextToken
+        }
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
-      forumPostEyecatchId
     }
   }
 `;
@@ -1498,6 +1532,8 @@ export const deleteForumPost = /* GraphQL */ `
       status
       importance
       delete
+      createdAt
+      updatedAt
       files {
         items {
           id
@@ -1555,12 +1591,12 @@ export const deleteForumPost = /* GraphQL */ `
         posts {
           nextToken
         }
+        tag_options {
+          nextToken
+        }
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
-      forumPostEyecatchId
     }
   }
 `;
@@ -1755,6 +1791,51 @@ export const deleteForumTag = /* GraphQL */ `
       post_id
       post_key
       sort_number
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createForumTagOption = /* GraphQL */ `
+  mutation CreateForumTagOption(
+    $input: CreateForumTagOptionInput!
+    $condition: ModelForumTagOptionConditionInput
+  ) {
+    createForumTagOption(input: $input, condition: $condition) {
+      id
+      forum_id
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateForumTagOption = /* GraphQL */ `
+  mutation UpdateForumTagOption(
+    $input: UpdateForumTagOptionInput!
+    $condition: ModelForumTagOptionConditionInput
+  ) {
+    updateForumTagOption(input: $input, condition: $condition) {
+      id
+      forum_id
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteForumTagOption = /* GraphQL */ `
+  mutation DeleteForumTagOption(
+    $input: DeleteForumTagOptionInput!
+    $condition: ModelForumTagOptionConditionInput
+  ) {
+    deleteForumTagOption(input: $input, condition: $condition) {
+      id
+      forum_id
       forum_tag_name
       company_cd
       createdAt

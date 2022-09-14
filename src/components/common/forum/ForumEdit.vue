@@ -24,6 +24,7 @@
           <v-list-item
             link
             density="compact"
+            @click="openFileSelectModal('eyecatch')"
           >
             ファイル管理から選択
           </v-list-item>
@@ -127,6 +128,7 @@
           <v-list-item
             density="compact"
             link
+            @click="openFileSelectModal('attachment')"
           >
             ファイル管理から選択
           </v-list-item>
@@ -189,25 +191,41 @@
     class="d-none"
     @change="changeAttachment"
   ></v-file-input>
+  <!-- ファイル管理から選択 -->
+  <template v-if="file_select_modal">
+    <FIleSelectModal
+      :file-select-modal="file_select_modal"
+      :file-select-function="file_select_function"
+      :dir-top="dir_top"
+      :isSelectedFile="isSelectedFile"
+    />
+  </template>
+  <!-- ローディング -->
   <OverlayLoading v-if="loading" />
   </v-container>
 </template>
 
 <script>
-import { toRefs, ref } from '@vue/reactivity';
+import { toRefs, ref, effectScope } from '@vue/reactivity';
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
-import Multiselect from '@vueform/multiselect'
-import { uuid } from 'vue-uuid'
+import OverlayLoading from '../OverlayLoading.vue';
+import FIleSelectModal from '../modal/FIleSelectModal.vue';
+
 import forumApiFunc from '@/mixins/api/func/forum'
 import storageFunc from '@/mixins/storage/storage.js'
-import OverlayLoading from '../OverlayLoading.vue';
+import fileApiFunc from '@/mixins/api/func/file'
+
+import Multiselect from '@vueform/multiselect'
+import { uuid } from 'vue-uuid'
+import { onMounted } from '@vue/runtime-core';
 
 export default {
   name: "forum-edit",
   components: {
     "app-require-label": AppRequireLabel,
     Multiselect,
-    OverlayLoading
+    OverlayLoading,
+    FIleSelectModal
   },
   props: {
     params: Object,
@@ -218,6 +236,31 @@ export default {
     const loading = ref(false)
     const _props = toRefs(props);
     const editor = ref(_props.params.value.editor);
+
+    // MEMO: ファイル選択用に水面下でTOPディレクトリ取得しておく
+    const dir_top = ref({})
+    // タグオプションセット
+    // TODO: オプションデータはForumTagOptionテーブルから取得するように変更
+    const initTagOptions = () => {
+      const tags = ref(editor.value.tags.items)
+      if(tags.value.length > 0) {
+        for (const tag of tags.value) {
+          tag_options.value.push({
+            uid: tag.id,
+            forum_tag_name: tag.forum_tag_name
+          })
+        }
+      }
+    }
+    // エフェクトスコープ
+    const scope = effectScope()
+    scope.run(() => {
+      onMounted(async () => {
+        dir_top.value = await fileApiFunc.apiGetDirTop()
+        initTagOptions()
+      })
+    })
+    
     // アイキャッチ
     const changeEyecatch = (event) => {
       editor.value.eyecatch = event.target.files[0]
@@ -239,7 +282,7 @@ export default {
     }
     // 添付画像
     const changeAttachment = (event) => {
-      editor.value.files.push(...event.target.files)
+      editor.value.files.items.push(...event.target.files)
     }
     const removeAttachment = (attachment) => {
       editor.value.files.items = editor.value.files.items.filter(v => v.name !== attachment.name)
@@ -253,18 +296,7 @@ export default {
         forum_tag_name: query
       })
     }
-    const initTagOptions = () => {
-      const tags = ref(editor.value.tags.items)
-      if(tags.value.length > 0) {
-        for (const tag of tags.value) {
-          tag_options.value.push({
-            uid: tag.id,
-            forum_tag_name: tag.forum_tag_name
-          })
-        }
-      }
-    }
-    initTagOptions()
+    
     const createPost = async () => {
       if(props.params.is_new) {
         loading.value = true
@@ -275,6 +307,7 @@ export default {
           if(editor.value.eyecatch && !editor.value.eyecatch?.file_id){
             // S3アップロード
             editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
+            // TODO: ↑ストレージに関連してDBにも保存
             await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
           }
           // 添付画像
@@ -283,6 +316,8 @@ export default {
               if(attachment.file_id) return;
               // S3アップロード
               attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
+              // TODO: ↑ストレージに関連してDBにも保存
+
               await forumApiFunc.createFiles(attachment, save_post)
             }
           }
@@ -298,6 +333,7 @@ export default {
               await forumApiFunc.createTags(tag, save_post)
             }
           }
+          // TODO: 新しく登録されたタグオプションもDBに保存する（table: ForumTagOption）
           alert('投稿データ保存')
           props.changeMode('list')
           loading.value = false
@@ -309,6 +345,28 @@ export default {
         alert('更新')
       }
       props.initEditor()
+    }
+    // ファイル管理から選択
+    const file_select_modal = ref(false)
+    const file_select_function = ref(undefined)
+    const openFileSelectModal = (func) => {
+      file_select_function.value = func
+      file_select_modal.value = true
+    }
+    const closeFileSelectModal = () => {
+      file_select_function.value = undefined
+      file_select_modal.value = false
+    }
+    const isSelectedFile = (file) => {
+      if(file_select_function.value === 'eyecatch') {
+        // アイキャッチの場合
+        editor.value.eyecatch = file
+      } else if (file_select_function.value === 'attachment') {
+        // 添付ファイルの場合
+        editor.value.files.items.push(file)
+      }
+      file_select_function.value = undefined
+      file_select_modal.value = false
     }
     return {
       loading,
@@ -325,7 +383,14 @@ export default {
       tag_options,
       handleTagCreate,
       // 保存
-      createPost
+      createPost,
+      // ファイル管理から選択
+      file_select_modal,
+      file_select_function,
+      dir_top,
+      openFileSelectModal,
+      closeFileSelectModal,
+      isSelectedFile
     };
   },
 }

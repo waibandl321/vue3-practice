@@ -858,7 +858,17 @@ export const getForum = /* GraphQL */ `
           delete
           createdAt
           updatedAt
-          forumPostEyecatchId
+        }
+        nextToken
+      }
+      tag_options {
+        items {
+          id
+          forum_id
+          forum_tag_name
+          company_cd
+          createdAt
+          updatedAt
         }
         nextToken
       }
@@ -895,7 +905,6 @@ export const listForums = /* GraphQL */ `
             delete
             createdAt
             updatedAt
-            forumPostEyecatchId
             files {
               items {
                 id
@@ -946,6 +955,9 @@ export const listForums = /* GraphQL */ `
           }
           nextToken
         }
+        tag_options {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -966,6 +978,8 @@ export const getForumPost = /* GraphQL */ `
       status
       importance
       delete
+      createdAt
+      updatedAt
       files {
         items {
           id
@@ -1023,12 +1037,12 @@ export const getForumPost = /* GraphQL */ `
         posts {
           nextToken
         }
+        tag_options {
+          nextToken
+        }
         createdAt
         updatedAt
       }
-      createdAt
-      updatedAt
-      forumPostEyecatchId
     }
   }
 `;
@@ -1050,6 +1064,8 @@ export const listForumPosts = /* GraphQL */ `
         status
         importance
         delete
+        createdAt
+        updatedAt
         files {
           nextToken
         }
@@ -1077,9 +1093,6 @@ export const listForumPosts = /* GraphQL */ `
           createdAt
           updatedAt
         }
-        createdAt
-        updatedAt
-        forumPostEyecatchId
       }
       nextToken
     }
@@ -1212,6 +1225,37 @@ export const listForumTags = /* GraphQL */ `
         post_id
         post_key
         sort_number
+        forum_tag_name
+        company_cd
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getForumTagOption = /* GraphQL */ `
+  query GetForumTagOption($id: ID!) {
+    getForumTagOption(id: $id) {
+      id
+      forum_id
+      forum_tag_name
+      company_cd
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listForumTagOptions = /* GraphQL */ `
+  query ListForumTagOptions(
+    $filter: ModelForumTagOptionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listForumTagOptions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        forum_id
         forum_tag_name
         company_cd
         createdAt
