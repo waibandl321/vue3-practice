@@ -259,7 +259,7 @@ export default {
         loading.value = true
         try {
           // 投稿
-          const save_post = await forumApiFunc.createPost(editor.value)
+          const save_post = await forumApiFunc.createPost(props.params.forum, editor.value)
           console.log(save_post);
           // // アイキャッチ
           if(editor.value.eyecatch && !editor.value.eyecatch?.file_id){
@@ -287,6 +287,8 @@ export default {
             }
           }
           alert('投稿データ保存')
+          props.changeMode('list')
+          loading.value = false
         } catch (error) {
           console.error("createPost exception error", error)
         }

@@ -48,8 +48,8 @@ export default {
     return results.data.listForumPosts.items
   },
   // 投稿作成
-  async createPost (item) {
-    const post = this.generateForumPostObject(item)
+  async createPost (forum, item) {
+    const post = this.generateForumPostObject(forum, item)
     return await API.graphql({
       query: createForumPost,
       variables: { input: post }
@@ -57,8 +57,9 @@ export default {
       return res.data.createForumPost
     })
   },
-  generateForumPostObject (item, delete_flag = null) {
+  generateForumPostObject (forum, item, delete_flag = null) {
     return {
+      forum_id: forum.forum_id,
       post_key: item.post_key ?? uuid.v4(),
       title: item.title,
       post_text: item.post_text,
