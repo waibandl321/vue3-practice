@@ -1,7 +1,7 @@
 <template>
   <v-container class="im-container">
     {{ editor }}
-    <v-card-item>
+    <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
       <v-menu>
         <template v-slot:activator="{ props }">
@@ -14,7 +14,7 @@
         </template>
         <v-list>
           <v-list-item
-            @click="$refs.triggerFile.click()"
+            @click="$refs.triggerEyecatch.click()"
             density="compact"
             link
           >
@@ -30,18 +30,18 @@
       </v-menu>
       <!-- 選択 or 登録済み -->
       <div 
-        v-if="editor.eyecatch || eyecatch"
+        v-if="editor.eyecatch"
         class="mt-2"
       >
         <v-chip
           closable
-          @click:close="chip = false"
+          @click:close="editor.eyecatch = undefined"
         >
-          {{ editor.eyecatch ? editor.eyecatch?.file_name : eyecatch?.name }}
+          {{ editor.eyecatch?.file_name || editor.eyecatch?.name }}
         </v-chip>
       </div>
-    </v-card-item>
-    <v-card-item>
+    </div>
+    <div class="mt-10">
       <div class="font-weight-bold">
         タイトル
         <app-require-label></app-require-label>
@@ -49,8 +49,8 @@
       <v-text-field
         v-model.trim="editor.title"
       ></v-text-field>
-    </v-card-item>
-    <v-card-item>
+    </div>
+    <div class="mt-10">
       <div class="font-weight-bold">
         本文
         <app-require-label></app-require-label>
@@ -58,11 +58,12 @@
       <v-textarea
         v-model.trim="editor.post_text"
       ></v-textarea>
-    </v-card-item>
-    <v-card-item>
+    </div>
+    <div class="mt-10">
       <div class="font-weight-bold">
         WEBサイト
       </div>
+      {{ editor.url_links }}
       <div>
         <v-btn
           color="primary"
@@ -100,8 +101,8 @@
           ></v-btn>
         </v-col>
       </v-row>
-    </v-card-item>
-    <v-card-item>
+    </div>
+    <div class="mt-10">
       <div class="font-weight-bold">添付ファイル</div>
       <v-menu>
         <template v-slot:activator="{ props }">
@@ -116,7 +117,7 @@
         </template>
         <v-list>
           <v-list-item 
-            @click="$refs.triggerFile.click()"
+            @click="$refs.triggerAttachment.click()"
             density="compact"
             link
           >
@@ -138,67 +139,89 @@
         >
           <v-chip
             closable
-            @click:close="chip = false"
+            @click:close="removeAttachment(attachment)"
           >
             {{ attachment.name }}
           </v-chip>
         </div>
       </template>
-    </v-card-item>
-    <v-card-item>
+    </div>
+    <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
-      <template v-if="editor.tags.length > 0">
-        <div
-          v-for="(tag, idxT) in editor.tags"
-          :key="idxT"
-          class="mt-2"
-        >
-          <v-chip
-            closable
-            @click:close="chip = false"
-          >
-            {{ tag.name }}
-          </v-chip>
-        </div>
-      </template>
-    </v-card-item>
+      <div>追加する際は入力後に「セミころん(;)」を押してください</div>
+      selected_tag: {{ editor.tags }}<br>
+      options: {{ tag_options }}
+      <div>
+        <Multiselect
+          mode="tags"
+          v-model="editor.tags"
+          :options="tag_options"
+          :searchable="true"
+          createTag
+          :addTagOn="[';']"
+          noOptionsText="タグが登録されていません"
+          placeholder="タグを入力して登録できます"
+          @tag="handleTagCreate"
+        />
+      </div>
+    </div>
     <footer class="fixed-footer">
     <div class="back">
-      <v-btn>一覧へ戻る</v-btn>
+      <v-btn @click="changeMode('list')">一覧へ戻る</v-btn>
     </div>
     <div class="next">
       <v-btn
         color="primary"
         :disabled="!editor.title || !editor.post_text"
-        @click="save()"
+        @click="createPost()"
       >
         {{ params.is_new ? '新規作成' : '更新' }}
       </v-btn>
     </div>
   </footer>
   <v-file-input
-    ref="triggerFile"
+    ref="triggerEyecatch"
     class="d-none"
+    @change="changeEyecatch"
   ></v-file-input>
+  <v-file-input
+    ref="triggerAttachment"
+    class="d-none"
+    @change="changeAttachment"
+  ></v-file-input>
+  <OverlayLoading v-if="loading" />
   </v-container>
 </template>
 
 <script>
 import { toRefs, ref } from '@vue/reactivity';
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
+import Multiselect from '@vueform/multiselect'
 import { uuid } from 'vue-uuid'
+import forumApiFunc from '@/mixins/api/func/forum'
+import storageFunc from '@/mixins/storage/storage.js'
+import OverlayLoading from '../OverlayLoading.vue';
+
 export default {
   name: "forum-edit",
-  components: { 'app-require-label': AppRequireLabel },
+  components: {
+    "app-require-label": AppRequireLabel,
+    Multiselect,
+    OverlayLoading
+  },
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
+    initEditor: Function
   },
   setup(props) {
+    const loading = ref(false)
     const props_data = toRefs(props);
     const editor = ref(props_data.params.value.editor);
     // アイキャッチ
-    const eyecatch = ref(undefined)
+    const changeEyecatch = (event) => {
+      editor.value.eyecatch = event.target.files[0]
+    }
     // URL
     const addLinks = () => {
       editor.value.url_links.push(
@@ -214,22 +237,83 @@ export default {
       results = results.filter(v => v.uid !== item.uid)
       editor.value.url_links = results
     }
-    const save = () => {
+    // 添付画像
+    const changeAttachment = (event) => {
+      editor.value.attachments.push(...event.target.files)
+    }
+    const removeAttachment = (attachment) => {
+      editor.value.attachments = editor.value.attachments.filter(v => v.name !== attachment.name)
+    }
+    // タグ
+    const tag_options = ref([])
+    const handleTagCreate = (query, select$) => {
+      console.log(select$.options);
+      tag_options.value.push({
+        uid: uuid.v4(),
+        forum_tag_name: query
+      })
+    }
+    const createPost = async () => {
       if(props.params.is_new) {
-        alert('新規作成')
+        // 1. S3にファイルアップロード
+        loading.value = true
+        try {
+          // 投稿
+          const save_post = await forumApiFunc.createPost(editor.value)
+          console.log(save_post);
+          // // アイキャッチ
+          if(editor.value.eyecatch && !editor.value.eyecatch?.file_id){
+            editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
+            await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
+          }
+          // 添付画像
+          if(editor.value.attachments.length > 0) {
+            for (const attachment of editor.value.attachments) {
+              if(attachment.file_id) return;
+              attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
+              await forumApiFunc.createFiles(attachment, save_post)
+            }
+          }
+          // URL
+          if(editor.value.url_links.length > 0) {
+            for (const url of editor.value.url_links) {
+              await forumApiFunc.createLinks(url, save_post)
+            }
+          }
+          // タグ
+          if(editor.value.tags.length > 0) {
+            for (const tag of editor.value.tags) {
+              await forumApiFunc.createTags(tag, save_post)
+            }
+          }
+          alert('投稿データ保存')
+        } catch (error) {
+          console.error("createPost exception error", error)
+        }
+        loading.value = false
       } else {
         alert('更新')
       }
+      props.initEditor()
     }
     return {
+      loading,
       editor,
-      eyecatch,
+      // アイキャッチ
+      changeEyecatch,
       // URL
       addLinks,
       deleteLinks,
+      // 添付ファイル
+      changeAttachment,
+      removeAttachment,
+      // タグ
+      tag_options,
+      handleTagCreate,
       // 保存
-      save
+      createPost
     };
   },
 }
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>

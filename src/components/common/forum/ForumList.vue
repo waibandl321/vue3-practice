@@ -61,6 +61,7 @@
       >検索</v-btn>
     </v-col>
   </v-row>
+  {{ items }}
   <v-row class="pa-6">
     <v-col cols="3">
       <v-card
@@ -122,6 +123,7 @@
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { ref } from '@vue/reactivity';
+import forumApiFunc from '@/mixins/api/func/forum'
 
 export default {
   name: "forum-list",
@@ -133,24 +135,35 @@ export default {
     changeMode: Function
   },
   setup (props) {
+    const items = ref([])
+    const getPosts = async () => {
+      items.value = await forumApiFunc.getPostList(props.params.forum.forum_id)
+      console.log(props.params.forum.forum_id);
+    }
+    getPosts()
+    // 詳細遷移
     const viewPost = () => {
       props.changeMode('detail')
     }
+    // 新規作成 遷移
     const newPost = () => {
       const is_new = true
       props.changeMode('edit', is_new)
     }
+    // 検索
     const filter_mode = ref(false)
     const post_start = ref()
     const post_end = ref()
     return {
+      // リスト
+      items,
+      // methods
+      viewPost,
+      newPost,
       // filter
       filter_mode,
       post_start,
       post_end,
-      // methods
-      viewPost,
-      newPost
     }
   },
 }
