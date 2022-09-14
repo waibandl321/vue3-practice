@@ -5,11 +5,13 @@
       v-if="mode === 'list'"
       :params="params"
       :changeMode="changeMode"
+      :setViewer="setViewer"
     />
     <ForumDetail
       v-if="mode === 'detail'"
       :params="params"
       :changeMode="changeMode"
+      :setEditor="setEditor"
     />
     <ForumEdit
       v-if="mode === 'edit'"
@@ -58,11 +60,23 @@ export default {
       params.value.editor = {
         title: "",
         post_text: "",
-        attachments: [],
-        url_links: [],
-        tags: [],
+        files: {
+          items: []
+        },
+        urls: {
+          items: []
+        },
+        tags: {
+          items: []
+        },
         eyecatch: undefined
       }
+    }
+    const setViewer = (post) => {
+      params.value.viewer = post
+    }
+    const setEditor = (post) => {
+      params.value.editor = post
     }
     const init = async () => {
       loading.value = true
@@ -81,6 +95,8 @@ export default {
       mode,
       params,
       changeMode,
+      setViewer,
+      setEditor,
       initEditor
     }
   }

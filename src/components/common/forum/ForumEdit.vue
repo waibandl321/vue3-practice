@@ -1,5 +1,6 @@
 <template>
   <v-container class="im-container">
+    新規フラグ: {{ params.is_new }} <br>
     {{ editor }}
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
@@ -63,7 +64,7 @@
       <div class="font-weight-bold">
         WEBサイト
       </div>
-      {{ editor.url_links }}
+      リンク有無判定: {{ editor.url_links }}
       <div>
         <v-btn
           color="primary"
@@ -74,8 +75,8 @@
       </div>
       <!-- URL入力欄 -->
       <v-row
-        v-for="(url, idxU) in editor.url_links"
-        :key="idxU"
+        v-for="url in editor.urls.items"
+        :key="url.id"
       >
         <v-col cols="4">
           <v-text-field
@@ -131,30 +132,28 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <template v-if="editor.attachments.length > 0">
-        <div
-          v-for="(attachment, idxA) in editor.attachments"
-          :key="idxA"
-          class="mt-2"
+      <div
+        v-for="file in editor.files.items"
+        :key="file.id"
+        class="mt-2"
+      >
+        <v-chip
+          closable
+          @click:close="removeAttachment(file)"
         >
-          <v-chip
-            closable
-            @click:close="removeAttachment(attachment)"
-          >
-            {{ attachment.name }}
-          </v-chip>
-        </div>
-      </template>
+          {{ file.id }}
+        </v-chip>
+      </div>
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
       <div>追加する際は入力後に「セミころん(;)」を押してください</div>
-      selected_tag: {{ editor.tags }}<br>
+      selected_tag: {{ editor.tags.items }}<br>
       options: {{ tag_options }}
       <div>
         <Multiselect
           mode="tags"
-          v-model="editor.tags"
+          v-model="editor.tags.items"
           :options="tag_options"
           :searchable="true"
           createTag
@@ -165,7 +164,7 @@
         />
       </div>
     </div>
-    <footer class="fixed-footer">
+  <footer class="fixed-footer">
     <div class="back">
       <v-btn @click="changeMode('list')">一覧へ戻る</v-btn>
     </div>
@@ -216,15 +215,15 @@ export default {
   },
   setup(props) {
     const loading = ref(false)
-    const props_data = toRefs(props);
-    const editor = ref(props_data.params.value.editor);
+    const _props = toRefs(props);
+    const editor = ref(_props.params.value.editor);
     // アイキャッチ
     const changeEyecatch = (event) => {
       editor.value.eyecatch = event.target.files[0]
     }
     // URL
     const addLinks = () => {
-      editor.value.url_links.push(
+      editor.value.urls.items.push(
         {
           uid: uuid.v4(),
           url_key: "",
@@ -233,16 +232,16 @@ export default {
       )
     }
     const deleteLinks = (item) => {
-      let results = editor.value.url_links
+      let results = editor.value.urls.items
       results = results.filter(v => v.uid !== item.uid)
-      editor.value.url_links = results
+      editor.value.urls.items = results
     }
     // 添付画像
     const changeAttachment = (event) => {
-      editor.value.attachments.push(...event.target.files)
+      editor.value.files.push(...event.target.files)
     }
     const removeAttachment = (attachment) => {
-      editor.value.attachments = editor.value.attachments.filter(v => v.name !== attachment.name)
+      editor.value.files.items = editor.value.files.items.filter(v => v.name !== attachment.name)
     }
     // タグ
     const tag_options = ref([])
@@ -267,22 +266,22 @@ export default {
             await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
           }
           // 添付画像
-          if(editor.value.attachments.length > 0) {
-            for (const attachment of editor.value.attachments) {
+          if(editor.value.files.items.length > 0) {
+            for (const attachment of editor.value.files.items) {
               if(attachment.file_id) return;
               attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
               await forumApiFunc.createFiles(attachment, save_post)
             }
           }
           // URL
-          if(editor.value.url_links.length > 0) {
-            for (const url of editor.value.url_links) {
+          if(editor.value.urls.items.length > 0) {
+            for (const url of editor.value.urls.items) {
               await forumApiFunc.createLinks(url, save_post)
             }
           }
           // タグ
-          if(editor.value.tags.length > 0) {
-            for (const tag of editor.value.tags) {
+          if(editor.value.tags.items.length > 0) {
+            for (const tag of editor.value.tags.items) {
               await forumApiFunc.createTags(tag, save_post)
             }
           }

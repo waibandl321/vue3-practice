@@ -63,7 +63,11 @@
   </v-row>
   {{ items }}
   <v-row class="pa-6">
-    <v-col cols="3">
+    <v-col 
+      cols="3"
+      v-for="post in items"
+      :key="post.id"
+    >
       <v-card
         variant="outlined"
         width="100%"
@@ -71,8 +75,13 @@
         <v-card-item>
           <div>
             <v-img src="https://placehold.jp/500x400.png"></v-img>
-            <div class="text-overline mb-1 d-flex justify-space-between">
-              <span>タグ名</span>              
+            <div class="text-overline my-2 d-flex justify-space-between align-center">
+              <v-chip
+                v-for="tag in post.tags.items"
+                :key="tag.id"
+              >
+                {{ tag.forum_tag_name }}
+              </v-chip>
               <v-menu>
                 <template v-slot:activator="{ props }">
                   <v-btn
@@ -91,17 +100,17 @@
               </v-menu>
             </div>
             <div class="text-h6 mb-1">
-              投稿タイトル
+              {{ post.title }}
             </div>
             <div class="text-overline">
-              投稿者 | yyyy/mm/dd
+              投稿者??? | {{ post.updatedAt }}
             </div>
           </div>
         </v-card-item>
         <v-card-actions>
           <v-btn
             variant="outlined"
-            @click.stop="viewPost()"
+            @click.stop="viewPost(post)"
           >
             詳しく見る
           </v-btn>
@@ -122,8 +131,8 @@
 <script>
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { ref } from '@vue/reactivity';
-import forumApiFunc from '@/mixins/api/func/forum'
+import { ref, toRefs } from '@vue/reactivity';
+// import forumApiFunc from '@/mixins/api/func/forum'
 
 export default {
   name: "forum-list",
@@ -132,21 +141,15 @@ export default {
   },
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
+    setViewer: Function,
   },
   setup (props) {
-    const items = ref([])
-    const getPosts = async () => {
-      const posts = await forumApiFunc.getPostList(props.params.forum.forum_id)
-      // for (const post of posts) {
-      //   post.detail = await forumApiFunc.getPostDetail(post.id)
-      //   items.value.push(post)
-      // }
-      console.log(posts);
-    }
-    getPosts()
+    const _props = toRefs(props)
+    const items = _props.params.value.forum.posts.items
     // 詳細遷移
-    const viewPost = () => {
+    const viewPost = (post) => {
+      props.setViewer(post)
       props.changeMode('detail')
     }
     // 新規作成 遷移

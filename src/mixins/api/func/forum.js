@@ -70,7 +70,7 @@ export default {
       post_key: item.post_key ?? uuid.v4(),
       title: item.title,
       post_text: item.post_text,
-      attached: item.attachments.length > 0 ? 0 : 1,
+      attached: item.files.items.length > 0 ? 0 : 1,
       url_links: item.url_links.length > 0 ? 0 : 1,
       status: 0,
       delete: delete_flag ? 1 : 0,
