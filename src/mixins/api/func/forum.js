@@ -36,11 +36,6 @@ export default {
   },
   // 投稿取得
   async getPostList (forum_id) {
-    const _p = await API.graphql({
-      query: getForumPost,
-      variables: { id: '5d4def88-f5b2-4da2-a4d3-34fc64a198a8' }
-    })
-    console.log(_p);
     const filter = {
       forum_id: {
         eq: forum_id
@@ -51,6 +46,13 @@ export default {
       variables: { filter: filter }
     })
     return results.data.listForumPosts.items
+  },
+  async getPostDetail (id) {
+    // ID指定テスト
+    return await API.graphql({
+      query: getForumPost,
+      variables: { id: id }
+    })
   },
   // 投稿作成
   async createPost (forum, item) {

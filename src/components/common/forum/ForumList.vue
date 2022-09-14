@@ -137,8 +137,12 @@ export default {
   setup (props) {
     const items = ref([])
     const getPosts = async () => {
-      items.value = await forumApiFunc.getPostList(props.params.forum.forum_id)
-      console.log(items.value);
+      const posts = await forumApiFunc.getPostList(props.params.forum.forum_id)
+      // for (const post of posts) {
+      //   post.detail = await forumApiFunc.getPostDetail(post.id)
+      //   items.value.push(post)
+      // }
+      console.log(posts);
     }
     getPosts()
     // 詳細遷移

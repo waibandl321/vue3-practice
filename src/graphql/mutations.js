@@ -1225,6 +1225,24 @@ export const createForum = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      posts {
+        items {
+          id
+          post_key
+          forum_id
+          title
+          post_text
+          attached
+          url_links
+          status
+          importance
+          delete
+          createdAt
+          updatedAt
+          forumPostEyecatchId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1242,6 +1260,24 @@ export const updateForum = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      posts {
+        items {
+          id
+          post_key
+          forum_id
+          title
+          post_text
+          attached
+          url_links
+          status
+          importance
+          delete
+          createdAt
+          updatedAt
+          forumPostEyecatchId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1259,6 +1295,24 @@ export const deleteForum = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      posts {
+        items {
+          id
+          post_key
+          forum_id
+          title
+          post_text
+          attached
+          url_links
+          status
+          importance
+          delete
+          createdAt
+          updatedAt
+          forumPostEyecatchId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1326,6 +1380,19 @@ export const createForumPost = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      forum {
+        id
+        forum_id
+        forum_name
+        company_cd
+        company_group_cd
+        owner_id
+        posts {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -1396,6 +1463,19 @@ export const updateForumPost = /* GraphQL */ `
         }
         nextToken
       }
+      forum {
+        id
+        forum_id
+        forum_name
+        company_cd
+        company_group_cd
+        owner_id
+        posts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
       forumPostEyecatchId
@@ -1464,6 +1544,19 @@ export const deleteForumPost = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      forum {
+        id
+        forum_id
+        forum_name
+        company_cd
+        company_group_cd
+        owner_id
+        posts {
+          nextToken
+        }
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt

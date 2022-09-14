@@ -68,6 +68,7 @@ export default {
       loading.value = true
       try {
         params.value.forum = await forumApiFunc.getForum()
+        console.log(params.value.forum);
       } catch (error) {
         console.error('func:forumApiFunc.getForum', error)
       }

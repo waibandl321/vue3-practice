@@ -227,16 +227,17 @@ type FileStore @model {
 }
 type Forum @model {
   id: ID!
-  forum_id: String
+  forum_id: ID!
   forum_name: String
   company_cd: String
   company_group_cd: String
   owner_id: String
+  posts: [ForumPost] @hasMany(indexName: "byForum", fields: ["forum_id"])
 }
 type ForumPost @model {
   id: ID!
   post_key: String
-  forum_id: String
+  forum_id: ID! @index(name: "byForum")
   title: String
   post_text: String
   attached: Int
@@ -248,6 +249,7 @@ type ForumPost @model {
   urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["id"])
   eyecatch: ForumEyecatch @hasOne
   tags: [ForumTag] @hasMany(indexName: "byForumPost", fields: ["id"])
+  forum: Forum @belongsTo(fields: ["forum_id"])
 }
 type ForumFile @model {
   id: ID!

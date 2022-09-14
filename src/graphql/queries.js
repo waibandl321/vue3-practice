@@ -844,6 +844,24 @@ export const getForum = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      posts {
+        items {
+          id
+          post_key
+          forum_id
+          title
+          post_text
+          attached
+          url_links
+          status
+          importance
+          delete
+          createdAt
+          updatedAt
+          forumPostEyecatchId
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -863,6 +881,9 @@ export const listForums = /* GraphQL */ `
         company_cd
         company_group_cd
         owner_id
+        posts {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -930,6 +951,19 @@ export const getForumPost = /* GraphQL */ `
         }
         nextToken
       }
+      forum {
+        id
+        forum_id
+        forum_name
+        company_cd
+        company_group_cd
+        owner_id
+        posts {
+          nextToken
+        }
+        createdAt
+        updatedAt
+      }
       createdAt
       updatedAt
       forumPostEyecatchId
@@ -955,10 +989,30 @@ export const listForumPosts = /* GraphQL */ `
         importance
         delete
         files {
+          items {
+            id
+            post_id
+            post_key
+            sort_number
+            file_id
+            data_url
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         urls {
           nextToken
+          items {
+            id
+            post_id
+            post_key
+            sort_number
+            url_key
+            url_value
+            createdAt
+            updatedAt
+          }
         }
         eyecatch {
           id
@@ -970,6 +1024,26 @@ export const listForumPosts = /* GraphQL */ `
         }
         tags {
           nextToken
+          items {
+            id
+            post_id
+            post_key
+            sort_number
+            forum_tag_name
+            company_cd
+            createdAt
+            updatedAt
+          }
+        }
+        forum {
+          id
+          forum_id
+          forum_name
+          company_cd
+          company_group_cd
+          owner_id
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
