@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag } from '@/graphql/mutations'
-import { listForums, listForumPosts, getForumPost } from '@/graphql/queries'
+import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
@@ -110,7 +110,7 @@ export default {
       url_value: url.url_value
     }
   },
-  // アイキャッチ作成
+  // アイキャッチ
   async createEyecatch (_eyecatch, save_post) {
     const eyecatch = this.createEyecatchObject(_eyecatch, save_post)
     await API.graphql({
@@ -124,6 +124,18 @@ export default {
       file_id: null,
       data_url: _eyecatch.data_url
     }
+  },
+  async getEyecatch (post) {
+    const filter = {
+      post_key: {
+        eq: post.post_key
+      }
+    }
+    const results = await API.graphql({
+      query: listForumEyecatches,
+      variables: { filter: filter }
+    })
+    return results.data.listForumEyecatches.items[0]
   },
   // タグ作成
   async createTags (tag, save_post) {

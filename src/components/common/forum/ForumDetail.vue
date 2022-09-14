@@ -2,16 +2,7 @@
   <v-container class="im-container">
     {{ viewer }}
     <v-img src="https://placehold.jp/1200x800.png"></v-img>
-    <div class="mt-4">
-      <div>
-        <v-chip
-          v-for="tag in viewer.tags.items"
-          :key="tag.id"
-        >
-          {{ tag.forum_tag_name }}
-        </v-chip> 
-      </div>
-    </div>
+    アイキャッチ{{ viewer.post_eyecatch.data_url }}
     <div class="mt-4">
       <v-card-title>{{ viewer.title }}</v-card-title>
       <v-card-subtitle>投稿者 | {{ viewer.updatedAt }}</v-card-subtitle>
@@ -75,7 +66,7 @@
 
 <script>
 import { toRefs } from '@vue/reactivity';
-
+import forumApiFunc from '@/mixins/api/func/forum'
 export default {
   name: "forum-detail",
   props: {
@@ -93,6 +84,11 @@ export default {
     const backFunc = () => {
       props.changeMode('list')
     }
+    // アイキャッチ
+    const setEyecatch = async () => {
+      viewer.post_eyecatch = await forumApiFunc.getEyecatch(viewer)
+    }
+    setEyecatch()
     return {
       viewer,
       edit,
