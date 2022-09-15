@@ -1,5 +1,6 @@
 import { API } from 'aws-amplify'
-import { createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag } from '@/graphql/mutations'
+import { createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag,
+  deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag } from '@/graphql/mutations'
 import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
@@ -76,7 +77,18 @@ export default {
       delete: delete_flag ? 1 : 0,
     }
   },
-  // ファイル作成
+  // 投稿削除
+  async delete (post) {
+    const filter = {
+      id: post.id,
+    }
+    return await API.graphql({
+      query: deleteForumPost,
+      variables: {input: filter}
+    });
+  },
+
+  // ファイル
   async createFiles (file, save_post) {
     const item = this.createFileObject(file, save_post)
     await API.graphql({
@@ -93,7 +105,16 @@ export default {
       data_url: file.data_url,
     }
   },
-  // URLリンク作成
+  async deleteFile (file) {
+    const filter = {
+      id: file.id,
+    }
+    return await API.graphql({
+      query: deleteForumFile,
+      variables: {input: filter}
+    });
+  },
+  // URLリンク
   async createLinks (url, save_post) {
     const item = this.createLinkObject(url, save_post)
     await API.graphql({
@@ -110,6 +131,15 @@ export default {
       url_value: url.url_value
     }
   },
+  async deleteLink (url) {
+    const filter = {
+      id: url.id,
+    }
+    return await API.graphql({
+      query: deleteForumUrl,
+      variables: {input: filter}
+    });
+  },
   // アイキャッチ
   async createEyecatch (_eyecatch, save_post) {
     const eyecatch = this.createEyecatchObject(_eyecatch, save_post)
@@ -125,6 +155,15 @@ export default {
       data_url: _eyecatch.data_url
     }
   },
+  async deleteEyecatch (_eyecatch) {
+    const filter = {
+      id: _eyecatch.id,
+    }
+    return await API.graphql({
+      query: deleteForumEyecatch,
+      variables: {input: filter}
+    });
+  },
   async getEyecatch (post) {
     const filter = {
       post_key: {
@@ -137,7 +176,7 @@ export default {
     })
     return results.data.listForumEyecatches.items[0]
   },
-  // タグ作成
+  // タグ
   async createTags (tag, save_post) {
     const item = this.createTagObject(tag, save_post)
     await API.graphql({
@@ -154,6 +193,14 @@ export default {
       company_cd: store.getters.companyCd
     }
   },
+  async deleteTag (tag) {
+    const filter = {
+      id: tag.id,
+    }
+    return await API.graphql({
+      query: deleteForumTag,
+      variables: {input: filter}
+    });
+  },
   update () {},
-  delete () {}
 }

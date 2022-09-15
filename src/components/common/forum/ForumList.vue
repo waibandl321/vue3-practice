@@ -95,6 +95,7 @@
                 <v-list>
                   <v-list-item
                     link
+                    @click="deletePost(post)"
                   >投稿を削除</v-list-item>
                 </v-list>
               </v-menu>
@@ -126,27 +127,31 @@
       @click="newPost()"
     ></v-btn>
   </div>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { ref, toRefs } from '@vue/reactivity';
-// import forumApiFunc from '@/mixins/api/func/forum'
+import forumApiFunc from '@/mixins/api/func/forum'
+import OverlayLoading from '../OverlayLoading.vue';
 
 export default {
   name: "forum-list",
   components: {
-    Datepicker
-  },
+    Datepicker,
+    OverlayLoading
+},
   props: {
     params: Object,
     changeMode: Function,
     setViewer: Function,
   },
   setup (props) {
+    const loading = ref(false)
     const _props = toRefs(props)
-    const items = _props.params.value.forum.posts.items
+    const items =ref(_props.params.value.forum.posts.items)
     // 詳細遷移
     const viewPost = (post) => {
       props.setViewer(post)
@@ -157,16 +162,61 @@ export default {
       const is_new = true
       props.changeMode('edit', is_new)
     }
+    // 削除
+    const deletePost = async (post) => {
+      if(!confirm('データは復元できません。よろしいですか？')) return;
+      console.log('delete post', post);
+      loading.value = true
+      try {
+        await forumApiFunc.delete(post)
+        .catch((error) => console.error('deleteForumPost', error))
+        // アイキャッチ
+        if(post.eyecatch) {
+          await forumApiFunc.deleteEyecatch(post.eyecatch)
+          .catch((error) => console.error('deleteForumEyecatch', error))
+        }
+        // 添付ファイル
+        if(post.files.items.length > 0) {
+          // TODO: ファイル管理、ストレージにあるデータを残すか要検討
+          for (const file of post.files.items ) {
+            await forumApiFunc.deleteFile(file)
+            .catch((error) => console.error('deleteForumFile', error))
+          }
+        }
+        // URL
+        if(post.urls.items.length > 0) {
+          for (const url of post.urls.items ) {
+            await forumApiFunc.deleteLink(url)
+            .catch((error) => console.error('deleteForumUrl', error))
+          }
+        }
+        // タグ
+        if(post.tags.items.length > 0) {
+          for (const tag of post.tags.items ) {
+            await forumApiFunc.deleteTag(tag)
+            .catch((error) => console.error('deleteForumTag', error))
+          }
+        }
+        alert('投稿を削除しました')
+        items.value = items.value.filter(v => v.id !== post.id)
+      } catch (error) {
+        console.error('delete post exception error', error);
+      }
+      loading.value = false
+    }
     // 検索
     const filter_mode = ref(false)
     const post_start = ref()
     const post_end = ref()
     return {
+      loading,
       // リスト
       items,
       // methods
       viewPost,
       newPost,
+      // 削除
+      deletePost,
       // filter
       filter_mode,
       post_start,

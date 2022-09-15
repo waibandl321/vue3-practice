@@ -303,42 +303,45 @@ export default {
         try {
           // 投稿
           const save_post = await forumApiFunc.createPost(props.params.forum, editor.value)
-          // // アイキャッチ
-          if(editor.value.eyecatch && !editor.value.eyecatch?.file_id){
-            // S3アップロード
-            editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
-            await fileApiFunc.apiCreateUploadFile(
-              dir_top.value,
-              editor.value.eyecatch,
-              editor.value.eyecatch.data_url,
-              "forum"
-            )
-            // S3アップロード → FileStoreテーブルに保存
-            await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
-          }
-          // 添付画像
-          if(editor.value.files.items.length > 0) {
-            for (const attachment of editor.value.files.items) {
-              if(attachment.file_id) return;
-              // S3アップロード
-              attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
-              // S3アップロード → FileStoreテーブルに保存
+          // アイキャッチ保存
+          if(editor.value.eyecatch){
+            if(!editor.value.eyecatch?.file_id) {
+              // ローカルから登録の場合は、S3アップロード → FileStoreテーブルに保存
+              editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
               await fileApiFunc.apiCreateUploadFile(
                 dir_top.value,
-                attachment,
-                attachment.data_url,
+                editor.value.eyecatch,
+                editor.value.eyecatch.data_url,
                 "forum"
               )
+            }
+            // ForumEyecatchテーブルに保存
+            await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
+          }
+          // 添付画像保存
+          if(editor.value.files.items.length > 0) {
+            for (const attachment of editor.value.files.items) {
+              if(!attachment.file_id) {
+                // ローカルから登録の場合は、S3アップロード → FileStoreテーブルに保存
+                attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
+                await fileApiFunc.apiCreateUploadFile(
+                  dir_top.value,
+                  attachment,
+                  attachment.data_url,
+                  "forum"
+                )
+              }
+              // ForumFileテーブルに保存
               await forumApiFunc.createFiles(attachment, save_post)
             }
           }
-          // URL
+          // URL保存
           if(editor.value.urls.items.length > 0) {
             for (const url of editor.value.urls.items) {
               await forumApiFunc.createLinks(url, save_post)
             }
           }
-          // タグ
+          // タグ保存
           if(editor.value.tags.items.length > 0) {
             for (const tag of editor.value.tags.items) {
               await forumApiFunc.createTags(tag, save_post)
