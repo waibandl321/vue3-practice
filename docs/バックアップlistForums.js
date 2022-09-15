@@ -960,6 +960,14 @@ export const listForums = /* GraphQL */ `
           nextToken
         }
         tag_options {
+          items {
+            id
+            forum_id
+            forum_tag_name
+            company_cd
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         createdAt

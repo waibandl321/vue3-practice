@@ -150,12 +150,16 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
+      <div class="mb-2">
+        {{ params.forum.tag_options }}
+      </div>
       v-model {{ editor.tags.items }}<br>
       options: {{ tag_options }}
       <div>
         <Multiselect
           mode="tags"
           v-model="editor.tags.items"
+          :addTagOn="[',']"
           :options="tag_options"
           :searchable="true"
           createTag
@@ -240,22 +244,8 @@ export default {
     const loading = ref(false)
     const _props = toRefs(props);
     const editor = _props.params.value.editor;
-
-    // MEMO: ファイル選択用に水面下でTOPディレクトリ取得しておく
+    const tag_options = _props.params.value.forum.tag_options.items
     const dir_top = ref({})
-    // タグオプションセット
-    // TODO: オプションデータはForumTagOptionテーブルから取得するように変更
-    const initTagOptions = () => {
-      const tags = ref(editor.tags.items)
-      if(tags.value.length > 0) {
-        for (const tag of tags.value) {
-          tag_options.value.push({
-            uid: tag.id,
-            forum_tag_name: tag.forum_tag_name
-          })
-        }
-      }
-    }
     // エフェクトスコープ
     const scope = effectScope()
     scope.run(() => {
@@ -264,7 +254,6 @@ export default {
         if(!_props.params.value.is_new) {
           editor.eyecatch = editor.eyecatch?.items[0]
         }
-        initTagOptions()
       })
     })
     // URL
@@ -293,10 +282,9 @@ export default {
       }
     }
     // タグ
-    const tag_options = ref([])
     const handleTagCreate = (query, select$) => {
       console.log('handleTagCreate', select$.options);
-      tag_options.value.push({
+      tag_options.push({
         uid: uuid.v4(),
         forum_tag_name: query
       })
@@ -308,6 +296,12 @@ export default {
       const is_new = _props.params.value.is_new
       try {
         if(is_new) {
+          // タグオプション作成 TODO: 後でMixin化する
+          if(tag_options.length > 0) {
+            for (const tag_option of tag_options) {
+              await forumApiFunc.createTagOption(forum, tag_option)
+            }
+          }
           await forumMixin.mixinCreateForumPost(forum, editor, dir_top.value)
           alert('投稿を保存しました。')
         } else {

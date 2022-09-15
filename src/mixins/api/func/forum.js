@@ -1,6 +1,7 @@
 import { API } from 'aws-amplify'
 import { 
-  createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag,
+  createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl, 
+  createForumTag, createForumTagOption,
   updateForumPost, updateForumTag,
   deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag 
 } from '@/graphql/mutations'
@@ -228,6 +229,21 @@ export default {
       query: deleteForumTag,
       variables: {input: filter}
     });
+  },
+  // タグオプション
+  async createTagOption (forum, tag_option) {
+    const item = this.createTagOptionObject(forum, tag_option)
+    await API.graphql({
+      query: createForumTagOption,
+      variables: { input: item }
+    })
+  },
+  createTagOptionObject (forum, tag_option) {
+    return {
+      forum_id: forum.forum_id,
+      forum_tag_name: tag_option.forum_tag_name,
+      company_cd: store.getters.companyCd
+    }
   },
   update () {},
 }

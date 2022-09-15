@@ -45,6 +45,9 @@ export default {
     const mode = ref('list')
     const params = ref({
       forum: {},
+      tag_options: {
+        items: []
+      },
       viewer: {},
       editor: {},
       is_new: false
