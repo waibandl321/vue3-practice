@@ -43,6 +43,7 @@
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
       <div class="mt-2">
+        {{ viewer.tags.items }}
         <v-chip
           v-for="tag in viewer.tags.items"
           :key="tag.id"

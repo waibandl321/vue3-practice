@@ -8,7 +8,7 @@ export default {
     const save_post = await forumApiFunc.createPost(forum, editor)
     await this.mixinCreateEyecatch(editor, save_post, dir_top)
     if(editor.files.items.length > 0) {
-      await this.mixinCreateFiles(editor, save_post, dir_top)
+      await this.mixinCreateFiles(editor.files.items, save_post, dir_top)
     }
     if(editor.urls.items.length > 0) {
       await this.mixinCreateUrls(editor, save_post)
@@ -27,8 +27,8 @@ export default {
       .catch((error) => console.error('forumApiFunc.createEyecatch', error))
     }
   },
-  async mixinCreateFiles (editor, save_post, dir_top) {
-    for (const file of editor.files.items) {
+  async mixinCreateFiles (files, save_post, dir_top) {
+    for (const file of files) {
       if(!file.id) {
         file.data_url = await this.mixinUploadForumFile(file, "forum")
         await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
@@ -50,9 +50,15 @@ export default {
     }
   },
   // 更新
-  // async mixinUpdateForumPost (forum, editor, dir_top) {
-  //   
-  // },
+  async mixinUpdateForumPost () {
+    
+  },
+  async mixinUpdateTags (tags, post_data) {
+    for (const tag of tags) {
+      await forumApiFunc.updateTag(tag, post_data)
+      .catch((error) => console.error('forumApiFunc.updateTag', error))
+    }
+  },
   // S3アップロード
   async mixinUploadForumFile (file, function_cd) {
     return await storageFunc.storageUploadFunctionFile(file, function_cd)

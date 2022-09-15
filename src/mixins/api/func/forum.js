@@ -1,7 +1,7 @@
 import { API } from 'aws-amplify'
 import { 
   createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag,
-  updateForumPost,
+  updateForumPost, updateForumTag,
   deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag 
 } from '@/graphql/mutations'
 import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
@@ -191,19 +191,32 @@ export default {
     return results.data.listForumEyecatches.items[0]
   },
   // タグ
-  async createTags (tag, save_post) {
-    const item = this.createTagObject(tag.forum_tag_name, save_post)
+  async createTags (tag, post_data) {
+    console.log('create tag', tag);
+    const item = this.createTagObject(tag, post_data)
     await API.graphql({
       query: createForumTag,
       variables: { input: item }
     })
   },
-  createTagObject (tag, save_post) {
+  async updateTag (_tag, post_data) {
+    if(!_tag.id) {
+      this.createTags(_tag, post_data)
+      return;
+    }
+    const tag = this.createTagObject(_tag, post_data)
+    tag.id = _tag.id
+    return await API.graphql({
+      query: updateForumTag,
+      variables: { input: tag }
+    })
+  },
+  createTagObject (tag, post_data) {
     return {
-      post_id: save_post.id,
-      post_key: save_post.post_key,
-      sort_number: uuid.v4(),
-      forum_tag_name: tag,
+      post_id: post_data.id,
+      post_key: post_data.post_key,
+      sort_number: post_data.sort_number ?? uuid.v4(),
+      forum_tag_name: tag.forum_tag_name,
       company_cd: store.getters.companyCd
     }
   },

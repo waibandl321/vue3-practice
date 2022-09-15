@@ -1,6 +1,7 @@
 <template>
   <v-container class="im-container">
-    新規フラグ: {{ editor }} <br>
+    新規フラグ: {{ params.is_new }}  <br>
+    {{ editor }}
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
       <v-menu>
@@ -141,7 +142,7 @@
       >
         <v-chip
           closable
-          @click:close="removeAttachment(file)"
+          @click:close="removeForumFile(file)"
         >
           {{ file.file_name ?? file.name ?? file.id }}
         </v-chip>
@@ -149,7 +150,7 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
-      <div>追加する際は入力後に「セミころん(;)」を押してください</div>
+      v-model {{ editor.tags.items }}<br>
       options: {{ tag_options }}
       <div>
         <Multiselect
@@ -158,9 +159,9 @@
           :options="tag_options"
           :searchable="true"
           createTag
-          :addTagOn="[';']"
           :object="true"
           label="forum_tag_name"
+          valueProp="forum_tag_name"
           noOptionsText="タグが登録されていません"
           placeholder="タグを入力して登録できます"
           @tag="handleTagCreate"
@@ -215,6 +216,8 @@ import FIleSelectModal from '../modal/FIleSelectModal.vue';
 
 import fileApiFunc from '@/mixins/api/func/file'
 import forumMixin from './forum_mixin'
+import forumApiFunc from '@/mixins/api/func/forum'
+
 
 import Multiselect from '@vueform/multiselect'
 import { uuid } from 'vue-uuid'
@@ -259,7 +262,7 @@ export default {
       onMounted(async () => {
         dir_top.value = await fileApiFunc.apiGetDirTop()
         if(!_props.params.value.is_new) {
-          editor.eyecatch = editor.eyecatch.items[0]
+          editor.eyecatch = editor.eyecatch?.items[0]
         }
         initTagOptions()
       })
@@ -283,8 +286,11 @@ export default {
     const changeAttachment = (event) => {
       editor.files.items.push(...event.target.files)
     }
-    const removeAttachment = (attachment) => {
-      editor.files.items = editor.files.items.filter(v => v.name !== attachment.name)
+    const removeForumFile = async (file) => {
+      editor.files.items = editor.files.items.filter(v => v.name !== file.name || v.id !== file.id)
+      if(file.post_key) {
+        await forumApiFunc.deleteFile(file)
+      }
     }
     // タグ
     const tag_options = ref([])
@@ -303,9 +309,20 @@ export default {
       try {
         if(is_new) {
           await forumMixin.mixinCreateForumPost(forum, editor, dir_top.value)
+          alert('投稿を保存しました。')
+        } else {
+          // タグ更新
+          const tags = editor.tags.items
+          await forumMixin.mixinUpdateTags(tags, editor)
+          // 添付ファイル更新
+          const files = editor.files.items.filter(v => !v.post_key)
+          if(files.length > 0) {
+            await forumMixin.mixinCreateFiles(files, editor, dir_top.value)
+          }
+          alert('投稿を保存しました。')
+          // const urls = editor.urls.items
         }
         // TODO: 新しく登録されたタグオプションもDBに保存する（table: ForumTagOption）
-        alert('投稿を保存しました。')
         props.changeMode('list')
       } catch (error) {
         console.error("forumApiFunc.createPost", error)
@@ -338,7 +355,6 @@ export default {
     // アイキャッチ画像（ローカルから）
     const changeEyecatch = (event) => {
       editor.eyecatch = event.target.files[0]
-      console.dir(...event.target.files)
     }
 
     return {
@@ -351,7 +367,7 @@ export default {
       deleteLinks,
       // 添付ファイル
       changeAttachment,
-      removeAttachment,
+      removeForumFile,
       // タグ
       tag_options,
       handleTagCreate,

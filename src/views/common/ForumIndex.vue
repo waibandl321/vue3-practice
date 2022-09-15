@@ -50,6 +50,7 @@ export default {
       is_new: false
     })
     const changeMode = (_mode, is_new = false) => {
+      params.value.is_new = false
       if(is_new) {
         params.value.is_new = true
         initEditor()
