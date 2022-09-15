@@ -250,7 +250,7 @@ type ForumPost @model {
 	updatedAt: AWSDateTime!
   files: [ForumFile] @hasMany(indexName: "byForumPost", fields: ["id"])
   urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["id"])
-  eyecatch: ForumEyecatch
+  eyecatch: [ForumEyecatch] @hasMany(indexName: "byForumPost", fields: ["id"])
   tags: [ForumTag] @hasMany(indexName: "byForumPost", fields: ["id"])
   forum: Forum @belongsTo(fields: ["forum_id"])
 }
@@ -276,9 +276,12 @@ type ForumUrl @model {
 }
 type ForumEyecatch @model {
   id: ID!
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
   post_key: String
   file_id: String
   data_url: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type ForumTag @model {
   id: ID!

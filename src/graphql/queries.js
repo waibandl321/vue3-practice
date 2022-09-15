@@ -932,12 +932,16 @@ export const listForums = /* GraphQL */ `
               nextToken
             }
             eyecatch {
-              id
-              post_key
-              file_id
-              data_url
-              createdAt
-              updatedAt
+              items {
+                id
+                post_id
+                post_key
+                file_id
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
             }
             tags {
               items {
@@ -1007,12 +1011,16 @@ export const getForumPost = /* GraphQL */ `
         nextToken
       }
       eyecatch {
-        id
-        post_key
-        file_id
-        data_url
-        createdAt
-        updatedAt
+        items {
+          id
+          post_id
+          post_key
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       tags {
         items {
@@ -1073,12 +1081,7 @@ export const listForumPosts = /* GraphQL */ `
           nextToken
         }
         eyecatch {
-          id
-          post_key
-          file_id
-          data_url
-          createdAt
-          updatedAt
+          nextToken
         }
         tags {
           nextToken
@@ -1172,6 +1175,7 @@ export const getForumEyecatch = /* GraphQL */ `
   query GetForumEyecatch($id: ID!) {
     getForumEyecatch(id: $id) {
       id
+      post_id
       post_key
       file_id
       data_url
@@ -1189,6 +1193,7 @@ export const listForumEyecatches = /* GraphQL */ `
     listForumEyecatches(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        post_id
         post_key
         file_id
         data_url

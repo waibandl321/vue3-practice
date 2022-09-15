@@ -171,8 +171,8 @@ export default {
         await forumApiFunc.delete(post)
         .catch((error) => console.error('deleteForumPost', error))
         // アイキャッチ
-        if(post.eyecatch) {
-          await forumApiFunc.deleteEyecatch(post.eyecatch)
+        if(post.eyecatch.items.length > 0) {
+          await forumApiFunc.deleteEyecatch(...post.eyecatch.items)
           .catch((error) => console.error('deleteForumEyecatch', error))
         }
         // 添付ファイル

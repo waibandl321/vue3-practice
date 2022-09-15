@@ -1,7 +1,6 @@
 <template>
   <v-container class="im-container">
-    新規フラグ: {{ params.is_new }} <br>
-    {{ editor }}
+    新規フラグ: {{ editor }} <br>
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
       <v-menu>
@@ -32,14 +31,14 @@
       </v-menu>
       <!-- 選択 or 登録済み -->
       <div 
-        v-if="editor.eyecatch"
+        v-if="editor.eyecatch?.id || editor.eyecatch?.name"
         class="mt-2"
       >
         <v-chip
           closable
           @click:close="editor.eyecatch = undefined"
         >
-          {{ editor.eyecatch?.file_name || editor.eyecatch?.name }}
+          {{ editor.eyecatch.file_name || editor.eyecatch.name }}
         </v-chip>
       </div>
     </div>
@@ -106,6 +105,7 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">添付ファイル</div>
+      {{ editor.files.items }}
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -143,7 +143,7 @@
           closable
           @click:close="removeAttachment(file)"
         >
-          {{ file.id ?? file.name }}
+          {{ file.file_name ?? file.name ?? file.id }}
         </v-chip>
       </div>
     </div>
@@ -175,7 +175,7 @@
       <v-btn
         color="primary"
         :disabled="!editor.title || !editor.post_text"
-        @click="createPost()"
+        @click="savePost()"
       >
         {{ params.is_new ? '新規作成' : '更新' }}
       </v-btn>
@@ -211,9 +211,10 @@ import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
 import OverlayLoading from '../OverlayLoading.vue';
 import FIleSelectModal from '../modal/FIleSelectModal.vue';
 
-import forumApiFunc from '@/mixins/api/func/forum'
-import storageFunc from '@/mixins/storage/storage.js'
+// import forumApiFunc from '@/mixins/api/func/forum'
+// import storageFunc from '@/mixins/storage/storage.js'
 import fileApiFunc from '@/mixins/api/func/file'
+import forumMixin from './forum_mixin'
 
 import Multiselect from '@vueform/multiselect'
 import { uuid } from 'vue-uuid'
@@ -235,14 +236,14 @@ export default {
   setup(props) {
     const loading = ref(false)
     const _props = toRefs(props);
-    const editor = ref(_props.params.value.editor);
+    const editor = _props.params.value.editor;
 
     // MEMO: ファイル選択用に水面下でTOPディレクトリ取得しておく
     const dir_top = ref({})
     // タグオプションセット
     // TODO: オプションデータはForumTagOptionテーブルから取得するように変更
     const initTagOptions = () => {
-      const tags = ref(editor.value.tags.items)
+      const tags = ref(editor.tags.items)
       if(tags.value.length > 0) {
         for (const tag of tags.value) {
           tag_options.value.push({
@@ -257,17 +258,15 @@ export default {
     scope.run(() => {
       onMounted(async () => {
         dir_top.value = await fileApiFunc.apiGetDirTop()
+        if(!_props.params.value.is_new) {
+          editor.eyecatch = editor.eyecatch.items[0]
+        }
         initTagOptions()
       })
     })
-    
-    // アイキャッチ
-    const changeEyecatch = (event) => {
-      editor.value.eyecatch = event.target.files[0]
-    }
     // URL
     const addLinks = () => {
-      editor.value.urls.items.push(
+      editor.urls.items.push(
         {
           uid: uuid.v4(),
           url_key: "",
@@ -276,16 +275,16 @@ export default {
       )
     }
     const deleteLinks = (item) => {
-      let results = editor.value.urls.items
+      let results = editor.urls.items
       results = results.filter(v => v.uid !== item.uid)
-      editor.value.urls.items = results
+      editor.urls.items = results
     }
     // 添付画像
     const changeAttachment = (event) => {
-      editor.value.files.items.push(...event.target.files)
+      editor.files.items.push(...event.target.files)
     }
     const removeAttachment = (attachment) => {
-      editor.value.files.items = editor.value.files.items.filter(v => v.name !== attachment.name)
+      editor.files.items = editor.files.items.filter(v => v.name !== attachment.name)
     }
     // タグ
     const tag_options = ref([])
@@ -296,68 +295,22 @@ export default {
         forum_tag_name: query
       })
     }
-    
-    const createPost = async () => {
-      if(props.params.is_new) {
-        loading.value = true
-        try {
-          // 投稿
-          const save_post = await forumApiFunc.createPost(props.params.forum, editor.value)
-          // アイキャッチ保存
-          if(editor.value.eyecatch){
-            if(!editor.value.eyecatch?.file_id) {
-              // ローカルから登録の場合は、S3アップロード → FileStoreテーブルに保存
-              editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
-              await fileApiFunc.apiCreateUploadFile(
-                dir_top.value,
-                editor.value.eyecatch,
-                editor.value.eyecatch.data_url,
-                "forum"
-              )
-            }
-            // ForumEyecatchテーブルに保存
-            await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
-          }
-          // 添付画像保存
-          if(editor.value.files.items.length > 0) {
-            for (const attachment of editor.value.files.items) {
-              if(!attachment.file_id) {
-                // ローカルから登録の場合は、S3アップロード → FileStoreテーブルに保存
-                attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
-                await fileApiFunc.apiCreateUploadFile(
-                  dir_top.value,
-                  attachment,
-                  attachment.data_url,
-                  "forum"
-                )
-              }
-              // ForumFileテーブルに保存
-              await forumApiFunc.createFiles(attachment, save_post)
-            }
-          }
-          // URL保存
-          if(editor.value.urls.items.length > 0) {
-            for (const url of editor.value.urls.items) {
-              await forumApiFunc.createLinks(url, save_post)
-            }
-          }
-          // タグ保存
-          if(editor.value.tags.items.length > 0) {
-            for (const tag of editor.value.tags.items) {
-              await forumApiFunc.createTags(tag, save_post)
-            }
-          }
-          // TODO: 新しく登録されたタグオプションもDBに保存する（table: ForumTagOption）
-          alert('投稿データ保存')
-          props.changeMode('list')
-          loading.value = false
-        } catch (error) {
-          console.error("createPost exception error", error)
+    // 保存
+    const savePost = async () => {
+      loading.value = true
+      const forum = _props.params.value.forum
+      const is_new = _props.params.value.is_new
+      try {
+        if(is_new) {
+          await forumMixin.mixinCreateForumPost(forum, editor, dir_top.value)
         }
-        loading.value = false
-      } else {
-        alert('更新')
+        // TODO: 新しく登録されたタグオプションもDBに保存する（table: ForumTagOption）
+        alert('投稿を保存しました。')
+        props.changeMode('list')
+      } catch (error) {
+        console.error("forumApiFunc.createPost", error)
       }
+      loading.value = false
       props.initEditor()
     }
     // ファイル管理から選択
@@ -374,14 +327,20 @@ export default {
     const isSelectedFile = (file) => {
       if(file_select_function.value === 'eyecatch') {
         // アイキャッチの場合
-        editor.value.eyecatch = file
+        editor.eyecatch = file
       } else if (file_select_function.value === 'attachment') {
         // 添付ファイルの場合
-        editor.value.files.items.push(file)
+        editor.files.items.push(file)
       }
       file_select_function.value = undefined
       file_select_modal.value = false
     }
+    // アイキャッチ画像（ローカルから）
+    const changeEyecatch = (event) => {
+      editor.eyecatch = event.target.files[0]
+      console.dir(...event.target.files)
+    }
+
     return {
       loading,
       editor,
@@ -397,7 +356,7 @@ export default {
       tag_options,
       handleTagCreate,
       // 保存
-      createPost,
+      savePost,
       // ファイル管理から選択
       file_select_modal,
       file_select_function,

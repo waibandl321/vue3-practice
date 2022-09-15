@@ -1,6 +1,9 @@
 import { API } from 'aws-amplify'
-import { createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag,
-  deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag } from '@/graphql/mutations'
+import { 
+  createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl,createForumTag,
+  updateForumPost,
+  deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag 
+} from '@/graphql/mutations'
 import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
@@ -60,6 +63,16 @@ export default {
     const post = this.generateForumPostObject(forum, item)
     return await API.graphql({
       query: createForumPost,
+      variables: { input: post }
+    }).then((res) => {
+      return res.data.createForumPost
+    })
+  },
+  async updatePost (forum, item) {
+    const post = this.generateForumPostObject(forum, item)
+    post.id = item.id
+    return await API.graphql({
+      query: updateForumPost,
       variables: { input: post }
     }).then((res) => {
       return res.data.createForumPost
@@ -150,6 +163,7 @@ export default {
   },
   createEyecatchObject (_eyecatch, save_post) {
     return {
+      post_id: save_post.id,
       post_key: save_post.post_key,
       file_id: null,
       data_url: _eyecatch.data_url
@@ -178,7 +192,7 @@ export default {
   },
   // タグ
   async createTags (tag, save_post) {
-    const item = this.createTagObject(tag, save_post)
+    const item = this.createTagObject(tag.forum_tag_name, save_post)
     await API.graphql({
       query: createForumTag,
       variables: { input: item }

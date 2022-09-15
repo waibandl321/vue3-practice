@@ -1239,12 +1239,16 @@ export const onCreateForumPost = /* GraphQL */ `
         nextToken
       }
       eyecatch {
-        id
-        post_key
-        file_id
-        data_url
-        createdAt
-        updatedAt
+        items {
+          id
+          post_id
+          post_key
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       tags {
         items {
@@ -1322,12 +1326,16 @@ export const onUpdateForumPost = /* GraphQL */ `
         nextToken
       }
       eyecatch {
-        id
-        post_key
-        file_id
-        data_url
-        createdAt
-        updatedAt
+        items {
+          id
+          post_id
+          post_key
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       tags {
         items {
@@ -1405,12 +1413,16 @@ export const onDeleteForumPost = /* GraphQL */ `
         nextToken
       }
       eyecatch {
-        id
-        post_key
-        file_id
-        data_url
-        createdAt
-        updatedAt
+        items {
+          id
+          post_id
+          post_key
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       tags {
         items {
@@ -1540,6 +1552,7 @@ export const onCreateForumEyecatch = /* GraphQL */ `
   ) {
     onCreateForumEyecatch(filter: $filter) {
       id
+      post_id
       post_key
       file_id
       data_url
@@ -1554,6 +1567,7 @@ export const onUpdateForumEyecatch = /* GraphQL */ `
   ) {
     onUpdateForumEyecatch(filter: $filter) {
       id
+      post_id
       post_key
       file_id
       data_url
@@ -1568,6 +1582,7 @@ export const onDeleteForumEyecatch = /* GraphQL */ `
   ) {
     onDeleteForumEyecatch(filter: $filter) {
       id
+      post_id
       post_key
       file_id
       data_url

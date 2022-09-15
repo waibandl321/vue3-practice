@@ -2,7 +2,6 @@ import Storage from '@aws-amplify/storage'
 import storeAuth from '@/mixins/store/auth'
 export default {
   async storageUploadFile (file) {
-    console.log('upload file', file);
     return await Storage.put(
       storeAuth.storeGetCompanyCd() + '/' + file.name,
       file,
@@ -15,7 +14,6 @@ export default {
   },
   // 機能別アップロード
   async storageUploadFunctionFile (file, function_cd) {
-    console.log('upload file', file);
     return await Storage.put(
       storeAuth.storeGetCompanyCd() + '/' + function_cd + '/' + file.name,
       file,
