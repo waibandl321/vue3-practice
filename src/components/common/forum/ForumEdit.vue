@@ -143,7 +143,7 @@
           closable
           @click:close="removeAttachment(file)"
         >
-          {{ file.id }}
+          {{ file.id ?? file.name }}
         </v-chip>
       </div>
     </div>
@@ -195,9 +195,9 @@
   <template v-if="file_select_modal">
     <FIleSelectModal
       :file-select-modal="file_select_modal"
-      :file-select-function="file_select_function"
       :dir-top="dir_top"
       :isSelectedFile="isSelectedFile"
+      :closeFileSelectModal="closeFileSelectModal"
     />
   </template>
   <!-- ローディング -->
@@ -307,7 +307,13 @@ export default {
           if(editor.value.eyecatch && !editor.value.eyecatch?.file_id){
             // S3アップロード
             editor.value.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.value.eyecatch, "forum_eyecatch")
-            // TODO: ↑ストレージに関連してDBにも保存
+            await fileApiFunc.apiCreateUploadFile(
+              dir_top.value,
+              editor.value.eyecatch,
+              editor.value.eyecatch.data_url,
+              "forum"
+            )
+            // S3アップロード → FileStoreテーブルに保存
             await forumApiFunc.createEyecatch(editor.value.eyecatch, save_post)
           }
           // 添付画像
@@ -316,8 +322,13 @@ export default {
               if(attachment.file_id) return;
               // S3アップロード
               attachment.data_url = await storageFunc.storageUploadFunctionFile(attachment, "forum")
-              // TODO: ↑ストレージに関連してDBにも保存
-
+              // S3アップロード → FileStoreテーブルに保存
+              await fileApiFunc.apiCreateUploadFile(
+                dir_top.value,
+                attachment,
+                attachment.data_url,
+                "forum"
+              )
               await forumApiFunc.createFiles(attachment, save_post)
             }
           }

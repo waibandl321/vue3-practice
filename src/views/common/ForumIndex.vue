@@ -54,6 +54,18 @@ export default {
         params.value.is_new = true
         initEditor()
       }
+      if(_mode === 'list') {
+        // 一旦データリフレッシュ
+        (async() => {
+          loading.value = true
+          try {
+            params.value.forum = await forumApiFunc.getForum()
+          } catch (error) {
+            console.error('refresh posts exception error', error)
+          }
+          loading.value = false
+        })()
+      }
       mode.value = _mode
     }
     const initEditor = () => {

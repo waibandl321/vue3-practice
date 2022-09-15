@@ -71,7 +71,7 @@ export default {
       title: item.title,
       post_text: item.post_text,
       attached: item.files.items.length > 0 ? 0 : 1,
-      url_links: item.url_links.length > 0 ? 0 : 1,
+      url_links: item.urls.items.length > 0 ? 0 : 1,
       status: 0,
       delete: delete_flag ? 1 : 0,
     }
