@@ -33,9 +33,9 @@ export default {
       side_menu: false,
       header_icons: [
         { icon: 'mdi-bell', path: '/notification', title: 'お知らせ' },
-        { icon: 'mdi-chat', path: '/chat', title: 'チャット' },
-        { icon: 'mdi-forum', path: '/forum', title: '掲示板' },
-        { icon: 'mdi-folder', path: '/file', title: 'ファイル管理' }
+        { icon: 'mdi-chat-processing-outline', path: '/chat', title: 'チャット' },
+        { icon: 'mdi-clipboard-edit-outline', path: '/forum', title: '掲示板' },
+        { icon: 'mdi-folder-multiple-outline', path: '/file', title: 'ファイル管理' }
       ]
     }
   },

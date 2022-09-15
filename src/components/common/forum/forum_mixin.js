@@ -1,6 +1,7 @@
 import forumApiFunc from '@/mixins/api/func/forum'
 import storageFunc from '@/mixins/storage/storage.js'
 import fileApiFunc from '@/mixins/api/func/file'
+
 export default {
   // 作成
   async mixinCreateForumPost (forum, editor, dir_top) {
@@ -66,4 +67,32 @@ export default {
       function_cd
     ).catch((error) => console.error('fileApiFunc.apiCreateUploadFile', error))
   },
+  // 削除
+  async mixinDeleteForumPost (post) {
+    await forumApiFunc.delete(post).catch((error) => console.error('deleteForumPost', error))
+    // アイキャッチ
+    if(post.eyecatch.items.length > 0) {
+      await forumApiFunc.deleteEyecatch(...post.eyecatch.items)
+      .catch((error) => console.error('deleteForumEyecatch', error))
+    }
+    // 添付ファイル
+    if(post.files.items.length > 0) {
+      // TODO: ファイル管理、ストレージにあるデータを残すか要検討
+      for (const file of post.files.items ) {
+        await forumApiFunc.deleteFile(file).catch((error) => console.error('deleteForumFile', error))
+      }
+    }
+    // URL
+    if(post.urls.items.length > 0) {
+      for (const url of post.urls.items ) {
+        await forumApiFunc.deleteLink(url).catch((error) => console.error('deleteForumUrl', error))
+      }
+    }
+    // タグ
+    if(post.tags.items.length > 0) {
+      for (const tag of post.tags.items ) {
+        await forumApiFunc.deleteTag(tag).catch((error) => console.error('deleteForumTag', error))
+      }
+    }
+  }
 }

@@ -131,11 +131,12 @@
 </template>
 
 <script>
+import OverlayLoading from '../OverlayLoading.vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { ref, toRefs } from '@vue/reactivity';
-import forumApiFunc from '@/mixins/api/func/forum'
-import OverlayLoading from '../OverlayLoading.vue';
+
+import forumMixin from './forum_mixin'
 
 export default {
   name: "forum-list",
@@ -168,37 +169,9 @@ export default {
       console.log('delete post', post);
       loading.value = true
       try {
-        await forumApiFunc.delete(post)
-        .catch((error) => console.error('deleteForumPost', error))
-        // アイキャッチ
-        if(post.eyecatch.items.length > 0) {
-          await forumApiFunc.deleteEyecatch(...post.eyecatch.items)
-          .catch((error) => console.error('deleteForumEyecatch', error))
-        }
-        // 添付ファイル
-        if(post.files.items.length > 0) {
-          // TODO: ファイル管理、ストレージにあるデータを残すか要検討
-          for (const file of post.files.items ) {
-            await forumApiFunc.deleteFile(file)
-            .catch((error) => console.error('deleteForumFile', error))
-          }
-        }
-        // URL
-        if(post.urls.items.length > 0) {
-          for (const url of post.urls.items ) {
-            await forumApiFunc.deleteLink(url)
-            .catch((error) => console.error('deleteForumUrl', error))
-          }
-        }
-        // タグ
-        if(post.tags.items.length > 0) {
-          for (const tag of post.tags.items ) {
-            await forumApiFunc.deleteTag(tag)
-            .catch((error) => console.error('deleteForumTag', error))
-          }
-        }
-        alert('投稿を削除しました')
+        await forumMixin.mixinDeleteForumPost(post)
         items.value = items.value.filter(v => v.id !== post.id)
+        alert('投稿を削除しました')
       } catch (error) {
         console.error('delete post exception error', error);
       }

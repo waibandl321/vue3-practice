@@ -207,18 +207,18 @@
 
 <script>
 import { toRefs, ref, effectScope } from '@vue/reactivity';
+import { onMounted } from '@vue/runtime-core';
+
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
 import OverlayLoading from '../OverlayLoading.vue';
 import FIleSelectModal from '../modal/FIleSelectModal.vue';
 
-// import forumApiFunc from '@/mixins/api/func/forum'
-// import storageFunc from '@/mixins/storage/storage.js'
 import fileApiFunc from '@/mixins/api/func/file'
 import forumMixin from './forum_mixin'
 
 import Multiselect from '@vueform/multiselect'
 import { uuid } from 'vue-uuid'
-import { onMounted } from '@vue/runtime-core';
+
 
 export default {
   name: "forum-edit",
