@@ -2,7 +2,7 @@ import { API } from 'aws-amplify'
 import { 
   createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl, 
   createForumTag, createForumTagOption,
-  updateForumPost, updateForumTag,
+  updateForumPost, updateForumTag, updateForumEyecatch,
   deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag, 
 } from '@/graphql/mutations'
 import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
@@ -162,11 +162,19 @@ export default {
       variables: { input: eyecatch }
     })
   },
+  async updateEyecatch (_eyecatch, old_eyecatch, save_post) {
+    const eyecatch = this.createEyecatchObject(_eyecatch, save_post)
+    eyecatch.id = old_eyecatch.id
+    await API.graphql({
+      query: updateForumEyecatch,
+      variables: { input: eyecatch }
+    })
+  },
   createEyecatchObject (_eyecatch, save_post) {
     return {
       post_id: save_post.id,
       post_key: save_post.post_key,
-      file_id: null,
+      file_id: _eyecatch.id ?? null,
       data_url: _eyecatch.data_url
     }
   },
