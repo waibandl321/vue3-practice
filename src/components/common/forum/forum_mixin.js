@@ -53,6 +53,36 @@ export default {
   async mixinUpdateForumPost () {
     
   },
+  // アイキャッチ更新
+  async mixinUpdateEyecatch (editor, dir_top) {
+    const uploadNew = async () => {
+      editor.eyecatch.data_url = await this.mixinUploadForumFile(editor.eyecatch, "forum_eyecatch")
+      await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
+    }
+    // 削除
+    if(!editor.eyecatch && editor.old_eyecatch.length > 0) {
+      await forumApiFunc.deleteEyecatch(...editor.old_eyecatch)
+    }
+    // 更新
+    if(editor.eyecatch) {
+      if(editor.old_eyecatch.length > 0 && !editor.eyecatch.post_key) {
+        // ローカルから画像アップロードして更新
+        if (!editor.eyecatch.id) {
+          await uploadNew()
+        }
+        await forumApiFunc.updateEyecatch(editor.eyecatch, ...editor.old_eyecatch, editor)
+        .catch((error) => console.log('forumApiFunc.updateEyecatch', error))
+      }
+      // 新規登録
+      if(editor.old_eyecatch.length === 0) {
+        if (!editor.eyecatch.id) {
+          await uploadNew()
+        }
+        await forumApiFunc.createEyecatch(editor.eyecatch, editor)
+      }
+    }
+  },
+  // タグ更新
   async mixinUpdateTags (forum, editor, tag_options) {
     const tags = editor.tags.items
     const old_tags = editor.old_tags

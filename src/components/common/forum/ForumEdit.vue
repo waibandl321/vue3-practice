@@ -4,14 +4,6 @@
     {{ editor }}
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
-      <div class="py-2">
-        アイキャッチ初期値：{{ editor.old_eyecatch }}
-        <hr>
-      </div>
-      <div class="py-2">
-        アイキャッチデータ：{{ editor.eyecatch }}
-        <hr>
-      </div>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -308,32 +300,7 @@ export default {
           // タグ更新
           await forumMixin.mixinUpdateTags(forum, editor, tag_options)
           // アイキャッチ更新
-          const uploadNew = async () => {
-            editor.eyecatch.data_url = await forumMixin.mixinUploadForumFile(editor.eyecatch, "forum_eyecatch")
-            await forumMixin.mixinSaveForumFileDatabase(dir_top.value, editor.eyecatch, editor.eyecatch.data_url, "forum")
-          }
-          // 削除
-          if(!editor.eyecatch && editor.old_eyecatch.length > 0) {
-            await forumApiFunc.deleteEyecatch(...editor.old_eyecatch)
-          }
-          // 更新
-          if(editor.eyecatch) {
-            if(editor.old_eyecatch.length > 0 && !editor.eyecatch.post_key) {
-              // ローカルから画像アップロードして更新
-              if (!editor.eyecatch.id) {
-                await uploadNew()
-              }
-              await forumApiFunc.updateEyecatch(editor.eyecatch, ...editor.old_eyecatch, editor)
-              .catch((error) => console.log('forumApiFunc.updateEyecatch', error))
-            }
-            // 新規登録
-            if(editor.old_eyecatch.length === 0) {
-              if (!editor.eyecatch.id) {
-                await uploadNew()
-              }
-              await forumApiFunc.createEyecatch(editor.eyecatch, editor)
-            }
-          }
+          await forumMixin.mixinUpdateEyecatch(editor, dir_top.value)
           
           
           // 添付ファイル更新

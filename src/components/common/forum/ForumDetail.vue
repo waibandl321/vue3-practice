@@ -3,8 +3,6 @@
     {{ viewer }}
     <div class="mt-4">
       <v-img src="https://placehold.jp/1200x800.png"></v-img>
-      アイキャッチデータ<br>
-      {{ viewer.eyecatch.items[0] }}
     </div>
     <div class="mt-4">
       <v-card-title>{{ viewer.title }}</v-card-title>
