@@ -53,9 +53,50 @@ export default {
   async mixinUpdateForumPost () {
     
   },
-  // async mixinUpdateTags (post_data) {
-    
-  // },
+  async mixinUpdateTags (forum, editor, tag_options) {
+    const tags = editor.tags.items
+    const old_tags = editor.old_tags
+
+    // 1つ目追加
+    if(old_tags.length === 0 && tags.length > 0) {
+      for (const tag of tags) {
+        await forumApiFunc.createTag(tag, editor)
+        .catch((error) => console.error('update:forumApiFunc.createTag', error))
+      }
+    }
+    // 値なし → 全削除
+    if(old_tags.length > 0 && tags.length === 0) {
+      for (const old_tag of old_tags) {
+        await forumApiFunc.deleteTag(old_tag)
+      }
+    }
+    // 差分処理
+    if(old_tags.length > 0 && tags.length > 0) {
+      // 追加 （初期値 < 登録値）
+      if(tags.length > old_tags.length) {
+        const add_item = tags.find((t) => {
+          return old_tags.find(o => o.id !== t.id)
+        })
+        console.log('登録...', add_item);
+        await forumApiFunc.createTag(add_item, editor)
+      }
+      // 削除 (初期値 > 登録値) 
+      if(tags.length < old_tags.length) {
+        const delete_item = old_tags.find((o) => {
+          return tags.find(t => t.id !== o.id)
+        })
+        console.log('削除...', delete_item);
+        await forumApiFunc.deleteTag(delete_item)
+      }
+    }
+    // 新しいタグオプション追加（削除禁止）
+    const new_tag_options = tag_options.filter(t => !t.id)
+    if(new_tag_options.length > 0) {
+      for (const new_option of new_tag_options) {
+        await forumApiFunc.createTagOption(forum, new_option)
+      }
+    }
+  },
   // S3アップロード
   async mixinUploadForumFile (file, function_cd) {
     return await storageFunc.storageUploadFunctionFile(file, function_cd)

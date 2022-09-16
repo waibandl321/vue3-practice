@@ -4,6 +4,14 @@
     {{ editor }}
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
+      <div class="py-2">
+        アイキャッチ初期値：{{ editor.old_eyecatch }}
+        <hr>
+      </div>
+      <div class="py-2">
+        アイキャッチデータ：{{ editor.eyecatch }}
+        <hr>
+      </div>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -150,11 +158,7 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
-      <hr>
-      選択済タグ {{ editor.tags.items }}<br>
-      <hr>
-      タグ選択肢: {{ tag_options }}
-      <div>
+      <div class="mt-2">
         <Multiselect
           mode="tags"
           v-model="editor.tags.items"
@@ -210,7 +214,7 @@
 </template>
 
 <script>
-import { toRefs, ref, effectScope } from '@vue/reactivity';
+import { toRefs, ref } from '@vue/reactivity';
 import { onMounted } from '@vue/runtime-core';
 
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
@@ -246,14 +250,11 @@ export default {
     const tag_options = _props.params.value.forum.tag_options.items
     const dir_top = ref({})
     // エフェクトスコープ
-    const scope = effectScope()
-    scope.run(() => {
-      onMounted(async () => {
-        dir_top.value = await fileApiFunc.apiGetDirTop()
-        if(!_props.params.value.is_new) {
-          editor.eyecatch = editor.eyecatch?.items[0]
-        }
-      })
+    onMounted(async () => {
+      dir_top.value = await fileApiFunc.apiGetDirTop()
+      if(!_props.params.value.is_new) {
+        editor.eyecatch = editor.eyecatch?.items[0]
+      }
     })
     // URL
     const addLinks = () => {
@@ -305,60 +306,10 @@ export default {
           alert('投稿を保存しました。')
         } else {
           // タグ更新
-          // await forumMixin.mixinUpdateTags(editor)
-          const tags = editor.tags.items
-          const old_tags = editor.old_tags
+          await forumMixin.mixinUpdateTags(forum, editor, tag_options)
+          // アイキャッチ更新
+          if(editor.eyecatch)
 
-          // 1つ目追加
-          if(old_tags.length === 0 && tags.length > 0) {
-            for (const tag of tags) {
-              await forumApiFunc.createTag(tag, editor)
-              .catch((error) => console.error('update:forumApiFunc.createTag', error))
-            }
-          }
-
-          // 値なし → 全削除
-          if(old_tags.length > 0 && tags.length === 0) {
-            for (const old_tag of old_tags) {
-              await forumApiFunc.deleteTag(old_tag)
-            }
-          }
-
-          // 差分処理
-          if(old_tags.length > 0 && tags.length > 0) {
-            // 追加 （初期値 < 登録値）
-            if(tags.length > old_tags.length) {
-              const add_item = tags.find((t) => {
-                return old_tags.find(o => o.id !== t.id)
-              })
-              await forumApiFunc.createTag(add_item, editor)
-            }
-            // 削除 (初期値 > 登録値) 
-            if(tags.length < old_tags.length) {
-              const delete_item = old_tags.find((o) => {
-                return tags.find(t => t.id !== o.id)
-              })
-              await forumApiFunc.deleteTag(delete_item)
-            }
-          }
-          
-          // 新しいタグオプション追加（削除禁止）
-          const new_tag_options = tag_options.filter(t => !t.id)
-          if(new_tag_options.length > 0) {
-            for (const new_option of new_tag_options) {
-              await forumApiFunc.createTagOption(forum, new_option)
-            }
-          }
-
-          // if(tags.length > 0) {
-          //   for (const tag of tags) {
-          //     // タグ削除
-          //     // await forumApiFunc.deleteTag(tag)
-          //     // 新規追加
-          //     // await forumApiFunc.updateTag(tag, editor)
-          //     // .catch((error) => console.error('forumApiFunc.updateTag', error))
-          //   }
-          // }
           
           // 添付ファイル更新
           // const files = editor.files.items.filter(v => !v.post_key)
