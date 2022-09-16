@@ -3,7 +3,7 @@ import {
   createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl, 
   createForumTag, createForumTagOption,
   updateForumPost, updateForumTag,
-  deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag 
+  deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag, 
 } from '@/graphql/mutations'
 import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
@@ -192,8 +192,7 @@ export default {
     return results.data.listForumEyecatches.items[0]
   },
   // タグ
-  async createTags (tag, post_data) {
-    console.log('create tag', tag);
+  async createTag (tag, post_data) {
     const item = this.createTagObject(tag, post_data)
     await API.graphql({
       query: createForumTag,
@@ -201,25 +200,18 @@ export default {
     })
   },
   async updateTag (_tag, post_data) {
+    // 新規作成
     if(!_tag.id) {
-      this.createTags(_tag, post_data)
+      this.createTag(_tag, post_data)
       return;
     }
+    // 更新
     const tag = this.createTagObject(_tag, post_data)
     tag.id = _tag.id
     return await API.graphql({
       query: updateForumTag,
       variables: { input: tag }
     })
-  },
-  createTagObject (tag, post_data) {
-    return {
-      post_id: post_data.id,
-      post_key: post_data.post_key,
-      sort_number: post_data.sort_number ?? uuid.v4(),
-      forum_tag_name: tag.forum_tag_name,
-      company_cd: store.getters.companyCd
-    }
   },
   async deleteTag (tag) {
     const filter = {
@@ -229,6 +221,15 @@ export default {
       query: deleteForumTag,
       variables: {input: filter}
     });
+  },
+  createTagObject (tag, post_data) {
+    return {
+      post_id: post_data.id,
+      post_key: post_data.post_key,
+      sort_number: post_data.sort_number ?? uuid.v4(),
+      forum_tag_name: tag.forum_tag_name,
+      company_cd: store.getters.companyCd
+    }
   },
   // タグオプション
   async createTagOption (forum, tag_option) {

@@ -45,20 +45,17 @@ export default {
   },
   async mixinCreateTags (editor, save_post) {
     for (const tag of editor.tags.items) {
-      await forumApiFunc.createTags(tag, save_post)
-      .catch((error) => console.error('forumApiFunc.createTags', error))
+      await forumApiFunc.createTag(tag, save_post)
+      .catch((error) => console.error('forumApiFunc.createTag', error))
     }
   },
   // 更新
   async mixinUpdateForumPost () {
     
   },
-  async mixinUpdateTags (tags, post_data) {
-    for (const tag of tags) {
-      await forumApiFunc.updateTag(tag, post_data)
-      .catch((error) => console.error('forumApiFunc.updateTag', error))
-    }
-  },
+  // async mixinUpdateTags (post_data) {
+    
+  // },
   // S3アップロード
   async mixinUploadForumFile (file, function_cd) {
     return await storageFunc.storageUploadFunctionFile(file, function_cd)

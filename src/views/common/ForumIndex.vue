@@ -58,8 +58,8 @@ export default {
         params.value.is_new = true
         initEditor()
       }
+      // MEMO : 仮）一旦データリフレッシュ
       if(_mode === 'list') {
-        // 一旦データリフレッシュ
         (async() => {
           loading.value = true
           try {
@@ -93,6 +93,10 @@ export default {
     }
     const setEditor = (post) => {
       params.value.editor = post
+      params.value.editor.old_tags = post.tags.items
+      params.value.editor.old_urls = post.urls.items
+      params.value.editor.old_eyecatch = post.eyecatch.items
+      params.value.editor.old_files = post.files.items
     }
     const init = async () => {
       loading.value = true
