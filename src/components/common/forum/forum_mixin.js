@@ -39,8 +39,8 @@ export default {
   },
   async mixinCreateUrls (editor, save_post) {
     for (const url of editor.urls.items) {
-      await forumApiFunc.createLinks(url, save_post)
-      .catch((error) => console.error('forumApiFunc.createLinks', error))
+      await forumApiFunc.createLink(url, save_post)
+      .catch((error) => console.error('forumApiFunc.createLink', error))
     }
   },
   async mixinCreateTags (editor, save_post) {

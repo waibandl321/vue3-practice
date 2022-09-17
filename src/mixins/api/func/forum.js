@@ -2,7 +2,7 @@ import { API } from 'aws-amplify'
 import { 
   createForum,createForumPost, createForumFile, createForumEyecatch, createForumUrl, 
   createForumTag, createForumTagOption,
-  updateForumPost, updateForumTag, updateForumEyecatch,
+  updateForumPost, updateForumTag, updateForumEyecatch, updateForumUrl,
   deleteForumPost, deleteForumFile, deleteForumEyecatch, deleteForumUrl, deleteForumTag, 
 } from '@/graphql/mutations'
 import { listForums, listForumPosts, getForumPost, listForumEyecatches } from '@/graphql/queries'
@@ -129,10 +129,18 @@ export default {
     });
   },
   // URLリンク
-  async createLinks (url, save_post) {
+  async createLink (url, save_post) {
     const item = this.createLinkObject(url, save_post)
     await API.graphql({
       query: createForumUrl,
+      variables: { input: item }
+    })
+  },
+  async updateLink (url, save_post) {
+    const item = this.createLinkObject(url, save_post)
+    item.id = url.id
+    await API.graphql({
+      query: updateForumUrl,
       variables: { input: item }
     })
   },

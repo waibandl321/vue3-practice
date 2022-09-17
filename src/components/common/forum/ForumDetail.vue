@@ -1,10 +1,13 @@
 <template>
   <v-container class="im-container">
     {{ viewer }}
-    <div class="mt-4">
+    <div
+      v-if="viewer.eyecatch_url"
+      class="mt-4"
+    >
       <v-img 
         :src="viewer.eyecatch_url"
-        aspect-ratio="1.5"
+        aspect-ratio="2"
       ></v-img>
     </div>
     <div class="mt-4">
@@ -31,15 +34,17 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">添付ファイル</div>
-      <div
-        class="mt-2"
-        v-for="file in viewer.files.items"
-        :key="file.id"
-      >
-        <v-chip>
-          {{ file.id }}
-        </v-chip>
-      </div>
+      <v-row>
+        <v-col
+          class="mt-2"
+          v-for="file in viewer.files.items"
+          :key="file.id"
+        >
+          <v-chip>
+            {{ file.id }}
+          </v-chip>
+        </v-col>
+      </v-row>
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>

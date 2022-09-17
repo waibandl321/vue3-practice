@@ -65,7 +65,12 @@
       <div class="font-weight-bold">
         WEBサイト
       </div>
-      リンク有無判定: {{ editor.url_links }}
+      <div>
+        昔の値: {{ editor.old_urls }}
+        <hr>
+        今の値: {{ editor.urls.items }}
+      </div>
+      
       <div>
         <v-btn
           color="primary"
@@ -106,7 +111,11 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">添付ファイル</div>
-      {{ editor.files.items }}
+      <div>
+        昔の値: {{ editor.old_files }}
+        <hr>
+        新しい値 {{ editor.files.items }}
+      </div>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -250,27 +259,30 @@ export default {
     })
     // URL
     const addLinks = () => {
-      editor.urls.items.push(
+      const results = editor.urls.items
+      results.push(
         {
           uid: uuid.v4(),
           url_key: "",
           url_value: ""
         }
       )
+      editor.urls.items = results
     }
     const deleteLinks = (item) => {
       let results = editor.urls.items
-      results = results.filter(v => v.uid !== item.uid)
+      results = results.filter(v => v.uid !== item.uid || v.id !== item.id)
       editor.urls.items = results
     }
     // 添付画像
     const changeAttachment = (event) => {
       editor.files.items.push(...event.target.files)
     }
+    const remove_files = ref([])
     const removeForumFile = async (file) => {
       editor.files.items = editor.files.items.filter(v => v.name !== file.name || v.id !== file.id)
       if(file.post_key) {
-        await forumApiFunc.deleteFile(file)
+        remove_files.value.push(file)
       }
     }
     // タグ
@@ -301,17 +313,90 @@ export default {
           await forumMixin.mixinUpdateTags(forum, editor, tag_options)
           // アイキャッチ更新
           await forumMixin.mixinUpdateEyecatch(editor, dir_top.value)
+          // URL
+          const urls = editor.urls.items
+          const old_urls = editor.old_urls.filter(v => !v.uid)
           
+          if(old_urls.length > 0) {
+            // 値なし 全削除
+            if(urls.length === 0) {
+              for (const url of old_urls) {
+                await forumApiFunc.deleteLink(url)
+              }
+            }
+            
+            if(urls.length > 0) {
+              for (const url of urls) {
+                // 追加
+                if(!url.id && url.uid) {
+                  await forumApiFunc.createLink(url, editor)
+                }
+                // 既存更新
+                if(old_urls.find(v => v.id === url.id)) {
+                  await forumApiFunc.updateLink(url, editor)
+                }
+                // 差分削除
+                if(old_urls.find(v => v.id !== url.id)) {
+                  console.log('delete', url);
+                  await forumApiFunc.deleteLink(url, editor)
+                }
+              }
+            }
+          }
+          // 初期値なし ＋ 新規追加
+          if(old_urls.length === 0) {
+            for (const url of urls) {
+              await forumApiFunc.createLink(url, editor)
+            }
+          }
           
           // 添付ファイル更新
-          // const files = editor.files.items.filter(v => !v.post_key)
-          // if(files.length > 0) {
-          //   await forumMixin.mixinCreateFiles(files, editor, dir_top.value)
-          // }
+          const files = editor.files.items
+          const old_files = editor.old_files.filter(v => v.post_key)
+          console.log('old_files', old_files);
+          if(old_files.length > 0) {
+            // 初期値なし ＋ 新規追加
+            if(old_files.length === 0) {
+              for (const file of files) {
+                if(file.id) {
+                  console.log('forum file new', file);
+                  await forumApiFunc.createFiles(file, editor)
+                } else {
+                  console.log('forum local file add', file);
+                  file.data_url = await this.mixinUploadForumFile(file, "forum")
+                  await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+                }
+              }
+            }
+            // 差分
+            if(files.length > 0) {
+              for (const file of files) {
+                // 追加
+                if(!file.post_key) {
+                  if(file.id) {
+                    console.log('forum file add', file);
+                    await forumApiFunc.createFiles(file, editor)
+                  } else {
+                    // 追加：アップロードあり
+                    console.log('forum local file add', file);
+                    file.data_url = await this.mixinUploadForumFile(file, "forum")
+                    await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+                  }
+                }
+              }
+            }
+            // 削除
+            if(remove_files.value.length > 0) {
+              for (const file of remove_files.value) {
+                console.log('delete', file);
+                await forumApiFunc.deleteFile(file, editor)
+              }
+            }
+          }
+          
+          remove_files.value = []
           alert('投稿を保存しました。')
-          // const urls = editor.urls.items
         }
-        // TODO: 新しく登録されたタグオプションもDBに保存する（table: ForumTagOption）
         props.changeMode('list')
       } catch (error) {
         console.error("forumApiFunc.savePost", error)

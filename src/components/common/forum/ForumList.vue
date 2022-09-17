@@ -61,7 +61,7 @@
       >検索</v-btn>
     </v-col>
   </v-row>
-  {{ items }}
+
   <v-row class="pa-6">
     <v-col 
       cols="3"
@@ -77,11 +77,11 @@
             <v-img
               :src="post.eyecatch_url"
               aspect-ratio="1.5"
-              contain
             >
               <template v-slot:placeholder>
                 <div class="d-flex align-center justify-center fill-height">
                   <v-progress-circular
+                    v-if="post.eyecatch_url"
                     indeterminate
                   ></v-progress-circular>
                 </div>
@@ -166,6 +166,7 @@ export default {
     const loading = ref(false)
     const _props = toRefs(props)
     const items = ref(_props.params.value.forum.posts.items)
+    console.log('forum list', items.value);
     // アイキャッチセット
     const getPreviewerFile = async (post) => {
       if(post.eyecatch.items.length === 0) return undefined;
