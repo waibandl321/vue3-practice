@@ -65,8 +65,8 @@
   <v-row class="pa-6">
     <v-col 
       cols="3"
-      v-for="post in items"
-      :key="post.id"
+      v-for="(post, index) in items"
+      :key="index"
     >
       <v-card
         variant="outlined"
@@ -74,7 +74,19 @@
       >
         <v-card-item>
           <div>
-            <v-img src="https://placehold.jp/500x400.png"></v-img>
+            <v-img
+              :src="post.eyecatch_url"
+              aspect-ratio="1.5"
+              contain
+            >
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+              </template>
+            </v-img>
             <div class="text-overline my-2 d-flex justify-space-between align-center">
               <v-chip
                 v-for="tag in post.tags.items"
@@ -137,6 +149,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { ref, toRefs } from '@vue/reactivity';
 
 import forumMixin from './forum_mixin'
+import utilMixin from '@/mixins/utils/utils.js'
 
 export default {
   name: "forum-list",
@@ -152,7 +165,19 @@ export default {
   setup (props) {
     const loading = ref(false)
     const _props = toRefs(props)
-    const items =ref(_props.params.value.forum.posts.items)
+    const items = ref(_props.params.value.forum.posts.items)
+    // アイキャッチセット
+    const getPreviewerFile = async (post) => {
+      if(post.eyecatch.items.length === 0) return undefined;
+      const req_url = post.eyecatch.items[0].data_url.replace(/\?.*$/,"")
+      return await utilMixin.getImageObjectURL(req_url)
+    }
+    const init = async () => {
+      for (const post of items.value) {
+        post.eyecatch_url = await getPreviewerFile(post)
+      }
+    }
+    init()
     // 詳細遷移
     const viewPost = (post) => {
       props.setViewer(post)
@@ -177,6 +202,7 @@ export default {
       }
       loading.value = false
     }
+    
     // 検索
     const filter_mode = ref(false)
     const post_start = ref()

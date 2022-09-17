@@ -98,11 +98,11 @@ export default {
       params.value.editor.old_eyecatch = post.eyecatch.items
       params.value.editor.old_files = post.files.items
     }
+    // データ取得
     const init = async () => {
       loading.value = true
       try {
         params.value.forum = await forumApiFunc.getForum()
-        console.log(params.value.forum);
       } catch (error) {
         console.error('func:forumApiFunc.getForum', error)
       }

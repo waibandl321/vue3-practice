@@ -28,13 +28,24 @@ export default {
     getPermanentText (value) {
       return Permanents.find(v => v.value === value).text
     },
-    cryptoData (value) {
-      return crypto.AES.encrypt(value, CryptHash)
-    },
-    decryptoData (value) {
-      return crypto.AES.decrypt(value, CryptHash)
-    }
-  }
+  },
+  // 暗号化
+  cryptoData (value) {
+    return crypto.AES.encrypt(value, CryptHash)
+  },
+  decryptoData (value) {
+    return crypto.AES.decrypt(value, CryptHash)
+  },
+  // imageプレビュー: createObjectURL
+  async getImageObjectURL (req_url) {
+    const myRequest = new Request(req_url);
+    return fetch(myRequest)
+    .then(response => response.blob())
+    .then((blob) => {
+      return window.URL.createObjectURL(blob);
+    })
+  },
+
 }
 const CryptHash = 'hcg7ebiisufh'
 const CompanyTypes = [

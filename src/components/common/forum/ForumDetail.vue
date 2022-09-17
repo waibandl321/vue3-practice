@@ -2,7 +2,10 @@
   <v-container class="im-container">
     {{ viewer }}
     <div class="mt-4">
-      <v-img src="https://placehold.jp/1200x800.png"></v-img>
+      <v-img 
+        :src="viewer.eyecatch_url"
+        aspect-ratio="1.5"
+      ></v-img>
     </div>
     <div class="mt-4">
       <v-card-title>{{ viewer.title }}</v-card-title>
@@ -86,10 +89,12 @@ export default {
     const backFunc = () => {
       props.changeMode('list')
     }
+    
     return {
       viewer,
       edit,
-      backFunc
+      backFunc,
+      // eyecatch_src
     }
   }
 }
