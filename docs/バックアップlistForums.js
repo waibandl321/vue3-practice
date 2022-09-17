@@ -912,6 +912,7 @@ export const listForums = /* GraphQL */ `
                 post_key
                 sort_number
                 file_id
+                file_name
                 data_url
                 createdAt
                 updatedAt
@@ -999,6 +1000,7 @@ export const getForumPost = /* GraphQL */ `
           post_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -1117,6 +1119,7 @@ export const getForumFile = /* GraphQL */ `
       post_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
@@ -1136,6 +1139,7 @@ export const listForumFiles = /* GraphQL */ `
         post_key
         sort_number
         file_id
+        file_name
         data_url
         createdAt
         updatedAt

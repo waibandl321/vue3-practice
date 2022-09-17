@@ -34,25 +34,23 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">添付ファイル</div>
-      <v-row>
-        <v-col
-          class="mt-2"
+      <div class="mt-2 d-flex">
+        <v-chip
           v-for="file in viewer.files.items"
           :key="file.id"
+          class="mr-2"
         >
-          <v-chip>
-            {{ file.id }}
-          </v-chip>
-        </v-col>
-      </v-row>
+          {{ file.file_name }}
+        </v-chip>
+      </div>
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">タグ</div>
       <div class="mt-2">
-        {{ viewer.tags.items }}
         <v-chip
           v-for="tag in viewer.tags.items"
           :key="tag.id"
+          class="mr-2"
         >
           {{ tag.forum_tag_name }}
         </v-chip>

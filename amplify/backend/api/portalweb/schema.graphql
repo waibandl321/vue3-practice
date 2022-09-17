@@ -260,6 +260,7 @@ type ForumFile @model {
   post_key: String
   sort_number: String
   file_id: String
+  file_name: String
   data_url: String
   createdAt: AWSDateTime!
 	updatedAt: AWSDateTime!

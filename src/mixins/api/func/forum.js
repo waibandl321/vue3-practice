@@ -103,7 +103,7 @@ export default {
   },
 
   // ファイル
-  async createFiles (file, save_post) {
+  async createFile (file, save_post) {
     const item = this.createFileObject(file, save_post)
     await API.graphql({
       query: createForumFile,
@@ -115,7 +115,8 @@ export default {
       post_id: save_post.id,
       post_key: save_post.post_key,
       sort_number: uuid.v4(),
-      file_id: null,
+      file_id: file.id ?? null,
+      file_name: file.file_name ?? file.name,
       data_url: file.data_url,
     }
   },

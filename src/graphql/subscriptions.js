@@ -1219,6 +1219,7 @@ export const onCreateForumPost = /* GraphQL */ `
           post_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -1306,6 +1307,7 @@ export const onUpdateForumPost = /* GraphQL */ `
           post_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -1393,6 +1395,7 @@ export const onDeleteForumPost = /* GraphQL */ `
           post_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -1466,6 +1469,7 @@ export const onCreateForumFile = /* GraphQL */ `
       post_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
@@ -1482,6 +1486,7 @@ export const onUpdateForumFile = /* GraphQL */ `
       post_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
@@ -1498,6 +1503,7 @@ export const onDeleteForumFile = /* GraphQL */ `
       post_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
