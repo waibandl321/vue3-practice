@@ -227,10 +227,8 @@ import fileApiFunc from '@/mixins/api/func/file'
 import forumMixin from './forum_mixin'
 import forumApiFunc from '@/mixins/api/func/forum'
 
-
 import Multiselect from '@vueform/multiselect'
 import { uuid } from 'vue-uuid'
-
 
 export default {
   name: "forum-edit",

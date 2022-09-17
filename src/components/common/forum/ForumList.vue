@@ -170,8 +170,8 @@ export default {
     // アイキャッチセット
     const getPreviewerFile = async (post) => {
       if(post.eyecatch.items.length === 0) return undefined;
-      const req_url = post.eyecatch.items[0].data_url.replace(/\?.*$/,"")
-      return await utilMixin.getImageObjectURL(req_url)
+      const requset_url = utilMixin.removeUrlQuery(post.eyecatch.items[0].data_url)
+      return await utilMixin.getImageObjectURL(requset_url)
     }
     const init = async () => {
       for (const post of items.value) {

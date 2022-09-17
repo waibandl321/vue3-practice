@@ -36,6 +36,10 @@ export default {
   decryptoData (value) {
     return crypto.AES.decrypt(value, CryptHash)
   },
+  // urlクエリ削除
+  removeUrlQuery(value) {
+    return value.replace(/\?.*$/,"")
+  },
   // imageプレビュー: createObjectURL
   async getImageObjectURL (req_url) {
     const myRequest = new Request(req_url);

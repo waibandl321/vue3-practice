@@ -130,14 +130,11 @@ export default {
     // 初期値なし ＋ 新規追加
     if(old_files.length === 0 && files.length > 0) {
       for (const file of files) {
-        if(file.id) {
-          console.log('forum file new', file);
-          await forumApiFunc.createFile(file, editor)
-        } else {
-          console.log('forum local file add', file);
+        if(!file.id) {
           file.data_url = await this.mixinUploadForumFile(file, "forum")
           await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
         }
+        await forumApiFunc.createFile(file, editor)
       }
     }
     if(old_files.length > 0) {
@@ -146,15 +143,12 @@ export default {
         for (const file of files) {
           // 追加
           if(!file.post_key) {
-            if(file.id) {
-              console.log('forum file add', file);
-              await forumApiFunc.createFile(file, editor)
-            } else {
-              // 追加：アップロードあり
+            if(!file.id) {
               console.log('forum local file add', file);
               file.data_url = await this.mixinUploadForumFile(file, "forum")
               await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
             }
+            await forumApiFunc.createFile(file, editor)
           }
         }
       }
@@ -197,9 +191,7 @@ export default {
       // 削除 (初期値 > 登録値) 
       if(tags.length < old_tags.length) {
         for (const old_tag of old_tags) {
-          if(tags.find(v => v.forum_tag_name === old_tag.forum_tag_name)) {
-            console.log("stay", old_tag);
-          } else {
+          if(tags.find(v => v.forum_tag_name === old_tag.forum_tag_name) === undefined) {
             console.log("delete_tag", old_tag);
             await forumApiFunc.deleteTag(old_tag)
           }

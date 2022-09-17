@@ -34,14 +34,20 @@
     </div>
     <div class="mt-10">
       <div class="font-weight-bold">添付ファイル</div>
-      <div class="mt-2 d-flex">
-        <v-chip
-          v-for="file in viewer.files.items"
-          :key="file.id"
-          class="mr-2"
-        >
+      <div
+        v-for="file in viewer.files.items"
+        :key="file.id"
+        class="mt-4"
+      >
+        <v-chip>
           {{ file.file_name }}
         </v-chip>
+        <div class="mt-2">
+          <v-img
+            width="150"
+            :src="file.preview_src"
+          ></v-img>
+        </div>
       </div>
     </div>
     <div class="mt-10">
@@ -74,6 +80,7 @@
 
 <script>
 import { toRefs } from '@vue/reactivity';
+import utilMixin from '@/mixins/utils/utils.js'
 
 export default {
   name: "forum-detail",
@@ -92,12 +99,22 @@ export default {
     const backFunc = () => {
       props.changeMode('list')
     }
-    
+    const getPreviewerFile = async (data_url) => {
+      const requset_url = utilMixin.removeUrlQuery(data_url)
+      return await utilMixin.getImageObjectURL(requset_url)
+    }
+    const init = async () => {
+      if(viewer.files.items.length === 0) return;
+      for (const file of viewer.files.items) {
+        file.preview_src = await getPreviewerFile(file.data_url)
+      }
+    }
+    init()
+
     return {
       viewer,
       edit,
       backFunc,
-      // eyecatch_src
     }
   }
 }
