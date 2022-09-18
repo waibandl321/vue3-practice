@@ -1,5 +1,5 @@
 import Home from '@/views/Home.vue'
-import ChatView from '@/views/common/ChatView.vue'
+import ChatIndex from '@/views/common/ChatIndex.vue'
 import FileIndex from '@/views/common/FileIndex.vue'
 import ForumIndex from '@/views/common/ForumIndex.vue'
 import NotificationView from '@/views/common/NotificationView.vue'
@@ -20,7 +20,7 @@ export default [
   {
     name: 'chat-view',
     path: '/chat',
-    component: ChatView,
+    component: ChatIndex,
     meta: { title: 'チャット' }
   },
   {

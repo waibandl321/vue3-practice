@@ -106,7 +106,6 @@ export default {
       } catch (error) {
         console.error('func:forumApiFunc.getForum', error)
       }
-      
       loading.value = false
     }
     init()

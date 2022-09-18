@@ -200,21 +200,25 @@ type FileDirTop @model {
   function_cd: String
   dir_id: String
   level: Int
-  company_cd: String
+  company_cd: ID!
+  dirs: [FileDir] @hasMany(indexName: "byFileDirTop", fields: ["company_cd"])
+  files: [FileStore] @hasMany(indexName: "byFileDirTop", fields: ["company_cd"])
 }
 type FileDir @model {
   id: ID!
   dir_id: String
   dir_name: String
   parent_dir_id: String
-  company_cd: String
+  company_cd: ID! @index(name: "byFileDirTop", sortKeyFields: ["createdAt"])
   level: Int
   status: Int
   permission: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type FileStore @model {
   id: ID!
-  company_cd: String
+  company_cd: ID! @index(name: "byFileDirTop", sortKeyFields: ["createdAt"])
   dir_id: String
   function_cd: String
   file_name: String
@@ -224,6 +228,8 @@ type FileStore @model {
   store_type: Int
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type Forum @model {
   id: ID!
@@ -238,7 +244,7 @@ type Forum @model {
 type ForumPost @model {
   id: ID!
   post_key: String
-  forum_id: ID! @index(name: "byForum", sortKeyFields: ["updatedAt"])
+  forum_id: ID! @index(name: "byForum", sortKeyFields: ["createdAt"])
   title: String
   post_text: String
   attached: Int
@@ -256,7 +262,7 @@ type ForumPost @model {
 }
 type ForumFile @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["createdAt"])
   post_key: String
   sort_number: String
   file_id: String
@@ -267,7 +273,7 @@ type ForumFile @model {
 }
 type ForumUrl @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["createdAt"])
   post_key: String
   sort_number: String
   url_key: String
@@ -277,7 +283,7 @@ type ForumUrl @model {
 }
 type ForumEyecatch @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["createdAt"])
   post_key: String
   file_id: String
   data_url: String
@@ -286,7 +292,7 @@ type ForumEyecatch @model {
 }
 type ForumTag @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["updatedAt"])
+  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["createdAt"])
   post_key: String
   sort_number: String
   forum_tag_name: String
@@ -296,7 +302,7 @@ type ForumTag @model {
 }
 type ForumTagOption @model {
   id: ID!
-  forum_id: ID! @index(name: "byForum", sortKeyFields: ["updatedAt"])
+  forum_id: ID! @index(name: "byForum", sortKeyFields: ["createdAt"])
   forum_tag_name: String
   company_cd: String
   createdAt: AWSDateTime!
