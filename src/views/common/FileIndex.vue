@@ -55,6 +55,7 @@ export default {
     const init = async () => {
       loading.value = true
       params.value.dir_top = await fileApiFunc.apiGetDirTop()
+      console.log(params.value.dir_top);
       params.value.dirs = await fileApiFunc.apiGetAllDir()
       loading.value = false
     }

@@ -778,9 +778,36 @@ export const listFileDirTops = /* GraphQL */ `
         level
         company_cd
         dirs {
+          items {
+            id
+            dir_id
+            dir_name
+            parent_dir_id
+            company_cd
+            level
+            status
+            permission
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         files {
+          items {
+            id
+            company_cd
+            dir_id
+            function_cd
+            file_name
+            file_size
+            owner_id
+            data_url
+            store_type
+            status
+            delete
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         createdAt
