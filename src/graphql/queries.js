@@ -1392,6 +1392,18 @@ export const listChats = /* GraphQL */ `
         company_group_cd
         owner_id
         rooms {
+          items {
+            id
+            room_id
+            room_name
+            room_type
+            send_notice
+            owner_staff_id
+            delete
+            chat_id
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         createdAt

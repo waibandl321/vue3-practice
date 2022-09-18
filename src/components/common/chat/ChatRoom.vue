@@ -1,8 +1,9 @@
 <template>
   <div class="chat-main">
+    {{ view_room }}
     <!-- ルーム設定 -->
     <v-card-actions>
-      <v-card-title>ルーム名</v-card-title>
+      <v-card-title>{{ view_room.room_name }}</v-card-title>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -148,7 +149,7 @@
 
 <script>
 import { ref } from '@vue/reactivity'
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, inject } from '@vue/runtime-core'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import fileApiFunc from '@/mixins/api/func/file'
 import OverlayLoading from '../OverlayLoading.vue'
@@ -161,6 +162,9 @@ export default {
     }
   },
   setup() {
+    const $params = inject('params')
+    const view_room = $params.view_room
+
     const loading = ref(false);
     // URL
     const menu_link = ref(false);
@@ -188,6 +192,7 @@ export default {
     };
 
     return {
+      view_room,
       loading,
       // URL
       menu_link,
