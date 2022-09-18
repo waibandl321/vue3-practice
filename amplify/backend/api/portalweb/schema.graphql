@@ -315,47 +315,63 @@ type Chat @model {
   company_cd: String
   company_group_cd: String
   owner_id: String
+  rooms: [ChatRoom] @hasMany(indexName: "byChat", fields: ["id"])
 }
 type ChatRoom @model {
   id: ID!
-  room_id: String
+  room_id: ID!
   room_name: String
   room_type: Int
   send_notice: Int
   owner_staff_id: String
   delete: Int
+  chat_id: ID! @index(name: "byChat", sortKeyFields: ["createdAt"])
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  members: [ChatRoomMember] @hasMany(indexName: "byChatRoom", fields: ["room_id"])
+  posts: [ChatPost] @hasMany(indexName: "byChatRoom", fields: ["room_id"])
 }
 type ChatRoomMember @model {
   id: ID!
-  room_id: String
+  room_id: ID! @index(name: "byChatRoom", sortKeyFields: ["createdAt"])
   member_id: String
   send_notice: Int
   room_name: String
   ignore: Int
   last_access: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type ChatPost @model {
   id: ID!
-  chat_key: String
-  room_id: String
+  chat_key: ID!
+  room_id: ID! @index(name: "byChatRoom", sortKeyFields: ["createdAt"])
   attached: Int
   post_text: String
   url_links: Int
   poster_ids: String
   mentions: String
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  files: [ChatFile] @hasMany(indexName: "byChatPost", fields: ["chat_key"])
+  urls: [ChatUrl] @hasMany(indexName: "byChatPost", fields: ["chat_key"])
 }
 type ChatFile @model {
   id: ID!
-  chat_key: String
+  chat_key: ID! @index(name: "byChatPost", sortKeyFields: ["createdAt"])
   sort_number: String
   file_id: String
   data_url: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 type ChatUrl @model {
   id: ID!
-  chat_key: String
+  chat_key: ID! @index(name: "byChatPost", sortKeyFields: ["createdAt"])
   sort_number: String
   url_key: String
   url_value: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }

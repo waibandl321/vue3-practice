@@ -1975,6 +1975,21 @@ export const createChat = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      rooms {
+        items {
+          id
+          room_id
+          room_name
+          room_type
+          send_notice
+          owner_staff_id
+          delete
+          chat_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1992,6 +2007,21 @@ export const updateChat = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      rooms {
+        items {
+          id
+          room_id
+          room_name
+          room_type
+          send_notice
+          owner_staff_id
+          delete
+          chat_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -2009,6 +2039,21 @@ export const deleteChat = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      rooms {
+        items {
+          id
+          room_id
+          room_name
+          room_type
+          send_notice
+          owner_staff_id
+          delete
+          chat_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -2027,8 +2072,39 @@ export const createChatRoom = /* GraphQL */ `
       send_notice
       owner_staff_id
       delete
+      chat_id
       createdAt
       updatedAt
+      members {
+        items {
+          id
+          room_id
+          member_id
+          send_notice
+          room_name
+          ignore
+          last_access
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      posts {
+        items {
+          id
+          chat_key
+          room_id
+          attached
+          post_text
+          url_links
+          poster_ids
+          mentions
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -2045,8 +2121,39 @@ export const updateChatRoom = /* GraphQL */ `
       send_notice
       owner_staff_id
       delete
+      chat_id
       createdAt
       updatedAt
+      members {
+        items {
+          id
+          room_id
+          member_id
+          send_notice
+          room_name
+          ignore
+          last_access
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      posts {
+        items {
+          id
+          chat_key
+          room_id
+          attached
+          post_text
+          url_links
+          poster_ids
+          mentions
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -2063,8 +2170,39 @@ export const deleteChatRoom = /* GraphQL */ `
       send_notice
       owner_staff_id
       delete
+      chat_id
       createdAt
       updatedAt
+      members {
+        items {
+          id
+          room_id
+          member_id
+          send_notice
+          room_name
+          ignore
+          last_access
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      posts {
+        items {
+          id
+          chat_key
+          room_id
+          attached
+          post_text
+          url_links
+          poster_ids
+          mentions
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -2139,6 +2277,30 @@ export const createChatPost = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      files {
+        items {
+          id
+          chat_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          chat_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -2159,6 +2321,30 @@ export const updateChatPost = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      files {
+        items {
+          id
+          chat_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          chat_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -2179,6 +2365,30 @@ export const deleteChatPost = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      files {
+        items {
+          id
+          chat_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          chat_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;

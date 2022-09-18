@@ -1357,6 +1357,21 @@ export const getChat = /* GraphQL */ `
       company_cd
       company_group_cd
       owner_id
+      rooms {
+        items {
+          id
+          room_id
+          room_name
+          room_type
+          send_notice
+          owner_staff_id
+          delete
+          chat_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -1376,6 +1391,9 @@ export const listChats = /* GraphQL */ `
         company_cd
         company_group_cd
         owner_id
+        rooms {
+          nextToken
+        }
         createdAt
         updatedAt
       }
@@ -1393,8 +1411,39 @@ export const getChatRoom = /* GraphQL */ `
       send_notice
       owner_staff_id
       delete
+      chat_id
       createdAt
       updatedAt
+      members {
+        items {
+          id
+          room_id
+          member_id
+          send_notice
+          room_name
+          ignore
+          last_access
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      posts {
+        items {
+          id
+          chat_key
+          room_id
+          attached
+          post_text
+          url_links
+          poster_ids
+          mentions
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -1413,8 +1462,15 @@ export const listChatRooms = /* GraphQL */ `
         send_notice
         owner_staff_id
         delete
+        chat_id
         createdAt
         updatedAt
+        members {
+          nextToken
+        }
+        posts {
+          nextToken
+        }
       }
       nextToken
     }
@@ -1471,6 +1527,30 @@ export const getChatPost = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      files {
+        items {
+          id
+          chat_key
+          sort_number
+          file_id
+          data_url
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      urls {
+        items {
+          id
+          chat_key
+          sort_number
+          url_key
+          url_value
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -1493,6 +1573,12 @@ export const listChatPosts = /* GraphQL */ `
         delete
         createdAt
         updatedAt
+        files {
+          nextToken
+        }
+        urls {
+          nextToken
+        }
       }
       nextToken
     }
