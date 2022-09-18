@@ -1403,6 +1403,20 @@ export const listChats = /* GraphQL */ `
             chat_id
             createdAt
             updatedAt
+            members {
+              items {
+                id
+                room_id
+                member_id
+                send_notice
+                room_name
+                ignore
+                last_access
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
           }
           nextToken
         }

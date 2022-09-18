@@ -1,5 +1,6 @@
 import { API } from 'aws-amplify'
-import { createChat, createChatRoom, deleteChatRoom } from '@/graphql/mutations'
+import { createChat, createChatRoom, createChatRoomMember,
+  deleteChatRoom, deleteChatRoomMember } from '@/graphql/mutations'
 import { listChats } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
@@ -55,9 +56,46 @@ export default {
     }
   },
   updateGroup () {},
-  deleteRoom () {
-    deleteChatRoom
+  async deleteRoom (room) {
+    const filter = {
+      id: room.id,
+    }
+    return await API.graphql({
+      query: deleteChatRoom,
+      variables: {input: filter}
+    });
+  },
+  async deleteRoomMember(member) {
+    const filter = {
+      id: member.id
+    }
+    return await API.graphql({
+      query: deleteChatRoomMember,
+      variables: {input: filter}
+    });
+  },
+  // ルーム作成時に
+  async createInitRoomMember (room, datetime, ) {
+    const init_room_member = this.generateInitRoomMemberObject(room, datetime)
+    return await API.graphql({
+      query: createChatRoomMember,
+      variables: { input: init_room_member }
+    })
+    // .then((res) => {
+    //   return res.data.createChatRoomMember
+    // })
+  },
+  generateInitRoomMemberObject (room, datetime) {
+    return {
+      room_id: room.room_id,
+      member_id: store.getters.staff.staff_id, // 作成者のstaff_idを登録
+      send_notice: room.send_notice,
+      room_name: room.type === 0 ? room.room_name : "", // MEMO: 個人チャットの場合は相手側のスタッフ名が表示されるようにする
+      ignore: null,
+      last_access: datetime
+    }
   },
   createMessage () {},
-  deleteMessage () {}
+  deleteMessage () {},
+
 }

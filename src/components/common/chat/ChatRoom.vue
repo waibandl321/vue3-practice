@@ -29,6 +29,7 @@
           <v-list-item
             density="compact"
             link
+            @click="deleteChatRoom()"
           >
             グループを削除
           </v-list-item>
@@ -152,6 +153,7 @@ import { ref } from '@vue/reactivity'
 import { onMounted, inject } from '@vue/runtime-core'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import fileApiFunc from '@/mixins/api/func/file'
+import chatApiFunc from '@/mixins/api/func/chat'
 import OverlayLoading from '../OverlayLoading.vue'
 
 export default {
@@ -161,8 +163,9 @@ export default {
       type: Function
     }
   },
-  setup() {
+  setup(props) {
     const $params = inject('params')
+    const initChatRoom = inject('init-chat-room')
     const view_room = $params.view_room
 
     const loading = ref(false);
@@ -190,6 +193,23 @@ export default {
     const clickSendMessage = () => {
       alert("click send");
     };
+    // トークルーム削除
+    const deleteChatRoom = async () => {
+      loading.value = true
+      try {
+        await chatApiFunc.deleteRoom(view_room)
+        for (const member of view_room.members.items) {
+          await chatApiFunc.deleteRoomMember(member)  
+        }
+        loading.value = false
+        initChatRoom()
+        alert('チャットルームを削除しました')
+      } catch (error) {
+        console.error(error);
+      }
+      loading.value = false
+      props.changeMode('home')
+    }
 
     return {
       view_room,
@@ -204,6 +224,8 @@ export default {
       isSelectedFile,
       // 送信
       clickSendMessage,
+      // 削除
+      deleteChatRoom
     };
   }
 }

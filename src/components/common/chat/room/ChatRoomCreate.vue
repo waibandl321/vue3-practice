@@ -59,10 +59,10 @@ import { inject } from '@vue/runtime-core'
 export default {
   setup() {
     const $params = inject('params')
-    const initChatRoom = inject('initChatRoom')
+    const initChatRoom = inject('init-chat-room')
     const chat_type = [
-      { value: 0, text: '個人' },
-      { value: 1, text: 'グループ' },
+      { value: 1, text: '個人' },
+      { value: 0, text: 'グループ' },
     ]
     
     const modal = ref(true)
@@ -76,7 +76,9 @@ export default {
       modal.value = false
       try {
         const result = await chatApiFunc.createRooom(room_obj.value, $params.company_chat)
-        initChatRoom(result, 'create')
+        await chatApiFunc.createInitRoomMember(result)
+        initChatRoom()
+        alert('トークルームを作成しました')
       } catch (error) {
         console.error(error);
       }

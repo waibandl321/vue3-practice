@@ -3,9 +3,6 @@
     class="mx-auto"
     width="300"
   >
-    {{ personal_rooms }}
-    <hr>
-    {{ group_rooms }}
     <v-list>
       <v-list-item 
         prepend-icon="mdi-home"
@@ -13,8 +10,7 @@
         link
         @click="backFunc()"
       ></v-list-item>
-      <v-list-group 
-        v-if="group_rooms"
+      <v-list-group
         value="Grou"
       >
         <template
@@ -73,20 +69,34 @@
 </template>
 
 <script>
-import ChatRoomCreate from './room/ChatRoomCreate.vue'
-
+import ChatRoomCreate from './ChatRoomCreate.vue'
+import chatApiFunc from '@/mixins/api/func/chat'
 import { ref } from '@vue/reactivity'
-import { computed, inject } from '@vue/runtime-core'
 
 export default {
+  components: { ChatRoomCreate },
   props: {
     changeMode: Function
   },
+
   setup(props) {
-    const $params = inject('params')
-    const rooms = $params.company_chat.rooms.items
-    const group_rooms = computed(() => rooms.filter(v => v.room_type === 0))
-    const personal_rooms = computed(() => rooms.filter(v => v.room_type === 1))
+    const loading = ref(false)
+    const rooms = ref([])
+    const group_rooms = ref([])
+    const personal_rooms = ref([])
+    
+    const init = async () => {
+      loading.value = true
+      try {
+        rooms.value = await chatApiFunc.getCompanyChat().then(res => res.rooms.items)
+        group_rooms.value = rooms.value.filter(v => v.room_type === 0)
+        personal_rooms.value = rooms.value.filter(v => v.room_type === 1)
+      } catch (error) {
+        console.error(error);
+      }
+      loading.value = false
+    }
+    init()
 
     const backFunc = () => {
       props.changeMode("home");
@@ -102,10 +112,10 @@ export default {
       moveRoom,
       room_add_mode,
       group_rooms,
-      personal_rooms
+      personal_rooms,
+      init,
     };
   },
-  components: { ChatRoomCreate }
 }
 </script>
 
