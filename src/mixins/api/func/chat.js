@@ -81,9 +81,6 @@ export default {
       query: createChatRoomMember,
       variables: { input: init_room_member }
     })
-    // .then((res) => {
-    //   return res.data.createChatRoomMember
-    // })
   },
   generateInitRoomMemberObject (room, datetime) {
     return {
@@ -91,6 +88,25 @@ export default {
       member_id: store.getters.staff.staff_id, // 作成者のstaff_idを登録
       send_notice: room.send_notice,
       room_name: room.type === 0 ? room.room_name : "", // MEMO: 個人チャットの場合は相手側のスタッフ名が表示されるようにする
+      ignore: null,
+      last_access: datetime
+    }
+  },
+  async addChatMember (room, member, datetime) {
+    const add_room_member = this.generateAddRoomMemberObject(room, member, datetime)
+    return await API.graphql({
+      query: createChatRoomMember,
+      variables: { input: add_room_member }
+    }).then((res) => {
+      return res.data.createChatRoomMember
+    })
+  },
+  generateAddRoomMemberObject (room, member, datetime) {
+    return {
+      room_id: room.room_id,
+      member_id: member.staff_id,
+      send_notice: room.send_notice,
+      room_name: room.type === 0 ? room.room_name : "",
       ignore: null,
       last_access: datetime
     }

@@ -17,6 +17,7 @@
           <v-list-item
             density="compact"
             link
+            @click="member_modal = !member_modal"
           >
             メンバー
           </v-list-item>
@@ -47,6 +48,7 @@
       >
       </v-list-item>
     </v-list>
+    {{ selectable_members }}
     <!-- メッセージ送信 -->
     <div class="chat-post">
       <div class="d-flex">
@@ -144,6 +146,73 @@
       :closeFileSelectModal="closeFileSelectModal"
     />
   </template>
+  <!-- メンバー確認、追加 -->
+  <v-dialog v-model="member_modal">
+    <v-card width="600">
+      <v-card-title>メンバー</v-card-title>
+      <v-card-item>
+        <v-card-subtitle>メンバー</v-card-subtitle>
+        <v-card
+          v-for="(member, m) in current_members"
+          :key="m"
+          class="mx-auto"
+          prepend-icon="mdi-account"
+        >
+          <template v-slot:subtitle>
+            {{ getMemberName(member.member_id) }}
+          </template>
+          <!-- ルーム作成者の場合はボタン非表示 -->
+          <template
+            v-if="judgeOwner(member.member_id)"
+            v-slot:append
+          >
+            <v-btn
+              color="error"
+              icon="mdi-delete"
+              size="small"
+              variant="text"
+              @click="deleteMember(member)"
+            ></v-btn>
+          </template>
+        </v-card>
+      </v-card-item>
+      <v-card-item class="mt-6">
+        <v-card-subtitle>ユーザー</v-card-subtitle>
+        <v-card
+          v-for="(member, e) in selectable_members"
+          :key="e"
+          class="mx-auto"
+          prepend-icon="mdi-account"
+        >
+          <template v-slot:subtitle>
+            {{ member.last_name }}{{ member.first_name }}
+          </template>
+          <template v-slot:append>
+            <v-checkbox
+              v-model="is_selected_members"
+              :value="member"
+              hide-details="auto"
+              color="primary"
+            ></v-checkbox>
+          </template>
+        </v-card>
+      </v-card-item>
+      <v-divider></v-divider>
+      <v-card-actions class="justify-end">
+        <v-btn
+          variant="outlined"
+          class="mr-2"
+          @click="member_modal = false"
+        >キャンセル</v-btn>
+        <v-btn
+          variant="flat"
+          color="primary"
+          :disabled="is_selected_members.length === 0"
+          @click="addMember()"
+        >追加</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>      
   <!-- ローディング -->
   <OverlayLoading v-if="loading" />
 </template>
@@ -154,7 +223,9 @@ import { onMounted, inject } from '@vue/runtime-core'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
+import employeeApiFunc from '@/mixins/api/master/employee'
 import OverlayLoading from '../OverlayLoading.vue'
+
 
 export default {
   components: { FIleSelectModal, OverlayLoading },
@@ -210,6 +281,66 @@ export default {
       loading.value = false
       props.changeMode('home')
     }
+    // メンバー
+    const member_modal = ref(false)
+    const current_members = ref([])
+    const company_employees = ref([])
+    const selectable_members = ref([])
+    const is_selected_members = ref([])
+
+    const getMembers = async () => {
+      current_members.value = view_room.members.items
+      company_employees.value = await employeeApiFunc.apiGetEmployeeList()
+      selectable_members.value = company_employees.value.filter((v) => {
+        return !current_members.value.find(s => s.member_id === v.staff_id)
+      })
+    }
+    getMembers()
+    const getMemberName = (staff_id) => {
+      const result = company_employees.value.find(v => v.staff_id === staff_id)
+      return result ? result.last_name + result.first_name : ""
+    }
+    // ルーム作成者判定
+    const judgeOwner = (staff_id) => {
+      return view_room.owner_staff_id !== staff_id
+    }
+    // メンバー追加
+    const addMember = async () => {
+      loading.value = true
+      member_modal.value = false
+      try {
+        for (const is_selected_member of is_selected_members.value) {
+          const result = await chatApiFunc.addChatMember(view_room, is_selected_member)
+          current_members.value.push(result)
+          selectable_members.value = selectable_members.value.filter(v => v.staff_id !== result.member_id)
+        }
+        alert('メンバーを追加しました。')
+      } catch (error) {
+        console.error(error);
+      }
+      is_selected_members.value = []
+      loading.value = false
+    }
+    // メンバー削除
+    const deleteMember = async (member) => {
+      if(!confirm('メンバーを削除します。よろしいですか？')) return;
+      
+      loading.value = true
+      member_modal.value = false
+      try {
+        await chatApiFunc.deleteRoomMember(member)
+        alert('メンバーを削除しました。')
+        current_members.value = current_members.value.filter(v => v.member_id !== member.member_id)
+        selectable_members.value = company_employees.value.filter((v) => {
+          return !current_members.value.find(s => s.member_id === v.staff_id)
+        })
+      } catch (error) {
+        console.error(error);
+      }
+      is_selected_members.value = []
+      loading.value = false
+    }
+    
 
     return {
       view_room,
@@ -225,7 +356,16 @@ export default {
       // 送信
       clickSendMessage,
       // 削除
-      deleteChatRoom
+      deleteChatRoom,
+      // メンバー確認・追加
+      member_modal,
+      selectable_members,
+      current_members,
+      is_selected_members,
+      getMemberName,
+      judgeOwner,
+      addMember,
+      deleteMember
     };
   }
 }

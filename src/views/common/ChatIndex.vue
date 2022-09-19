@@ -11,6 +11,7 @@
     <ChatRoom
       v-if="mode === 'room'"
       :changeMode="changeMode"
+      ref="roomViewRef"
     />
   </v-main>
 </template>
@@ -50,6 +51,7 @@ export default {
         console.error(error);
       }
       loading.value = false
+      
     }
     init()
     // 一覧更新

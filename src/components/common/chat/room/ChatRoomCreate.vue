@@ -77,11 +77,11 @@ export default {
       try {
         const result = await chatApiFunc.createRooom(room_obj.value, $params.company_chat)
         await chatApiFunc.createInitRoomMember(result)
-        initChatRoom()
         alert('トークルームを作成しました')
       } catch (error) {
         console.error(error);
       }
+      initChatRoom()
       room_obj.value = {}
     }
     return {
