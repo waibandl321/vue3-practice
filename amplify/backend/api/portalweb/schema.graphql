@@ -11,47 +11,92 @@ type Todo @model {
 
 type Accounts @model {
   id: ID!
-  account_id: String
+  account_id: ID!
   sub: String
   status: Int
   user_name: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  associate: [Associate] @hasMany(indexName: "byAccounts", fields: ["account_id"])
 }
 
 type Associate @model {
   id: ID!
-  associate_id: String
-  account_id: String
+  associate_id: ID!
+  account_id: ID! @index(name: "byAccounts", sortKeyFields: ["createdAt"])
   invite_key: String
   company_group_cd: String
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  staffs: [Staff] @hasMany(indexName: "byAssociate", fields: ["associate_id"])
 }
 
 type Staff @model {
   id: ID!
-  staff_id: String
-  associate_id: String
+  staff_id: ID!
+  associate_id: ID! @index(name: "byAssociate", sortKeyFields: ["createdAt"])
   company_cd: String
   company_group_cd: String
   invite_key: String
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  roles: [StaffRole] @hasMany(indexName: "byStaff", fields: ["staff_id"])
+  positions: [StaffPosition] @hasMany(indexName: "byStaff", fields: ["staff_id"])
+  employees: [Employee] @hasMany(indexName: "byStaff", fields: ["staff_id"])
 }
 
 type StaffRole @model {
   id: ID!
   role_cd: String
-  staff_id: String
+  staff_id: ID! @index(name: "byStaff", sortKeyFields: ["createdAt"])
   company_cd: String
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+}
+
+type StaffPosition @model {
+  id: ID!
+  staff_position_id: String
+  position_cd: String
+  staff_id: ID! @index(name: "byStaff", sortKeyFields: ["createdAt"])
+  company_cd: String
+  status: Int
+  delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+}
+
+type Company @model {
+  id: ID!
+  company_cd: ID!
+  company_name: String
+  company_name_kana: String
+  company_form: Int
+  form_name_position: Int
+  homepage_url: String
+  membership: Int
+  certified: Int
+  status: Int
+  delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  employees: [Employee] @hasMany(indexName: "byCompany", fields: ["company_cd"])
+  brands: [Brand] @hasMany(indexName: "byCompany", fields: ["company_cd"])
+  positions: [Position] @hasMany(indexName: "byCompany", fields: ["company_cd"])
+  areas: [Area] @hasMany(indexName: "byCompany", fields: ["company_cd"])
 }
 
 type Employee @model {
   id: ID!
   company_employee_id: String
-  staff_id: String
-  company_cd: String
+  staff_id: ID! @index(name: "byStaff", sortKeyFields: ["createdAt"])
+  company_cd: ID! @index(name: "byCompany", sortKeyFields: ["createdAt"])
   last_name: String
   first_name: String
   last_name_kana: String
@@ -63,20 +108,8 @@ type Employee @model {
   official_position: String
   delete: Int
   status: Int
-}
-
-type Company @model {
-  id: ID!
-  company_cd: String
-  company_name: String
-  company_name_kana: String
-  company_form: Int
-  form_name_position: Int
-  homepage_url: String
-  membership: Int
-  certified: Int
-  status: Int
-  delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
 type Invitation @model {
@@ -91,17 +124,8 @@ type Invitation @model {
   invitation_id: String
   send_to: String
   url: String
-}
-
-type Brand @model {
-  id: ID!
-  company_brand_cd: String
-  brand_name: String
-  brand_cd: String
-  exchange_time: String
-  company_cd: String
-  status: Int
-  delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
 type Area @model {
@@ -109,33 +133,41 @@ type Area @model {
   company_area_cd: String
   area_cd: String
   area_name: String
-  company_cd: String
+  company_cd: ID! @index(name: "byCompany", sortKeyFields: ["createdAt"])
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
 type Position @model {
   id: ID!
   company_position_cd: String
-  company_cd: String
+  company_cd: ID! @index(name: "byCompany", sortKeyFields: ["createdAt"])
   position_cd: String
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
-type StaffPosition @model {
+type Brand @model {
   id: ID!
-  staff_position_id: String
-  position_cd: String
-  staff_id: String
-  company_cd: String
+  company_brand_cd: ID!
+  brand_name: String
+  brand_cd: String
+  exchange_time: String
+  company_cd: ID! @index(name: "byCompany", sortKeyFields: ["createdAt"])
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  shops: [Shop] @hasMany(indexName: "byBrand", fields: ["company_brand_cd"])
 }
 
 type Shop @model {
   id: ID!
-  company_shop_cd: String
+  company_shop_cd: ID! @index(name: "byBrand", sortKeyFields: ["createdAt"])
   shop_cd: String
   address: String
   area_cd: String
@@ -148,40 +180,54 @@ type Shop @model {
   francisee_id: String
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  times: [ShopTime] @hasMany(indexName: "byShop", fields: ["company_shop_cd"])
+  staffs: [ShopStaff] @hasMany(indexName: "byShop", fields: ["company_shop_cd"])
+  groups: [ShopStaffGroup] @hasMany(indexName: "byShop", fields: ["company_shop_cd"])
 }
 
 type ShopTime @model {
   id: ID!
   shop_time_id: String
-  company_shop_cd: String
+  company_shop_cd: ID! @index(name: "byShop", sortKeyFields: ["createdAt"])
   day_cd: String
   holiday: Int
   start_time: String
   end_time: String
   status: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
 type ShopStaff @model {
   id: ID!
   shop_staff_id: String
-  company_shop_cd: String
+  company_shop_cd: ID! @index(name: "byShop", sortKeyFields: ["createdAt"])
   staff_id: String
   status: Int
   delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
 type ShopStaffGroup @model {
   id: ID!
-  staff_group_cd: String
-  company_shop_cd: String
+  staff_group_cd: ID!
+  company_shop_cd: ID! @index(name: "byShop", sortKeyFields: ["createdAt"])
   group_name: String
   staff_id: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+  members: [ShopStaffGroupStaff] @hasMany(indexName: "byShopStaffGroup", fields: ["staff_group_cd"])
 }
 
 type ShopStaffGroupStaff @model {
   id: ID!
-  staff_group_cd: String
+  staff_group_cd: ID! @index(name: "byShopStaffGroup", sortKeyFields: ["createdAt"])
   shop_staff_id: String
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
 }
 
 type Role @model {

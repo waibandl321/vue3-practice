@@ -73,10 +73,15 @@ export default {
       try {
         const account = await accountApiFunc.getAccount(user)
         // TODO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
-        const associate = await accountApiFunc.getAssociate(account)
-        const staff = await accountApiFunc.getStaff(associate)
-        const role = await accountApiFunc.apiGetStaffRole(staff.staff_id)
+        const associate = account.associate.items[0]
+        const staff = associate.staffs.items[0]
+        const role = staff.roles.items[0]
         const brand = await brandFunc._apiGetBrand(staff.company_cd)
+        console.log('signin account', account);
+        console.log('signin associate', associate);
+        console.log('signin staff', staff);
+        console.log('signin staff role', role);
+        console.log('signin brand', brand);
 
         storeAuth.storeSetAuthUser(user)
         storeAuth.storeSetAccount(account)

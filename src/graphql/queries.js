@@ -42,6 +42,20 @@ export const getAccounts = /* GraphQL */ `
       user_name
       createdAt
       updatedAt
+      associate {
+        items {
+          id
+          associate_id
+          account_id
+          invite_key
+          company_group_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -60,6 +74,62 @@ export const listAccounts = /* GraphQL */ `
         user_name
         createdAt
         updatedAt
+        associate {
+          items {
+            id
+            associate_id
+            account_id
+            invite_key
+            company_group_cd
+            status
+            delete
+            createdAt
+            updatedAt
+            staffs {
+              items {
+                id
+                staff_id
+                associate_id
+                company_cd
+                company_group_cd
+                invite_key
+                status
+                delete
+                createdAt
+                updatedAt
+                roles {
+                  items {
+                    id
+                    role_cd
+                    staff_id
+                    company_cd
+                    status
+                    delete
+                    createdAt
+                    updatedAt
+                  }
+                  nextToken
+                }
+                positions {
+                  items {
+                    id
+                    staff_position_id
+                    position_cd
+                    staff_id
+                    company_cd
+                    status
+                    delete
+                    createdAt
+                    updatedAt
+                  }
+                  nextToken
+                }
+              }
+              nextToken
+            }
+          }
+          nextToken
+        }
       }
       nextToken
     }
@@ -77,6 +147,21 @@ export const getAssociate = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      staffs {
+        items {
+          id
+          staff_id
+          associate_id
+          company_cd
+          company_group_cd
+          invite_key
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -97,8 +182,49 @@ export const listAssociates = /* GraphQL */ `
         delete
         createdAt
         updatedAt
+        staffs {
+          items {
+            id
+            staff_id
+            associate_id
+            company_cd
+            company_group_cd
+            invite_key
+            status
+            delete
+            createdAt
+            updatedAt
+            roles {
+              items {
+                id
+                role_cd
+                staff_id
+                company_cd
+                status
+                delete
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            positions {
+              items {
+                id
+                staff_position_id
+                position_cd
+                staff_id
+                company_cd
+                status
+                delete
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
+          nextToken
+        }
       }
-      nextToken
     }
   }
 `;
@@ -115,6 +241,55 @@ export const getStaff = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      roles {
+        items {
+          id
+          role_cd
+          staff_id
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      positions {
+        items {
+          id
+          staff_position_id
+          position_cd
+          staff_id
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      employees {
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -136,6 +311,15 @@ export const listStaff = /* GraphQL */ `
         delete
         createdAt
         updatedAt
+        roles {
+          nextToken
+        }
+        positions {
+          nextToken
+        }
+        employees {
+          nextToken
+        }
       }
       nextToken
     }
@@ -171,6 +355,164 @@ export const listStaffRoles = /* GraphQL */ `
         delete
         createdAt
         updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getStaffPosition = /* GraphQL */ `
+  query GetStaffPosition($id: ID!) {
+    getStaffPosition(id: $id) {
+      id
+      staff_position_id
+      position_cd
+      staff_id
+      company_cd
+      status
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listStaffPositions = /* GraphQL */ `
+  query ListStaffPositions(
+    $filter: ModelStaffPositionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listStaffPositions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        staff_position_id
+        position_cd
+        staff_id
+        company_cd
+        status
+        delete
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getCompany = /* GraphQL */ `
+  query GetCompany($id: ID!) {
+    getCompany(id: $id) {
+      id
+      company_cd
+      company_name
+      company_name_kana
+      company_form
+      form_name_position
+      homepage_url
+      membership
+      certified
+      status
+      delete
+      createdAt
+      updatedAt
+      employees {
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      brands {
+        items {
+          id
+          company_brand_cd
+          brand_name
+          brand_cd
+          exchange_time
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      positions {
+        items {
+          id
+          company_position_cd
+          company_cd
+          position_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      areas {
+        items {
+          id
+          company_area_cd
+          area_cd
+          area_name
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const listCompanies = /* GraphQL */ `
+  query ListCompanies(
+    $filter: ModelCompanyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCompanies(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        company_cd
+        company_name
+        company_name_kana
+        company_form
+        form_name_position
+        homepage_url
+        membership
+        certified
+        status
+        delete
+        createdAt
+        updatedAt
+        employees {
+          nextToken
+        }
+        brands {
+          nextToken
+        }
+        positions {
+          nextToken
+        }
+        areas {
+          nextToken
+        }
       }
       nextToken
     }
@@ -229,51 +571,6 @@ export const listEmployees = /* GraphQL */ `
     }
   }
 `;
-export const getCompany = /* GraphQL */ `
-  query GetCompany($id: ID!) {
-    getCompany(id: $id) {
-      id
-      company_cd
-      company_name
-      company_name_kana
-      company_form
-      form_name_position
-      homepage_url
-      membership
-      certified
-      status
-      delete
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listCompanies = /* GraphQL */ `
-  query ListCompanies(
-    $filter: ModelCompanyFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listCompanies(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        company_cd
-        company_name
-        company_name_kana
-        company_form
-        form_name_position
-        homepage_url
-        membership
-        certified
-        status
-        delete
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getInvitation = /* GraphQL */ `
   query GetInvitation($id: ID!) {
     getInvitation(id: $id) {
@@ -312,45 +609,6 @@ export const listInvitations = /* GraphQL */ `
         invitation_id
         send_to
         url
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getBrand = /* GraphQL */ `
-  query GetBrand($id: ID!) {
-    getBrand(id: $id) {
-      id
-      company_brand_cd
-      brand_name
-      brand_cd
-      exchange_time
-      company_cd
-      status
-      delete
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listBrands = /* GraphQL */ `
-  query ListBrands(
-    $filter: ModelBrandFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listBrands(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        company_brand_cd
-        brand_name
-        brand_cd
-        exchange_time
-        company_cd
-        status
-        delete
         createdAt
         updatedAt
       }
@@ -430,38 +688,64 @@ export const listPositions = /* GraphQL */ `
     }
   }
 `;
-export const getStaffPosition = /* GraphQL */ `
-  query GetStaffPosition($id: ID!) {
-    getStaffPosition(id: $id) {
+export const getBrand = /* GraphQL */ `
+  query GetBrand($id: ID!) {
+    getBrand(id: $id) {
       id
-      staff_position_id
-      position_cd
-      staff_id
+      company_brand_cd
+      brand_name
+      brand_cd
+      exchange_time
       company_cd
       status
       delete
       createdAt
       updatedAt
+      shops {
+        items {
+          id
+          company_shop_cd
+          shop_cd
+          address
+          area_cd
+          brand_cd
+          company_cd
+          shop_name_kana
+          shop_name
+          phone
+          is_head
+          francisee_id
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
-export const listStaffPositions = /* GraphQL */ `
-  query ListStaffPositions(
-    $filter: ModelStaffPositionFilterInput
+export const listBrands = /* GraphQL */ `
+  query ListBrands(
+    $filter: ModelBrandFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listStaffPositions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listBrands(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        staff_position_id
-        position_cd
-        staff_id
+        company_brand_cd
+        brand_name
+        brand_cd
+        exchange_time
         company_cd
         status
         delete
         createdAt
         updatedAt
+        shops {
+          nextToken
+        }
       }
       nextToken
     }
@@ -486,6 +770,46 @@ export const getShop = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      times {
+        items {
+          id
+          shop_time_id
+          company_shop_cd
+          day_cd
+          holiday
+          start_time
+          end_time
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      staffs {
+        items {
+          id
+          shop_staff_id
+          company_shop_cd
+          staff_id
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      groups {
+        items {
+          id
+          staff_group_cd
+          company_shop_cd
+          group_name
+          staff_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -513,6 +837,15 @@ export const listShops = /* GraphQL */ `
         delete
         createdAt
         updatedAt
+        times {
+          nextToken
+        }
+        staffs {
+          nextToken
+        }
+        groups {
+          nextToken
+        }
       }
       nextToken
     }
@@ -602,6 +935,16 @@ export const getShopStaffGroup = /* GraphQL */ `
       staff_id
       createdAt
       updatedAt
+      members {
+        items {
+          id
+          staff_group_cd
+          shop_staff_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -620,6 +963,9 @@ export const listShopStaffGroups = /* GraphQL */ `
         staff_id
         createdAt
         updatedAt
+        members {
+          nextToken
+        }
       }
       nextToken
     }
@@ -778,36 +1124,9 @@ export const listFileDirTops = /* GraphQL */ `
         level
         company_cd
         dirs {
-          items {
-            id
-            dir_id
-            dir_name
-            parent_dir_id
-            company_cd
-            level
-            status
-            permission
-            createdAt
-            updatedAt
-          }
           nextToken
         }
         files {
-          items {
-            id
-            company_cd
-            dir_id
-            function_cd
-            file_name
-            file_size
-            owner_id
-            data_url
-            store_type
-            status
-            delete
-            createdAt
-            updatedAt
-          }
           nextToken
         }
         createdAt
@@ -958,83 +1277,9 @@ export const listForums = /* GraphQL */ `
         company_group_cd
         owner_id
         posts {
-          items {
-            id
-            post_key
-            forum_id
-            title
-            post_text
-            attached
-            url_links
-            status
-            importance
-            delete
-            createdAt
-            updatedAt
-            files {
-              items {
-                id
-                post_id
-                post_key
-                sort_number
-                file_id
-                file_name
-                data_url
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-            urls {
-              items {
-                id
-                post_id
-                post_key
-                sort_number
-                url_key
-                url_value
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-            eyecatch {
-              items {
-                id
-                post_id
-                post_key
-                file_id
-                data_url
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-            tags {
-              items {
-                id
-                post_id
-                post_key
-                sort_number
-                forum_tag_name
-                company_cd
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-          }
           nextToken
         }
         tag_options {
-          items {
-            id
-            forum_id
-            forum_tag_name
-            company_cd
-            createdAt
-            updatedAt
-          }
           nextToken
         }
         createdAt
@@ -1392,32 +1637,6 @@ export const listChats = /* GraphQL */ `
         company_group_cd
         owner_id
         rooms {
-          items {
-            id
-            room_id
-            room_name
-            room_type
-            send_notice
-            owner_staff_id
-            delete
-            chat_id
-            createdAt
-            updatedAt
-            members {
-              items {
-                id
-                room_id
-                member_id
-                send_notice
-                room_name
-                ignore
-                last_access
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-          }
           nextToken
         }
         createdAt
