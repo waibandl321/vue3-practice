@@ -1277,9 +1277,83 @@ export const listForums = /* GraphQL */ `
         company_group_cd
         owner_id
         posts {
+          items {
+            id
+            post_key
+            forum_id
+            title
+            post_text
+            attached
+            url_links
+            status
+            importance
+            delete
+            createdAt
+            updatedAt
+            files {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                file_id
+                file_name
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            urls {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                url_key
+                url_value
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            eyecatch {
+              items {
+                id
+                post_id
+                post_key
+                file_id
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            tags {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                forum_tag_name
+                company_cd
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         tag_options {
+          items {
+            id
+            forum_id
+            forum_tag_name
+            company_cd
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         createdAt
@@ -1637,6 +1711,32 @@ export const listChats = /* GraphQL */ `
         company_group_cd
         owner_id
         rooms {
+          items {
+            id
+            room_id
+            room_name
+            room_type
+            send_notice
+            owner_staff_id
+            delete
+            chat_id
+            createdAt
+            updatedAt
+            members {
+              items {
+                id
+                room_id
+                member_id
+                send_notice
+                room_name
+                ignore
+                last_access
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         createdAt
