@@ -24,15 +24,16 @@
           <v-list-item
             density="compact"
             link
+            @click="chat_room_edit = !chat_room_edit"
           >
-            グループ名を修正
+            トークルーム名を修正
           </v-list-item>
           <v-list-item
             density="compact"
             link
             @click="deleteChatRoom()"
           >
-            グループを削除
+            トークルームを削除
           </v-list-item>
         </v-list>
       </v-menu>
@@ -48,7 +49,7 @@
       >
       </v-list-item>
     </v-list>
-    {{ selectable_members }}
+
     <!-- メッセージ送信 -->
     <div class="chat-post">
       <div class="d-flex">
@@ -132,11 +133,14 @@
       </div>
     </div>
   </div>
+
+  <!-- input file 擬似要素 -->
   <v-file-input
     ref="triggerFile"
     class="d-none"
     @change="changeAttachment"
   ></v-file-input>
+
   <!-- ファイル管理から選択 -->
   <template v-if="file_select_modal">
     <FIleSelectModal
@@ -146,6 +150,7 @@
       :closeFileSelectModal="closeFileSelectModal"
     />
   </template>
+
   <!-- メンバー確認、追加 -->
   <v-dialog v-model="member_modal">
     <v-card width="600">
@@ -212,23 +217,31 @@
         >追加</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>      
+  </v-dialog>
+  
+  <!-- ルーム編集 -->
+  <ChatRoomEdit 
+    v-if="chat_room_edit"
+    :closeEditRoom="closeEditRoom"
+  />
+
   <!-- ローディング -->
   <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import { ref } from '@vue/reactivity'
-import { onMounted, inject } from '@vue/runtime-core'
+import { inject, onBeforeMount } from '@vue/runtime-core'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
 import employeeApiFunc from '@/mixins/api/master/employee'
-import OverlayLoading from '../OverlayLoading.vue'
 
+import OverlayLoading from '../OverlayLoading.vue'
+import ChatRoomEdit from './room/ChatRoomEdit.vue'
 
 export default {
-  components: { FIleSelectModal, OverlayLoading },
+  components: { FIleSelectModal, OverlayLoading, ChatRoomEdit },
   props: {
     changeMode: {
       type: Function
@@ -237,39 +250,16 @@ export default {
   setup(props) {
     const $params = inject('params')
     const initChatRoom = inject('init-chat-room')
-    const view_room = $params.view_room
-
+    let view_room = ref({})
+    view_room.value = $params.view_room
     const loading = ref(false);
-    // URL
-    const menu_link = ref(false);
-    // const add_links = ref([])
-    // ファイル関連
-    const file_select_modal = ref(false);
-    // const add_files = ref([])
-    const dir_top = ref({})
-    onMounted(async () => {
-      dir_top.value = await fileApiFunc.apiGetDirTop()
-    })
-    const changeAttachment = (event) => {
-      console.log(...event.target.files);
-    };
-    const closeFileSelectModal = () => {
-      file_select_modal.value = false
-    }
-    const isSelectedFile = (file) => {
-      console.log(file);
-      file_select_modal.value = false
-    }
-    // メッセージ送信
-    const clickSendMessage = () => {
-      alert("click send");
-    };
+
     // トークルーム削除
     const deleteChatRoom = async () => {
       loading.value = true
       try {
-        await chatApiFunc.deleteRoom(view_room)
-        for (const member of view_room.members.items) {
+        await chatApiFunc.deleteRoom(view_room.value)
+        for (const member of view_room.value.members.items) {
           await chatApiFunc.deleteRoomMember(member)  
         }
         loading.value = false
@@ -289,7 +279,7 @@ export default {
     const is_selected_members = ref([])
 
     const getMembers = async () => {
-      current_members.value = view_room.members.items
+      current_members.value = view_room.value.members.items
       company_employees.value = await employeeApiFunc.apiGetEmployeeList()
       selectable_members.value = company_employees.value.filter((v) => {
         return !current_members.value.find(s => s.member_id === v.staff_id)
@@ -302,7 +292,7 @@ export default {
     }
     // ルーム作成者判定
     const judgeOwner = (staff_id) => {
-      return view_room.owner_staff_id !== staff_id
+      return view_room.value.owner_staff_id !== staff_id
     }
     // メンバー追加
     const addMember = async () => {
@@ -310,7 +300,7 @@ export default {
       member_modal.value = false
       try {
         for (const is_selected_member of is_selected_members.value) {
-          const result = await chatApiFunc.addChatMember(view_room, is_selected_member)
+          const result = await chatApiFunc.addChatMember(view_room.value, is_selected_member)
           current_members.value.push(result)
           selectable_members.value = selectable_members.value.filter(v => v.staff_id !== result.member_id)
         }
@@ -321,6 +311,7 @@ export default {
       is_selected_members.value = []
       loading.value = false
     }
+
     // メンバー削除
     const deleteMember = async (member) => {
       if(!confirm('メンバーを削除します。よろしいですか？')) return;
@@ -340,6 +331,44 @@ export default {
       is_selected_members.value = []
       loading.value = false
     }
+
+    // ルーム更新
+    const chat_room_edit = ref(false)
+    const closeEditRoom = async () => {
+      // トークルーム情報再取得
+      try {
+        const result = await chatApiFunc.getRoomDetail(view_room.value)
+        view_room.value = result.data.getChatRoom
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // メッセージ送信
+    // URL
+    const menu_link = ref(false);
+    // const add_links = ref([])
+    // ファイル関連
+    const file_select_modal = ref(false);
+    // const add_files = ref([])
+    const dir_top = ref({})
+    onBeforeMount(async () => {
+      dir_top.value = await fileApiFunc.apiGetDirTop()
+    })
+    const changeAttachment = (event) => {
+      console.log(...event.target.files);
+    };
+    const closeFileSelectModal = () => {
+      file_select_modal.value = false
+    }
+    const isSelectedFile = (file) => {
+      console.log(file);
+      file_select_modal.value = false
+    }
+    // メッセージ送信
+    const clickSendMessage = () => {
+      alert("click send");
+    };
     
 
     return {
@@ -353,6 +382,9 @@ export default {
       changeAttachment,
       closeFileSelectModal,
       isSelectedFile,
+      // ルーム編集
+      chat_room_edit,
+      closeEditRoom,
       // 送信
       clickSendMessage,
       // 削除

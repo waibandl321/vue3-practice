@@ -1,60 +1,77 @@
 <template>
-  <v-dialog v-model="room_add_mode">
+  <v-dialog v-model="modal">
     <v-card width="500">
-      <v-card-title>トークルーム作成</v-card-title>
+      <v-card-title>トークルーム名を修正</v-card-title>
       <v-divider></v-divider>
-      <v-card-actions>
+      {{ view_room.room_name }}
+      <v-card-item class="mt-6">
         <v-text-field
-          v-model.trim="room_obj.room_name"
-          label="グループ名"
+          v-model.trim="new_room_name"
+          label="トークルーム名"
           hide-details="auto"
         ></v-text-field>
-      </v-card-actions>
-      <v-card-actions>
-
-      </v-card-actions>
+      </v-card-item>
       <v-divider></v-divider>
       <v-card-actions class="justify-end">
         <v-btn
           variant="outlined"
           class="mr-2"
-          @click="room_add_mode = false"
+          @click="modal = false"
         >キャンセル</v-btn>
         <v-btn
           variant="flat"
           color="primary"
-          :disabled="!room_obj.room_name"
-          @click="createChatRoom()"
+          :disabled="!new_room_name"
+          @click="updateChatRoom()"
         >追加</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
+  <OverlayLoading v-if="loading" />
 </template>
 <script>
 import { ref } from '@vue/reactivity'
 import chatApiFunc from '@/mixins/api/func/chat'
+import { inject } from '@vue/runtime-core'
+import OverlayLoading from '../../OverlayLoading.vue'
 
 export default {
-  setup() {
-    const company_chat = ""
+  components: { OverlayLoading },
+  props: {
+    closeEditRoom: {
+      type: Function
+    }
+  },
+  setup(props) {
+    const loading = ref(false);
+    const $params = inject("params");
+    const initChatRoom = inject("init-chat-room");
+    const view_room = $params.view_room;
+    const modal = ref(true);
     // ルーム追加
-    const room_add_mode = ref(false)
-    const room_obj = ref({})
-    const createChatRoom = async () => {
+    const new_room_name = ref(view_room.room_name)
+    const updateChatRoom = async () => {
+      modal.value = false;
+      loading.value = true;
       try {
-        await chatApiFunc.createRooom(room_obj.value, company_chat)
-      } catch (error) {
+        await chatApiFunc.updateRoom(view_room, new_room_name.value);
+        alert("トークルーム名を更新しました");
+      }
+      catch (error) {
         console.error(error);
       }
-      room_add_mode.value = false
-      room_obj.value = ""
-    }
+      loading.value = false;
+      props.closeEditRoom()
+      initChatRoom();
+    };
     return {
+      modal,
+      loading,
+      view_room,
       // ルーム追加
-      room_add_mode,
-      room_obj,
-      createChatRoom
-    }
+      new_room_name,
+      updateChatRoom,
+    };
   },
 }
 </script>
