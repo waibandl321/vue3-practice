@@ -1,5 +1,5 @@
 import { API } from 'aws-amplify'
-import { createChat, createChatRoom, createChatRoomMember,
+import { createChat, createChatRoom, createChatRoomMember, createChatPost, createChatFile, createChatUrl,
   updateChatRoom,
   deleteChatRoom, deleteChatRoomMember } from '@/graphql/mutations'
 import { listChats, getChatRoom } from '@/graphql/queries'
@@ -130,7 +130,63 @@ export default {
       last_access: datetime
     }
   },
-  createMessage () {},
+  // メッセージ
+  async createChatMessage (room, message_text) {
+    const post = this.generateChatMessageObject(room, message_text)
+    console.log('send post', post);
+    return await API.graphql({
+      query: createChatPost,
+      variables: { input: post }
+    }).then((res) => {
+      return res.data.createChatPost
+    })
+  },
+  generateChatMessageObject (room, message_text) {
+    return {
+      chat_key: uuid.v4(),
+      room_id: room.room_id,
+      post_text: message_text,
+      attached: null,
+      url_links: null,
+      poster_ids: store.getters.staff.staff_id,
+      mentions: null,
+      delete: 0,
+    }
+  },
+  async createChatFile (post, file, file_store = undefined) {
+    const postFile = this.generateChatFileObject(post, file, file_store)
+    return await API.graphql({
+      query: createChatFile,
+      variables: { input: postFile }
+    }).then((res) => {
+      return res.data.createChatFile
+    })
+  },  
+  generateChatFileObject (post, file, file_store) {
+    return {
+      chat_key: post.chat_key,
+      sort_number: null,
+      file_id: file_store ? file_store.id : file.id,
+      data_url: file.data_url
+    }
+  },
+  async createChatUrl (post, url) {
+    const postUrl = this.generateChatUrlObject(post, url)
+    return await API.graphql({
+      query: createChatUrl,
+      variables: { input: postUrl }
+    }).then((res) => {
+      return res.data.createChatUrl
+    })
+  },
+  generateChatUrlObject (post, url) {
+    return {
+      chat_key: post.chat_key,
+      sort_number: null,
+      url_key: url.url_key,
+      url_value: url.url_value
+    }
+  },
   deleteMessage () {},
 
 }

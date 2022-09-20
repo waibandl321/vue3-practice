@@ -120,7 +120,7 @@ export default {
     return await API.graphql({
       query: createFileStore,
       variables: { input: fileObj }
-    })
+    }).then(res => res.data.createFileStore)
   },
   generateUploadFileObject (current_dir, _file, data_url, func_cd) {
     return {

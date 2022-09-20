@@ -42,7 +42,7 @@
     <!-- メッセージリスト -->
     <v-list>
       <v-list-item
-        prepend-avatar="https://cdn.vuetifyjs.com/images/john.png"
+        prepend-icon="mdi-account"
         title="John Leider"
         subtitle="昨日はおいしいご飯をご馳走になりまして、有難うございました！またご一緒させてください！"
         class="chat-message"
@@ -145,6 +145,7 @@
         >{{ file.name ?? file.file_name }}</v-chip>
       </div>
       <!-- URL -->
+      {{ message.urls }}
       <div
         v-for="url in message.urls"
         :key="url.id"
@@ -176,7 +177,7 @@
     />
   </template>
 
-  <!-- メンバー確認、追加 -->
+  <!-- メンバー確認、追加 MEMO: 当コンポーネントは責務が多すぎるのでコンポーネント分割したい ファイル管理から選択と同じ感じにできればOK -->
   <v-dialog v-model="member_modal">
     <v-card width="600">
       <v-card-title>メンバー</v-card-title>
@@ -259,12 +260,13 @@ import { ref, reactive } from '@vue/reactivity'
 import { inject, onBeforeMount } from '@vue/runtime-core'
 import { uuid } from 'vue-uuid'
 
-import FIleSelectModal from '../modal/FIleSelectModal.vue'
+import chatMixin from './chat_mixin'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
 import employeeApiFunc from '@/mixins/api/master/employee'
 
 import OverlayLoading from '../OverlayLoading.vue'
+import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
 
 export default {
@@ -279,16 +281,20 @@ export default {
     const initChatRoom = inject('init-chat-room')
     const loading = ref(false);
     // MEMO: let使用理由・・・ルーム更新時に再代入するため
-    let view_room = ref({})
-
-    view_room.value = $params.view_room
+    let view_room = reactive({})
+    view_room = $params.view_room
+    // MEMO: ファイル選択用でディレクトリ情報事前読み込み
+    const dir_top = ref({})
+    onBeforeMount(async () => {
+      dir_top.value = await fileApiFunc.apiGetDirTop()
+    })
 
     // トークルーム削除
     const deleteChatRoom = async () => {
       loading.value = true
       try {
-        await chatApiFunc.deleteRoom(view_room.value)
-        for (const member of view_room.value.members.items) {
+        await chatApiFunc.deleteRoom(view_room)
+        for (const member of view_room.members.items) {
           await chatApiFunc.deleteRoomMember(member)  
         }
         loading.value = false
@@ -308,7 +314,7 @@ export default {
     const is_selected_members = ref([])
 
     const getMembers = async () => {
-      current_members.value = view_room.value.members.items
+      current_members.value = view_room.members.items
       company_employees.value = await employeeApiFunc.apiGetEmployeeList()
       selectable_members.value = company_employees.value.filter((v) => {
         return !current_members.value.find(s => s.member_id === v.staff_id)
@@ -321,7 +327,7 @@ export default {
     }
     // ルーム作成者判定
     const judgeOwner = (staff_id) => {
-      return view_room.value.owner_staff_id !== staff_id
+      return view_room.owner_staff_id !== staff_id
     }
     // メンバー追加
     const addMember = async () => {
@@ -329,7 +335,7 @@ export default {
       member_modal.value = false
       try {
         for (const is_selected_member of is_selected_members.value) {
-          const result = await chatApiFunc.addChatMember(view_room.value, is_selected_member)
+          const result = await chatApiFunc.addChatMember(view_room, is_selected_member)
           current_members.value.push(result)
           selectable_members.value = selectable_members.value.filter(v => v.staff_id !== result.member_id)
         }
@@ -366,15 +372,15 @@ export default {
     const closeEditRoom = async () => {
       // トークルーム情報再取得
       try {
-        const result = await chatApiFunc.getRoomDetail(view_room.value)
-        view_room.value = result.data.getChatRoom
+        const result = await chatApiFunc.getRoomDetail(view_room)
+        view_room = result.data.getChatRoom
       } catch (error) {
         console.error(error);
       }
     }
 
     // メッセージ送信
-    const message = reactive({
+    let message = reactive({
       text: "",
       urls: [],
       files: []
@@ -387,22 +393,44 @@ export default {
     const setUrl = () => {
       url_obj.id = uuid.v4()
       message.urls.push(url_obj)
-      url_obj = {
-        url_key: "",
-        url_value: ""
-      }
       url_setting.value = false
     }
     const file_select_modal = ref(false);
     // 送信処理
     const sendMessage = async () => {
-      alert("click send");
+      loading.value = true
+      try {
+        // メッセージ
+        const post = await chatApiFunc.createChatMessage(view_room, message.text)
+        // ファイル
+        if(message.files.length > 0) {
+          for (const file of message.files) {
+            let file_store = undefined
+            if(!file.id) {
+              file.data_url = await chatMixin.mixinUploadChatFile(file, "chat")
+              file_store = await chatMixin.mixinSaveChatFileDatabase(dir_top.value, file, file.data_url, "chat")
+            }
+            await chatApiFunc.createChatFile(post, file, file_store)
+          }
+        }
+        // URL
+        if(message.urls.length > 0) {
+          for (const url of message.urls) {
+            await chatApiFunc.createChatUrl(post, url)
+          }
+        }
+        alert('送信完了')
+      } catch (error) {
+        console.error(error);
+      }
+      loading.value = false
+      // message.text = ""
+      // message.urls = []
+      // message.files = []
+      // url_obj.url_key = ""
+      // url_obj.url_value = ""
     };
     // ファイル関連
-    const dir_top = ref({})
-    onBeforeMount(async () => {
-      dir_top.value = await fileApiFunc.apiGetDirTop()
-    })
     const changeAttachment = (event) => {
       message.files.push(...event.target.files)
     };
