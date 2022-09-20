@@ -400,6 +400,7 @@ export default {
     const sendMessage = async () => {
       loading.value = true
       try {
+        // TODO: ローディング時間が長いので、ファイルとURLは遅延処理にしたい（LINEみたいなイメージ）
         // メッセージ
         const post = await chatApiFunc.createChatMessage(view_room, message.text)
         // ファイル
