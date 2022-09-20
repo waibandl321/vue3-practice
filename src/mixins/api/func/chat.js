@@ -167,6 +167,7 @@ export default {
       chat_key: post.chat_key,
       sort_number: null,
       file_id: file_store ? file_store.id : file.id,
+      file_name: file.file_name ?? file.name,
       data_url: file.data_url
     }
   },
