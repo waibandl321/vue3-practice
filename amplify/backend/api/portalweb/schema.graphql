@@ -408,6 +408,7 @@ type ChatFile @model {
   chat_key: ID! @index(name: "byChatPost", sortKeyFields: ["createdAt"])
   sort_number: String
   file_id: String
+  file_name: String
   data_url: String
   createdAt: AWSDateTime!
 	updatedAt: AWSDateTime!

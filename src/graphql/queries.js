@@ -183,48 +183,10 @@ export const listAssociates = /* GraphQL */ `
         createdAt
         updatedAt
         staffs {
-          items {
-            id
-            staff_id
-            associate_id
-            company_cd
-            company_group_cd
-            invite_key
-            status
-            delete
-            createdAt
-            updatedAt
-            roles {
-              items {
-                id
-                role_cd
-                staff_id
-                company_cd
-                status
-                delete
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-            positions {
-              items {
-                id
-                staff_position_id
-                position_cd
-                staff_id
-                company_cd
-                status
-                delete
-                createdAt
-                updatedAt
-              }
-              nextToken
-            }
-          }
           nextToken
         }
       }
+      nextToken
     }
   }
 `;
@@ -1878,6 +1840,7 @@ export const getChatPost = /* GraphQL */ `
           chat_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -1936,6 +1899,7 @@ export const getChatFile = /* GraphQL */ `
       chat_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
@@ -1954,6 +1918,7 @@ export const listChatFiles = /* GraphQL */ `
         chat_key
         sort_number
         file_id
+        file_name
         data_url
         createdAt
         updatedAt

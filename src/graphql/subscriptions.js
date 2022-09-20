@@ -2715,6 +2715,7 @@ export const onCreateChatPost = /* GraphQL */ `
           chat_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -2756,6 +2757,7 @@ export const onUpdateChatPost = /* GraphQL */ `
           chat_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -2797,6 +2799,7 @@ export const onDeleteChatPost = /* GraphQL */ `
           chat_key
           sort_number
           file_id
+          file_name
           data_url
           createdAt
           updatedAt
@@ -2825,6 +2828,7 @@ export const onCreateChatFile = /* GraphQL */ `
       chat_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
@@ -2838,6 +2842,7 @@ export const onUpdateChatFile = /* GraphQL */ `
       chat_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
@@ -2851,6 +2856,7 @@ export const onDeleteChatFile = /* GraphQL */ `
       chat_key
       sort_number
       file_id
+      file_name
       data_url
       createdAt
       updatedAt
