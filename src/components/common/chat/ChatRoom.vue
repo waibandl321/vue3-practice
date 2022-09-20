@@ -80,7 +80,7 @@
         <v-menu
           location="end"
           :close-on-content-click="false"
-          v-model="menu_link"
+          v-model="url_setting"
         >
           <template v-slot:activator="{ props }">
             <v-btn
@@ -94,10 +94,12 @@
             <v-card-title>WEBサイト追加</v-card-title>
             <v-card-item>
               <v-text-field
+                v-model="url_obj.url_key"
                 label="WEBサイト名"
                 density="compact"
               ></v-text-field>
               <v-text-field
+                v-model="url_obj.url_value"
                 label="URL"
                 density="compact"
               ></v-text-field>
@@ -105,12 +107,12 @@
             <v-card-actions class="justify-end">
               <v-btn
                 variant="outlined"
-                @click="menu_link = false"
+                @click="url_setting = false"
               >キャンセル</v-btn>
               <v-btn
                 variant="flat"
                 color="primary"
-                @click="menu_link = false"
+                @click="setUrl()"
               >保存</v-btn>
             </v-card-actions>
           </v-card>
@@ -118,18 +120,41 @@
       </div>
       <div class="d-flex align-end">
         <v-textarea
+          v-model.trim="message.text"
           hide-details="auto"
           clearable
           no-resize
           rows="3"
-          @click:append="clickSendMessage()"
         ></v-textarea>
         <v-btn
+          :disabled="!message.text"
           icon="mdi-send"
           class="ml-2"
           variant="text"
           color="success"
+          @click="sendMessage()"
         ></v-btn>
+      </div>
+      <!-- 添付画像 -->
+      <div class="mt-2">
+        <span>添付画像:</span>
+        <v-chip
+          v-for="(file, f) in message.files"
+          :key="f"
+          class="ml-2"
+        >{{ file.name ?? file.file_name }}</v-chip>
+      </div>
+      <!-- URL -->
+      <div
+        v-for="url in message.urls"
+        :key="url.id"
+        class="mt-2"
+      >
+        <a
+          :href="url.url_value"
+          target="_blank"
+          rel="noopener noreferrer"
+        >{{ url.url_key }}</a>
       </div>
     </div>
   </div>
@@ -230,8 +255,10 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
+import { ref, reactive } from '@vue/reactivity'
 import { inject, onBeforeMount } from '@vue/runtime-core'
+import { uuid } from 'vue-uuid'
+
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
@@ -250,9 +277,11 @@ export default {
   setup(props) {
     const $params = inject('params')
     const initChatRoom = inject('init-chat-room')
-    let view_room = ref({})
-    view_room.value = $params.view_room
     const loading = ref(false);
+    // MEMO: let使用理由・・・ルーム更新時に再代入するため
+    let view_room = ref({})
+
+    view_room.value = $params.view_room
 
     // トークルーム削除
     const deleteChatRoom = async () => {
@@ -345,51 +374,53 @@ export default {
     }
 
     // メッセージ送信
-    // URL
-    const menu_link = ref(false);
-    // const add_links = ref([])
-    // ファイル関連
+    const message = reactive({
+      text: "",
+      urls: [],
+      files: []
+    })
+    let url_obj = reactive({
+      url_key: "",
+      url_value: ""
+    })
+    const url_setting = ref(false);
+    const setUrl = () => {
+      url_obj.id = uuid.v4()
+      message.urls.push(url_obj)
+      url_obj = {
+        url_key: "",
+        url_value: ""
+      }
+      url_setting.value = false
+    }
     const file_select_modal = ref(false);
-    // const add_files = ref([])
+    // 送信処理
+    const sendMessage = async () => {
+      alert("click send");
+    };
+    // ファイル関連
     const dir_top = ref({})
     onBeforeMount(async () => {
       dir_top.value = await fileApiFunc.apiGetDirTop()
     })
     const changeAttachment = (event) => {
-      console.log(...event.target.files);
+      message.files.push(...event.target.files)
     };
     const closeFileSelectModal = () => {
       file_select_modal.value = false
     }
-    const isSelectedFile = (file) => {
-      console.log(file);
+    const isSelectedFile = (is_selected_file) => {
+      message.files.push(is_selected_file)
       file_select_modal.value = false
     }
-    // メッセージ送信
-    const clickSendMessage = () => {
-      alert("click send");
-    };
-    
 
     return {
       view_room,
       loading,
-      // URL
-      menu_link,
-      // ファイル管理から選択
-      file_select_modal,
-      dir_top,
-      changeAttachment,
-      closeFileSelectModal,
-      isSelectedFile,
       // ルーム編集
       chat_room_edit,
       closeEditRoom,
-      // 送信
-      clickSendMessage,
-      // 削除
-      deleteChatRoom,
-      // メンバー確認・追加
+      // ルームメンバー確認・追加
       member_modal,
       selectable_members,
       current_members,
@@ -397,7 +428,23 @@ export default {
       getMemberName,
       judgeOwner,
       addMember,
-      deleteMember
+      deleteMember,
+      // ルーム削除
+      deleteChatRoom,
+      
+      // メッセージ送信
+      message,
+      file_select_modal,
+      sendMessage,
+      // URL
+      url_obj,
+      url_setting,
+      setUrl,
+      // ファイル管理から選択
+      dir_top,
+      changeAttachment,
+      closeFileSelectModal,
+      isSelectedFile,
     };
   }
 }
