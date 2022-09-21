@@ -76,6 +76,7 @@
                 <v-list-item
                   density="compact"
                   link
+                  @click="deleteMessage(message)"
                 >
                   メッセージを削除
                 </v-list-item>
@@ -441,6 +442,7 @@ export default {
     const chat_messages = ref([])
     const message_loading = ref(false)
     // メッセージ一覧取得
+    // TODO: 日付順にソート
     getChatMessages()
     async function getChatMessages() {
       message_loading.value = true
@@ -502,7 +504,43 @@ export default {
       storeGetStaffId() === poster_id
     }
     // メッセージ削除
-    
+    const deleteMessage = async (message) => {
+      if(!confirm('削除後は復元できません。よろしいですか？')) return
+      loading.value = true
+      try {
+        await deleteMessage(message)
+        await deleteFiles(message)
+        await deleteUrls(message)
+        chat_messages.value = afterDeleteMessageInit(message, chat_messages.value)
+      } catch (error) {
+        console.log(error);
+      }
+      loading.value = false
+
+      async function deleteMessage (message) {
+        await chatApiFunc.deleteChatMessage(message)
+      }
+      async function deleteFiles (message) {
+        const files = message.files.items
+        if(files.length === 0) return;
+        for (const file of files) {
+          await chatApiFunc.deleteChatFile(file)
+        }
+      }
+      async function deleteUrls (message) {
+        const urls = message.urls.items
+        if(urls.length === 0) return;
+        for (const url of urls) {
+          await chatApiFunc.deleteChatUrl(url)
+        }
+      }
+      function afterDeleteMessageInit (message, groups) {
+        for (const group of groups) {
+          group.messages = group.messages.filter(m => m.id !== message.id)
+        }
+        return groups
+      }
+    }
     // メッセージ送信
     let message = reactive({
       text: "",
@@ -549,11 +587,11 @@ export default {
         console.error(error);
       }
       loading.value = false
-      // message.text = ""
-      // message.urls = []
-      // message.files = []
-      // url_obj.url_key = ""
-      // url_obj.url_value = ""
+      message.text = ""
+      message.urls = []
+      message.files = []
+      url_obj.url_key = ""
+      url_obj.url_value = ""
     };
     // ファイル関連
     const changeAttachment = (event) => {
@@ -592,6 +630,8 @@ export default {
       message,
       file_select_modal,
       sendMessage,
+      // メッセージ削除
+      deleteMessage,
       // URL
       url_obj,
       url_setting,

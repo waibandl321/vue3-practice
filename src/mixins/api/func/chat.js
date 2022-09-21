@@ -1,7 +1,7 @@
 import { API } from 'aws-amplify'
 import { createChat, createChatRoom, createChatRoomMember, createChatPost, createChatFile, createChatUrl,
   updateChatRoom,
-  deleteChatRoom, deleteChatRoomMember } from '@/graphql/mutations'
+  deleteChatRoom, deleteChatRoomMember, deleteChatPost, deleteChatFile, deleteChatUrl } from '@/graphql/mutations'
 import { listChats, getChatRoom, listChatPosts } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
@@ -201,6 +201,32 @@ export default {
       url_value: url.url_value
     }
   },
-  deleteMessage () {},
+  async deleteChatMessage (post) {
+    const filter = {
+      id: post.id,
+    }
+    return await API.graphql({
+      query: deleteChatPost,
+      variables: {input: filter}
+    });
+  },
+  async deleteChatFile (chat_file) {
+    const filter = {
+      id: chat_file.id,
+    }
+    return await API.graphql({
+      query: deleteChatFile,
+      variables: {input: filter}
+    });
+  },
+  async deleteChatUrl (chat_url) {
+    const filter = {
+      id: chat_url.id,
+    }
+    return await API.graphql({
+      query: deleteChatUrl,
+      variables: {input: filter}
+    });
+  },
 
 }
