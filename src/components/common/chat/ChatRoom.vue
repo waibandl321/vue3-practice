@@ -47,7 +47,7 @@
         color="green"
       ></v-progress-linear>
       <template v-else>
-        <v-list 
+        <v-list
           v-for="(group, g) in chat_messages"
           :key="g"
         >
@@ -58,7 +58,28 @@
             :subtitle="message.poster_ids"
             class="chat-message"
           >
-            <!-- {{ message }} -->
+            <!-- 削除同線 -->
+            <v-menu
+              v-if="judgePoster(message.poster_ids)"
+            >
+              <template v-slot:activator="{ props }">
+                <v-btn
+                  variant="text"
+                  v-bind="props"
+                  icon="mdi-dots-horizontal"
+                  size="small"
+                  class="chat-message-setting"
+                ></v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  density="compact"
+                  link
+                >
+                  メッセージを削除
+                </v-list-item>
+              </v-list>
+            </v-menu>
             <v-list-item-title>{{ message.post_text }}</v-list-item-title>
             <div v-if="message.files.items.length > 0">
               <v-img
@@ -301,6 +322,7 @@ import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
 import employeeApiFunc from '@/mixins/api/master/employee'
 import utilMixin from '@/mixins/utils/utils.js'
+import storeAuth from '@/mixins/store/auth.js'
 
 import OverlayLoading from '../OverlayLoading.vue'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
@@ -470,6 +492,9 @@ export default {
       }
       return groups
     }
+    const judgePoster = (poster_id) => {
+      return storeAuth.storeGetStaffId() === poster_id
+    }
     const getPreviewerFile = async (data_url) => {
       const requset_url = utilMixin.removeUrlQuery(data_url)
       return await utilMixin.getImageObjectURL(requset_url)
@@ -559,6 +584,7 @@ export default {
       // メッセージ取得
       message_loading,
       chat_messages,
+      judgePoster,
       // メッセージ送信
       message,
       file_select_modal,
@@ -598,5 +624,10 @@ export default {
 }
 .chat-post >>> .v-input__append {
   align-items: flex-end;
+}
+.chat-message-setting {
+  position: absolute;
+  right: 16px;
+  top: 0;
 }
 </style>

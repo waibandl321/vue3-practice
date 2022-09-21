@@ -16,6 +16,9 @@ export default {
   storeSetStaff (staff) {
     store.commit('mSetStaff', staff)
   },
+  storeGetStaffId () {
+    return store.state.staff.staff_id
+  },
   storeSetAssociateStaff (associate, staff) {
     console.log('store save associate', associate)
     console.log('store save staff', staff)
