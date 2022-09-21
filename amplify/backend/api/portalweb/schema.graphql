@@ -96,7 +96,9 @@ type Employee @model {
   id: ID!
   company_employee_id: String
   staff_id: ID! @index(name: "byStaff", sortKeyFields: ["createdAt"])
-  company_cd: ID! @index(name: "byCompany", sortKeyFields: ["createdAt"])
+  company_cd: ID!
+  @index(name: "byCompany", sortKeyFields: ["createdAt"])
+  @index(name: "byChat", sortKeyFields: ["createdAt"])
   last_name: String
   first_name: String
   last_name_kana: String
@@ -358,10 +360,11 @@ type Chat @model {
   id: ID!
   chat_id: String
   chat_name: String
-  company_cd: String
+  company_cd: ID!
   company_group_cd: String
   owner_id: String
   rooms: [ChatRoom] @hasMany(indexName: "byChat", fields: ["id"])
+  company_employees: [Employee] @hasMany(indexName: "byChat", fields: ["company_cd"])
 }
 type ChatRoom @model {
   id: ID!

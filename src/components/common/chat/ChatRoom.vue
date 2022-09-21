@@ -238,7 +238,7 @@
 
   <!-- メンバー確認、追加 
     MEMO: 当コンポーネントは責務が多すぎるのでコンポーネント分割したい ファイル管理から選択と同じ感じにできればOK -->
-  <v-dialog v-model="member_modal">
+  <!-- <v-dialog v-model="member_modal">
     <v-card width="600">
       <v-card-title>メンバー</v-card-title>
       <v-card-item>
@@ -252,7 +252,6 @@
           <template v-slot:subtitle>
             {{ getMemberName(member.member_id) }}
           </template>
-          <!-- ルーム作成者の場合はボタン非表示 -->
           <template
             v-if="judgeOwner(member.member_id)"
             v-slot:append
@@ -303,7 +302,11 @@
         >追加</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
+  </v-dialog> -->
+  <ChatMemberSelect
+    v-if="member_modal"
+    :viewRoom="view_room"
+  />
   
   <!-- ルーム編集 -->
   <ChatRoomEdit 
@@ -323,16 +326,17 @@ import { uuid } from 'vue-uuid'
 import chatMixin from './chat_mixin'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
-import employeeApiFunc from '@/mixins/api/master/employee'
+// import employeeApiFunc from '@/mixins/api/master/employee'
 import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
 
 import OverlayLoading from '../OverlayLoading.vue'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
+import ChatMemberSelect from './member/ChatMemberSelect.vue'
 
 export default {
-  components: { FIleSelectModal, OverlayLoading, ChatRoomEdit },
+  components: { FIleSelectModal, OverlayLoading, ChatRoomEdit, ChatMemberSelect },
   props: {
     changeMode: {
       type: Function
@@ -376,9 +380,9 @@ export default {
     const is_selected_members = ref([])
 
     getMembers()
-    async function getMembers () {
+    function getMembers () {
       current_members.value = view_room.members.items
-      company_employees.value = await employeeApiFunc.apiGetEmployeeList()
+      company_employees.value = $params.company_employees
       selectable_members.value = company_employees.value.filter((v) => {
         return !current_members.value.find(s => s.member_id === v.staff_id)
       })
@@ -488,6 +492,7 @@ export default {
       for (const group of groups) {
         for( const message of group.messages ) {
           const files = message.files.items
+          console.log(message);
           if(files.length > 0) {
             for (const file of files) {
               file.preview_src = await getPreviewerFile(file.data_url)

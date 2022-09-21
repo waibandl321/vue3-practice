@@ -2629,6 +2629,28 @@ export const createChat = /* GraphQL */ `
         }
         nextToken
       }
+      company_employees {
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -2661,6 +2683,28 @@ export const updateChat = /* GraphQL */ `
         }
         nextToken
       }
+      company_employees {
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       createdAt
       updatedAt
     }
@@ -2688,6 +2732,28 @@ export const deleteChat = /* GraphQL */ `
           owner_staff_id
           delete
           chat_id
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      company_employees {
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
           createdAt
           updatedAt
         }
