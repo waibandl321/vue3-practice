@@ -65,6 +65,7 @@
                 v-for="(file, i) in message.files.items"
                 :key="i"
                 :src="file.preview_src"
+                :lazy-src="lazy_image_src"
                 width="200"
               ></v-img>
             </div>
@@ -181,7 +182,6 @@
         >{{ file.name ?? file.file_name }}</v-chip>
       </div>
       <!-- URL -->
-      {{ message.urls }}
       <div
         v-for="url in message.urls"
         :key="url.id"
@@ -293,7 +293,7 @@
 
 <script>
 import { ref, reactive } from '@vue/reactivity'
-import { inject, onBeforeMount } from '@vue/runtime-core'
+import { inject, onBeforeMount, watch } from '@vue/runtime-core'
 import { uuid } from 'vue-uuid'
 
 import chatMixin from './chat_mixin'
@@ -317,6 +317,8 @@ export default {
     const $params = inject('params')
     const initChatRoom = inject('init-chat-room')
     const loading = ref(false);
+    const lazy_image_src = ref()
+    lazy_image_src.value = require('@/assets/loading.svg')
     // MEMO: let使用理由・・・ルーム更新時に再代入するため
     let view_room = reactive({})
     view_room = $params.view_room
@@ -423,13 +425,21 @@ export default {
       try {
         const results = await chatApiFunc.getMessages(view_room)
         chat_messages.value = reduceArrayGroupDate(results)
-        chat_messages.value = await getChatFilePreview(chat_messages.value)
+        // chat_messages.value = await getChatFilePreview(chat_messages.value)
       } catch (error) {
         console.error(error);
       }
       message_loading.value = false
     }
     getChatMessages()
+
+    // 画像遅延読み込み
+    watch(
+      () => chat_messages.value,
+      async () => {
+        chat_messages.value = await getChatFilePreview(chat_messages.value)
+      }
+    )
     
     function reduceArrayGroupDate(results) {
       const groups = results.reduce((groups, message) => {
@@ -458,10 +468,8 @@ export default {
           }
         }
       }
-      console.log(groups);
       return groups
     }
-
     const getPreviewerFile = async (data_url) => {
       const requset_url = utilMixin.removeUrlQuery(data_url)
       return await utilMixin.getImageObjectURL(requset_url)
@@ -533,6 +541,7 @@ export default {
     return {
       view_room,
       loading,
+      lazy_image_src,
       // ルーム編集
       chat_room_edit,
       closeEditRoom,
@@ -550,7 +559,6 @@ export default {
       // メッセージ取得
       message_loading,
       chat_messages,
-      getPreviewerFile,
       // メッセージ送信
       message,
       file_select_modal,
@@ -582,9 +590,8 @@ export default {
 .chat-post {
   background: #fff;
   bottom: 0;
-  max-height: 250px;
   position: fixed;
-  padding: 16px;
+  padding: 8px 16px;
   left: 300px;
   right: 0;
   z-index: 2;
