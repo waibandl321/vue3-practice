@@ -1,7 +1,8 @@
 <template>
   <v-card
-    class="mx-auto"
+    class="mx-auto chat-list"
     width="300"
+    flat
   >
     <v-list>
       <v-list-item 
@@ -120,6 +121,13 @@ export default {
 </script>
 
 <style scoped>
+.chat-list {
+  border-right: 1px solid #ccc;
+  height: calc(100vh - 48px);
+  overflow: auto;
+  position: sticky;
+  top: 48px;
+}
 .chat-add {
   position: absolute;
   bottom: 24px;

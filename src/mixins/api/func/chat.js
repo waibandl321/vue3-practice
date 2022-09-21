@@ -2,7 +2,7 @@ import { API } from 'aws-amplify'
 import { createChat, createChatRoom, createChatRoomMember, createChatPost, createChatFile, createChatUrl,
   updateChatRoom,
   deleteChatRoom, deleteChatRoomMember } from '@/graphql/mutations'
-import { listChats, getChatRoom } from '@/graphql/queries'
+import { listChats, getChatRoom, listChatPosts } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
@@ -131,6 +131,19 @@ export default {
     }
   },
   // メッセージ
+  async getMessages (room) {
+    const filter = {
+      room_id: {
+        eq: room.room_id
+      }
+    }
+    const results = await API.graphql({
+      query: listChatPosts,
+      variables: { filter: filter }
+    })
+    return results.data.listChatPosts.items
+    
+  },
   async createChatMessage (room, message_text) {
     const post = this.generateChatMessageObject(room, message_text)
     console.log('send post', post);

@@ -40,18 +40,54 @@
     </v-card-actions>
     <v-divider></v-divider>
     <!-- メッセージリスト -->
-    <v-list>
-      <v-list-item
-        prepend-icon="mdi-account"
-        title="John Leider"
-        subtitle="昨日はおいしいご飯をご馳走になりまして、有難うございました！またご一緒させてください！"
-        class="chat-message"
-      >
-      </v-list-item>
-    </v-list>
+    <div class="chat-messages">
+      <v-progress-linear
+        v-if="message_loading"
+        indeterminate
+        color="green"
+      ></v-progress-linear>
+      <template v-else>
+        <v-list 
+          v-for="(group, g) in chat_messages"
+          :key="g"
+        >
+          <v-list-item
+            v-for="(message, m) in group.messages"
+            :key="m"            
+            prepend-icon="mdi-account"
+            :subtitle="message.poster_ids"
+            class="chat-message"
+          >
+            <!-- {{ message }} -->
+            <v-list-item-title>{{ message.post_text }}</v-list-item-title>
+            <div v-if="message.files.items.length > 0">
+              <v-img
+                v-for="(file, i) in message.files.items"
+                :key="i"
+                :src="file.preview_src"
+                width="200"
+              ></v-img>
+            </div>
+            <div v-if="message.urls.items.length > 0">
+              <div
+                v-for="url in message.urls.items"
+                :key="url.id"
+                class="mt-2"
+              >
+                <a
+                  :href="url.url_value"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >{{ url.url_key }}</a>
+              </div>
+            </div>
+          </v-list-item>
+        </v-list>
+      </template>
+    </div>
 
     <!-- メッセージ送信 -->
-    <div class="chat-post">
+    <v-card class="chat-post" elevation="2">
       <div class="d-flex">
         <v-menu location="end">
           <template v-slot:activator="{ props }">
@@ -157,7 +193,7 @@
           rel="noopener noreferrer"
         >{{ url.url_key }}</a>
       </div>
-    </div>
+    </v-card>
   </div>
 
   <!-- input file 擬似要素 -->
@@ -264,6 +300,7 @@ import chatMixin from './chat_mixin'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
 import employeeApiFunc from '@/mixins/api/master/employee'
+import utilMixin from '@/mixins/utils/utils.js'
 
 import OverlayLoading from '../OverlayLoading.vue'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
@@ -378,7 +415,57 @@ export default {
         console.error(error);
       }
     }
+    // メッセージ取得
+    const chat_messages = ref([])
+    const message_loading = ref(false)
+    const getChatMessages = async () => {
+      message_loading.value = true
+      try {
+        const results = await chatApiFunc.getMessages(view_room)
+        chat_messages.value = reduceArrayGroupDate(results)
+        chat_messages.value = await getChatFilePreview(chat_messages.value)
+      } catch (error) {
+        console.error(error);
+      }
+      message_loading.value = false
+    }
+    getChatMessages()
+    
+    function reduceArrayGroupDate(results) {
+      const groups = results.reduce((groups, message) => {
+        const date = message.createdAt.split('T')[0];
+        if (!groups[date]) {
+          groups[date] = [];
+        }
+        groups[date].push(message);
+        return groups;
+      }, {})
+      return Object.keys(groups).map((date) => {
+        return {
+          date,
+          messages: groups[date]
+        };
+      });
+    }
+    async function getChatFilePreview (groups) {
+      for (const group of groups) {
+        for( const message of group.messages ) {
+          const files = message.files.items
+          if(files.length > 0) {
+            for (const file of files) {
+              file.preview_src = await getPreviewerFile(file.data_url)
+            }
+          }
+        }
+      }
+      console.log(groups);
+      return groups
+    }
 
+    const getPreviewerFile = async (data_url) => {
+      const requset_url = utilMixin.removeUrlQuery(data_url)
+      return await utilMixin.getImageObjectURL(requset_url)
+    }
     // メッセージ送信
     let message = reactive({
       text: "",
@@ -460,7 +547,10 @@ export default {
       deleteMember,
       // ルーム削除
       deleteChatRoom,
-      
+      // メッセージ取得
+      message_loading,
+      chat_messages,
+      getPreviewerFile,
       // メッセージ送信
       message,
       file_select_modal,
@@ -482,16 +572,22 @@ export default {
 .chat-main {
   width: calc(100% - 300px);
 }
+.chat-messages {
+  padding-bottom: 250px;
+}
 .chat-message {
   padding-top: 8px;
   padding-bottom: 8px;
 }
 .chat-post {
-  padding: 16px;
-  position: fixed;
+  background: #fff;
   bottom: 0;
+  max-height: 250px;
+  position: fixed;
+  padding: 16px;
   left: 300px;
   right: 0;
+  z-index: 2;
 }
 .chat-post >>> .v-input__append {
   align-items: flex-end;

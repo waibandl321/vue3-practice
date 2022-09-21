@@ -1882,9 +1882,28 @@ export const listChatPosts = /* GraphQL */ `
         createdAt
         updatedAt
         files {
+          items {
+            id
+            chat_key
+            sort_number
+            file_id
+            file_name
+            data_url
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         urls {
+          items {
+            id
+            chat_key
+            sort_number
+            url_key
+            url_value
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }
