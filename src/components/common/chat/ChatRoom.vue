@@ -88,7 +88,8 @@
                 v-for="(file, i) in message.files.items"
                 :key="i"
                 :src="file.preview_src"
-                width="200"
+                width="auto"
+                style="max-width: 250px;"
               ></v-img>
             </div>
             <div v-if="message.urls.items.length > 0">
@@ -235,7 +236,8 @@
     />
   </template>
 
-  <!-- メンバー確認、追加 MEMO: 当コンポーネントは責務が多すぎるのでコンポーネント分割したい ファイル管理から選択と同じ感じにできればOK -->
+  <!-- メンバー確認、追加 
+    MEMO: 当コンポーネントは責務が多すぎるのでコンポーネント分割したい ファイル管理から選択と同じ感じにできればOK -->
   <v-dialog v-model="member_modal">
     <v-card width="600">
       <v-card-title>メンバー</v-card-title>
@@ -448,7 +450,9 @@ export default {
       message_loading.value = true
       try {
         const results = await chatApiFunc.getMessages(view_room)
-        chat_messages.value = reduceArrayGroupDate(results)
+        if(results.length > 0) {
+          chat_messages.value = reduceArrayGroupDate(results)
+        }
       } catch (error) {
         console.error(error);
       }
@@ -558,14 +562,21 @@ export default {
       url_setting.value = false
     }
     const file_select_modal = ref(false);
-    // 送信処理
+    // メッセージ送信
     const sendMessage = async () => {
       loading.value = true
       try {
-        // TODO: ローディング時間が長いので、ファイルとURLは遅延処理にしたい（LINEみたいなイメージ）
-        // メッセージ
         const post = await chatApiFunc.createChatMessage(view_room, message.text)
-        // ファイル
+        await createChatFiles(post)
+        await createChatUrls(post)
+        alert('送信完了')
+      } catch (error) {
+        console.error(error);
+      }
+      resetMessage()
+      loading.value = false
+
+      async function createChatFiles(post) {
         if(message.files.length > 0) {
           for (const file of message.files) {
             let file_store = undefined
@@ -576,22 +587,20 @@ export default {
             await chatApiFunc.createChatFile(post, file, file_store)
           }
         }
-        // URL
-        if(message.urls.length > 0) {
-          for (const url of message.urls) {
-            await chatApiFunc.createChatUrl(post, url)
-          }
-        }
-        alert('送信完了')
-      } catch (error) {
-        console.error(error);
       }
-      loading.value = false
-      message.text = ""
-      message.urls = []
-      message.files = []
-      url_obj.url_key = ""
-      url_obj.url_value = ""
+      async function createChatUrls (post) {
+        if(message.urls.length === 0) return
+        for (const url of message.urls) {
+          await chatApiFunc.createChatUrl(post, url)
+        }
+      }
+      function resetMessage() {
+        message.text = ""
+        message.urls = []
+        message.files = []
+        url_obj.url_key = ""
+        url_obj.url_value = ""
+      }
     };
     // ファイル関連
     const changeAttachment = (event) => {

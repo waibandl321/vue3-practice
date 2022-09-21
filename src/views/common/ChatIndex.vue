@@ -24,7 +24,7 @@ import ChatRoom from '@/components/common/chat/ChatRoom.vue';
 
 import chatApiFunc from '@/mixins/api/func/chat'
 
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import { provide } from '@vue/runtime-core';
 
 export default {
@@ -37,7 +37,7 @@ export default {
   },
   setup () {
     const loading = ref(false)
-    const params = ref({
+    const params = reactive({
       company_chat: {},
       view_room: null,
       rooms: []
@@ -46,7 +46,7 @@ export default {
     const init = async () => {
       loading.value = true
       try {
-        params.value.company_chat = await chatApiFunc.getCompanyChat()
+        params.company_chat = await chatApiFunc.getCompanyChat()
       } catch (error) {
         console.error(error);
       }
@@ -63,10 +63,10 @@ export default {
     const mode = ref('home')
     const changeMode = (_mode, room = null) => {
       mode.value = _mode
-      params.value.view_room = room
+      params.view_room = room
     }
     // データ共有
-    provide('params', params.value)
+    provide('params', params)
     provide('init-chat-room', initChatRoom)
 
     return {
