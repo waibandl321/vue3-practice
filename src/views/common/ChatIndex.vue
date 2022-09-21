@@ -23,7 +23,6 @@ import ChatHome from '@/components/common/chat/ChatHome.vue';
 import ChatRoom from '@/components/common/chat/ChatRoom.vue';
 
 import chatApiFunc from '@/mixins/api/func/chat'
-// import employeeApiFunc from '@/mixins/api/master/employee'
 
 import { ref, reactive } from 'vue';
 import { provide } from '@vue/runtime-core';
@@ -49,12 +48,10 @@ export default {
       loading.value = true
       try {
         params.company_chat = await chatApiFunc.getCompanyChat()
-        params.company_employees = params.company_chat.company_employees.items
       } catch (error) {
         console.error(error);
       }
       loading.value = false
-      
     }
     init()
     // 一覧更新

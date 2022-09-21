@@ -306,6 +306,7 @@
   <ChatMemberSelect
     v-if="member_modal"
     :viewRoom="view_room"
+    :closeMemberModal="closeMemberModal"
   />
   
   <!-- ルーム編集 -->
@@ -326,7 +327,6 @@ import { uuid } from 'vue-uuid'
 import chatMixin from './chat_mixin'
 import fileApiFunc from '@/mixins/api/func/file'
 import chatApiFunc from '@/mixins/api/func/chat'
-// import employeeApiFunc from '@/mixins/api/master/employee'
 import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
 
@@ -374,63 +374,8 @@ export default {
     }
     // メンバー
     const member_modal = ref(false)
-    const current_members = ref([])
-    const company_employees = ref([])
-    const selectable_members = ref([])
-    const is_selected_members = ref([])
-
-    getMembers()
-    function getMembers () {
-      current_members.value = view_room.members.items
-      company_employees.value = $params.company_employees
-      selectable_members.value = company_employees.value.filter((v) => {
-        return !current_members.value.find(s => s.member_id === v.staff_id)
-      })
-    }
-    const getMemberName = (staff_id) => {
-      const result = company_employees.value.find(v => v.staff_id === staff_id)
-      return result ? result.last_name + result.first_name : ""
-    }
-    // ルーム作成者判定
-    const judgeOwner = (staff_id) => {
-      return view_room.owner_staff_id !== staff_id
-    }
-    // メンバー追加
-    const addMember = async () => {
-      loading.value = true
+    const closeMemberModal = () => {
       member_modal.value = false
-      try {
-        for (const is_selected_member of is_selected_members.value) {
-          const result = await chatApiFunc.addChatMember(view_room, is_selected_member)
-          current_members.value.push(result)
-          selectable_members.value = selectable_members.value.filter(v => v.staff_id !== result.member_id)
-        }
-        alert('メンバーを追加しました。')
-      } catch (error) {
-        console.error(error);
-      }
-      is_selected_members.value = []
-      loading.value = false
-    }
-
-    // メンバー削除
-    const deleteMember = async (member) => {
-      if(!confirm('メンバーを削除します。よろしいですか？')) return;
-      
-      loading.value = true
-      member_modal.value = false
-      try {
-        await chatApiFunc.deleteRoomMember(member)
-        alert('メンバーを削除しました。')
-        current_members.value = current_members.value.filter(v => v.member_id !== member.member_id)
-        selectable_members.value = company_employees.value.filter((v) => {
-          return !current_members.value.find(s => s.member_id === v.staff_id)
-        })
-      } catch (error) {
-        console.error(error);
-      }
-      is_selected_members.value = []
-      loading.value = false
     }
 
     // ルーム更新
@@ -627,13 +572,7 @@ export default {
       closeEditRoom,
       // ルームメンバー確認・追加
       member_modal,
-      selectable_members,
-      current_members,
-      is_selected_members,
-      getMemberName,
-      judgeOwner,
-      addMember,
-      deleteMember,
+      closeMemberModal,
       // ルーム削除
       deleteChatRoom,
       // メッセージ取得
