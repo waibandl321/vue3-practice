@@ -51,6 +51,7 @@
           v-for="(group, g) in chat_messages"
           :key="g"
         >
+          <v-list-subheader>【{{ group.date }}】</v-list-subheader>
           <v-list-item
             v-for="(message, m) in group.messages"
             :key="m"            
@@ -86,7 +87,6 @@
                 v-for="(file, i) in message.files.items"
                 :key="i"
                 :src="file.preview_src"
-                :lazy-src="lazy_image_src"
                 width="200"
               ></v-img>
             </div>
@@ -339,8 +339,6 @@ export default {
     const $params = inject('params')
     const initChatRoom = inject('init-chat-room')
     const loading = ref(false);
-    const lazy_image_src = ref()
-    lazy_image_src.value = require('@/assets/loading.svg')
     // MEMO: let使用理由・・・ルーム更新時に再代入するため
     let view_room = reactive({})
     view_room = $params.view_room
@@ -374,14 +372,14 @@ export default {
     const selectable_members = ref([])
     const is_selected_members = ref([])
 
-    const getMembers = async () => {
+    getMembers()
+    async function getMembers () {
       current_members.value = view_room.members.items
       company_employees.value = await employeeApiFunc.apiGetEmployeeList()
       selectable_members.value = company_employees.value.filter((v) => {
         return !current_members.value.find(s => s.member_id === v.staff_id)
       })
     }
-    getMembers()
     const getMemberName = (staff_id) => {
       const result = company_employees.value.find(v => v.staff_id === staff_id)
       return result ? result.last_name + result.first_name : ""
@@ -442,19 +440,36 @@ export default {
     // メッセージ取得
     const chat_messages = ref([])
     const message_loading = ref(false)
-    const getChatMessages = async () => {
+    // メッセージ一覧取得
+    getChatMessages()
+    async function getChatMessages() {
       message_loading.value = true
       try {
         const results = await chatApiFunc.getMessages(view_room)
         chat_messages.value = reduceArrayGroupDate(results)
-        // chat_messages.value = await getChatFilePreview(chat_messages.value)
       } catch (error) {
         console.error(error);
       }
       message_loading.value = false
-    }
-    getChatMessages()
 
+      // 日付ごとに配列をグルーピング
+      function reduceArrayGroupDate(results) {
+        const groups = results.reduce((groups, message) => {
+          const date = message.createdAt.split('T')[0];
+          if (!groups[date]) {
+            groups[date] = [];
+          }
+          groups[date].push(message);
+          return groups;
+        }, {})
+        return Object.keys(groups).map((date) => {
+          return {
+            date,
+            messages: groups[date]
+          };
+        });
+      }
+    }
     // 画像遅延読み込み
     watch(
       () => chat_messages.value,
@@ -462,23 +477,7 @@ export default {
         chat_messages.value = await getChatFilePreview(chat_messages.value)
       }
     )
-    
-    function reduceArrayGroupDate(results) {
-      const groups = results.reduce((groups, message) => {
-        const date = message.createdAt.split('T')[0];
-        if (!groups[date]) {
-          groups[date] = [];
-        }
-        groups[date].push(message);
-        return groups;
-      }, {})
-      return Object.keys(groups).map((date) => {
-        return {
-          date,
-          messages: groups[date]
-        };
-      });
-    }
+    // ファイルプレビュー
     async function getChatFilePreview (groups) {
       for (const group of groups) {
         for( const message of group.messages ) {
@@ -491,14 +490,19 @@ export default {
         }
       }
       return groups
+      
+      async function getPreviewerFile (data_url) {
+        const requset_url = utilMixin.removeUrlQuery(data_url)
+        return await utilMixin.getImageObjectURL(requset_url)
+      }
     }
+    // 削除スタッフ判定
     const judgePoster = (poster_id) => {
-      return storeAuth.storeGetStaffId() === poster_id
+      return storeAuth.
+      storeGetStaffId() === poster_id
     }
-    const getPreviewerFile = async (data_url) => {
-      const requset_url = utilMixin.removeUrlQuery(data_url)
-      return await utilMixin.getImageObjectURL(requset_url)
-    }
+    // メッセージ削除
+    
     // メッセージ送信
     let message = reactive({
       text: "",
@@ -566,7 +570,6 @@ export default {
     return {
       view_room,
       loading,
-      lazy_image_src,
       // ルーム編集
       chat_room_edit,
       closeEditRoom,
