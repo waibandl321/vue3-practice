@@ -66,7 +66,7 @@ export default {
       mode.value = _mode
     }
     const roomViewRef = ref()
-    const changeRoom = async (room) => {
+    const changeRoom = (room) => {
       params.view_room = room
       mode.value = 'room'
     }

@@ -82,7 +82,7 @@
                 </v-list-item>
               </v-list>
             </v-menu>
-            <v-list-item-title>{{ message.post_text }}</v-list-item-title>
+            <v-list-item-title class="white-space-wrap">{{ message.post_text }}</v-list-item-title>
             <div v-if="message.files.items.length > 0">
               <v-img
                 v-for="(file, i) in message.files.items"
@@ -278,10 +278,11 @@ export default {
   setup(props) {
     const initChatRoom = inject('init-chat-room')
     const params = inject('params')
-    // トークルーム変更時の再読み込み
+    // トークルーム変更時のメッセージ読み込み
     watch(
       () => params.view_room,
       () => {
+        resetMessage()
         getChatMessages()
       }
     )
@@ -451,6 +452,14 @@ export default {
       url_setting.value = false
     }
     const file_select_modal = ref(false);
+    // 初期化
+    function resetMessage() {
+      message.text = ""
+        message.urls = []
+        message.files = []
+        url_obj.url_key = ""
+        url_obj.url_value = ""
+    }
     // メッセージ送信
     const sendMessage = async () => {
       try {
@@ -479,13 +488,6 @@ export default {
         for (const url of message.urls) {
           await chatApiFunc.createChatUrl(post, url)
         }
-      }
-      function resetMessage() {
-        message.text = ""
-        message.urls = []
-        message.files = []
-        url_obj.url_key = ""
-        url_obj.url_value = ""
       }
     };
     // ファイル関連
@@ -564,5 +566,7 @@ export default {
   right: 16px;
   top: 0;
 }
-
+.white-space-wrap {
+  white-space: pre-wrap;
+}
 </style>
