@@ -3,6 +3,7 @@
   <v-main class="d-flex">
     <ChatList      
       :changeMode="changeMode"
+      :changeRoom="changeRoom"
       ref="roomlistRef"
     />
     <ChatHome
@@ -61,9 +62,13 @@ export default {
     }
     // 表示モード切り替え
     const mode = ref('home')
-    const changeMode = (_mode, room = null) => {
+    const changeMode = (_mode) => {
       mode.value = _mode
+    }
+    const roomViewRef = ref()
+    const changeRoom = async (room) => {
       params.view_room = room
+      mode.value = 'room'
     }
     // データ共有
     provide('params', params)
@@ -73,8 +78,10 @@ export default {
       loading,
       mode,
       changeMode,
+      changeRoom,
       params,
-      roomlistRef
+      roomlistRef,
+      roomViewRef
     }
   }
 }

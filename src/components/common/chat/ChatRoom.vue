@@ -1,9 +1,9 @@
 <template>
   <div class="chat-main">
-    {{ view_room }}
+    {{ params.view_room }}
     <!-- ルーム設定 -->
     <v-card-actions>
-      <v-card-title>{{ view_room.room_name }}</v-card-title>
+      <v-card-title>{{ params.view_room.room_name }}</v-card-title>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -88,8 +88,7 @@
                 v-for="(file, i) in message.files.items"
                 :key="i"
                 :src="file.preview_src"
-                width="auto"
-                style="max-width: 250px;"
+                width="150"
               ></v-img>
             </div>
             <div v-if="message.urls.items.length > 0">
@@ -235,77 +234,11 @@
       :closeFileSelectModal="closeFileSelectModal"
     />
   </template>
-
-  <!-- メンバー確認、追加 
-    MEMO: 当コンポーネントは責務が多すぎるのでコンポーネント分割したい ファイル管理から選択と同じ感じにできればOK -->
-  <!-- <v-dialog v-model="member_modal">
-    <v-card width="600">
-      <v-card-title>メンバー</v-card-title>
-      <v-card-item>
-        <v-card-subtitle>メンバー</v-card-subtitle>
-        <v-card
-          v-for="(member, m) in current_members"
-          :key="m"
-          class="mx-auto"
-          prepend-icon="mdi-account"
-        >
-          <template v-slot:subtitle>
-            {{ getMemberName(member.member_id) }}
-          </template>
-          <template
-            v-if="judgeOwner(member.member_id)"
-            v-slot:append
-          >
-            <v-btn
-              color="error"
-              icon="mdi-delete"
-              size="small"
-              variant="text"
-              @click="deleteMember(member)"
-            ></v-btn>
-          </template>
-        </v-card>
-      </v-card-item>
-      <v-card-item class="mt-6">
-        <v-card-subtitle>ユーザー</v-card-subtitle>
-        <v-card
-          v-for="(member, e) in selectable_members"
-          :key="e"
-          class="mx-auto"
-          prepend-icon="mdi-account"
-        >
-          <template v-slot:subtitle>
-            {{ member.last_name }}{{ member.first_name }}
-          </template>
-          <template v-slot:append>
-            <v-checkbox
-              v-model="is_selected_members"
-              :value="member"
-              hide-details="auto"
-              color="primary"
-            ></v-checkbox>
-          </template>
-        </v-card>
-      </v-card-item>
-      <v-divider></v-divider>
-      <v-card-actions class="justify-end">
-        <v-btn
-          variant="outlined"
-          class="mr-2"
-          @click="member_modal = false"
-        >キャンセル</v-btn>
-        <v-btn
-          variant="flat"
-          color="primary"
-          :disabled="is_selected_members.length === 0"
-          @click="addMember()"
-        >追加</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog> -->
+  
+  <!-- メンバー -->
   <ChatMemberSelect
     v-if="member_modal"
-    :viewRoom="view_room"
+    :viewRoom="params.view_room"
     :closeMemberModal="closeMemberModal"
   />
   
@@ -343,12 +276,17 @@ export default {
     }
   },
   setup(props) {
-    const $params = inject('params')
     const initChatRoom = inject('init-chat-room')
+    const params = inject('params')
+    // トークルーム変更時の再読み込み
+    watch(
+      () => params.view_room,
+      () => {
+        getChatMessages()
+      }
+    )
     const loading = ref(false);
-    // MEMO: let使用理由・・・ルーム更新時に再代入するため
-    let view_room = reactive({})
-    view_room = $params.view_room
+    
     // MEMO: ファイル選択用でディレクトリ情報事前読み込み
     const dir_top = ref({})
     onBeforeMount(async () => {
@@ -357,15 +295,13 @@ export default {
 
     // トークルーム削除
     const deleteChatRoom = async () => {
-      loading.value = true
       try {
-        await chatApiFunc.deleteRoom(view_room)
-        for (const member of view_room.members.items) {
-          await chatApiFunc.deleteRoomMember(member)  
+        await chatApiFunc.deleteRoom(params.view_room)
+        for (const member of params.view_room.members.items) {
+          await chatApiFunc.deleteRoomMember(member) 
         }
-        loading.value = false
-        initChatRoom()
         alert('チャットルームを削除しました')
+        initChatRoom()
       } catch (error) {
         console.error(error);
       }
@@ -383,8 +319,8 @@ export default {
     const closeEditRoom = async () => {
       // トークルーム情報再取得
       try {
-        const result = await chatApiFunc.getRoomDetail(view_room)
-        view_room = result.data.getChatRoom
+        const result = await chatApiFunc.getRoomDetail(params.view_room)
+        params.view_room = result.data.getChatRoom
       } catch (error) {
         console.error(error);
       }
@@ -394,11 +330,13 @@ export default {
     const message_loading = ref(false)
     // メッセージ一覧取得
     // TODO: 日付順にソート
-    getChatMessages()
-    async function getChatMessages() {
+    const getChatMessages = async () => {
       message_loading.value = true
       try {
-        const results = await chatApiFunc.getMessages(view_room)
+        const results = await chatApiFunc.getMessages(params.view_room)
+        console.log('getMessages', results);
+        chat_messages.value = results
+        // 日付グルーピング
         if(results.length > 0) {
           chat_messages.value = reduceArrayGroupDate(results)
         }
@@ -424,12 +362,18 @@ export default {
           };
         });
       }
+      // 日付順にソート
+      // function sortMessagesByDate () {}
     }
+    getChatMessages()
     // 画像遅延読み込み
     watch(
       () => chat_messages.value,
       async () => {
-        chat_messages.value = await getChatFilePreview(chat_messages.value)
+        if(chat_messages.value.length > 0) {
+          chat_messages.value = await getChatFilePreview(chat_messages.value)
+        }
+        return;
       }
     )
     // ファイルプレビュー
@@ -514,28 +458,25 @@ export default {
     const file_select_modal = ref(false);
     // メッセージ送信
     const sendMessage = async () => {
-      loading.value = true
       try {
-        const post = await chatApiFunc.createChatMessage(view_room, message.text)
+        const post = await chatApiFunc.createChatMessage(params.view_room, message.text)
         await createChatFiles(post)
         await createChatUrls(post)
-        alert('送信完了')
       } catch (error) {
         console.error(error);
       }
+      getChatMessages()
       resetMessage()
-      loading.value = false
 
       async function createChatFiles(post) {
-        if(message.files.length > 0) {
-          for (const file of message.files) {
-            let file_store = undefined
-            if(!file.id) {
-              file.data_url = await chatMixin.mixinUploadChatFile(file, "chat")
-              file_store = await chatMixin.mixinSaveChatFileDatabase(dir_top.value, file, file.data_url, "chat")
-            }
-            await chatApiFunc.createChatFile(post, file, file_store)
+        if(message.files.length === 0) return;
+        for (const file of message.files) {
+          let file_store = undefined
+          if(!file.id) {
+            file.data_url = await chatMixin.mixinUploadChatFile(file, "chat")
+            file_store = await chatMixin.mixinSaveChatFileDatabase(dir_top.value, file, file.data_url, "chat")
           }
+          await chatApiFunc.createChatFile(post, file, file_store)
         }
       }
       async function createChatUrls (post) {
@@ -565,7 +506,8 @@ export default {
     }
 
     return {
-      view_room,
+      params,
+      // view_room,
       loading,
       // ルーム編集
       chat_room_edit,
@@ -576,6 +518,7 @@ export default {
       // ルーム削除
       deleteChatRoom,
       // メッセージ取得
+      getChatMessages,
       message_loading,
       chat_messages,
       judgePoster,
@@ -626,4 +569,5 @@ export default {
   right: 16px;
   top: 0;
 }
+
 </style>

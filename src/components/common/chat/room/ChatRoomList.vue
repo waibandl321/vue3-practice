@@ -77,8 +77,14 @@ import { ref } from '@vue/reactivity'
 export default {
   components: { ChatRoomCreate },
   props: {
-    changeMode: Function
+    changeMode: {
+      type: Function
+    },
+    changeRoom: {
+      type: Function
+    }
   },
+  
 
   setup(props) {
     const loading = ref(false)
@@ -103,7 +109,7 @@ export default {
       props.changeMode("home");
     };
     const moveRoom = (room) => {
-      props.changeMode("room", room);
+      props.changeRoom(room);
     };
     // ルーム作成関連
     const room_add_mode = ref(false);
