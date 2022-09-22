@@ -72,6 +72,8 @@
 <script>
 import ChatRoomCreate from './ChatRoomCreate.vue'
 import chatApiFunc from '@/mixins/api/func/chat'
+
+import storeAuth from '@/mixins/store/auth.js'
 import { ref } from '@vue/reactivity'
 
 export default {
@@ -87,21 +89,32 @@ export default {
   
 
   setup(props) {
-    const loading = ref(false)
     const rooms = ref([])
     const group_rooms = ref([])
     const personal_rooms = ref([])
     
     const init = async () => {
-      loading.value = true
       try {
         rooms.value = await chatApiFunc.getCompanyChat().then(res => res.rooms.items)
-        group_rooms.value = rooms.value.filter(v => v.room_type === 0)
-        personal_rooms.value = rooms.value.filter(v => v.room_type === 1)
+        filterRoom()
       } catch (error) {
         console.error(error);
       }
-      loading.value = false
+      // 自分が所属しているルームのみフィルタする
+      function filterRoom() {
+        group_rooms.value = rooms.value.filter(v =>
+          v.room_type === 0 &&
+          v.members.items.find(m => {
+            return m.member_id === storeAuth.storeGetStaffId()
+          })
+        )
+        personal_rooms.value = rooms.value.filter(v =>
+          v.room_type === 1 &&
+          v.members.items.find(m => {
+            return m.member_id === storeAuth.storeGetStaffId()
+          })
+        )
+      }
     }
     init()
 

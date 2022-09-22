@@ -333,13 +333,12 @@ export default {
     const getChatMessages = async () => {
       message_loading.value = true
       try {
-        const results = await chatApiFunc.getMessages(params.view_room)
-        console.log('getMessages', results);
-        chat_messages.value = results
+        let results = await chatApiFunc.getMessages(params.view_room)
         // 日付グルーピング
         if(results.length > 0) {
-          chat_messages.value = reduceArrayGroupDate(results)
+          results = reduceArrayGroupDate(results)
         }
+        chat_messages.value = results
       } catch (error) {
         console.error(error);
       }
@@ -370,9 +369,7 @@ export default {
     watch(
       () => chat_messages.value,
       async () => {
-        if(chat_messages.value.length > 0) {
-          chat_messages.value = await getChatFilePreview(chat_messages.value)
-        }
+        chat_messages.value = await getChatFilePreview(chat_messages.value)
         return;
       }
     )
@@ -381,7 +378,6 @@ export default {
       for (const group of groups) {
         for( const message of group.messages ) {
           const files = message.files.items
-          console.log(message);
           if(files.length > 0) {
             for (const file of files) {
               file.preview_src = await getPreviewerFile(file.data_url)
@@ -398,8 +394,7 @@ export default {
     }
     // 削除スタッフ判定
     const judgePoster = (poster_id) => {
-      return storeAuth.
-      storeGetStaffId() === poster_id
+      return storeAuth.storeGetStaffId() === poster_id
     }
     // メッセージ削除
     const deleteMessage = async (message) => {
