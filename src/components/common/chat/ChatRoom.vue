@@ -399,11 +399,20 @@ export default {
           };
         });
       }
-      // 日付順にソート
+      // 日付順、時間順にソート
       function sortMessagesByDate (results) {
-        return results.sort(function (a, b) {
+        // MEMO: ネストすると可読性が下がるのでメッセージのソートは分割
+        const groups = results.sort(function (a, b) {
           return Number(a["date"].replace(/-/g, "")) - Number(b["date"].replace(/-/g, ""))
         });
+        for (const group of groups) {
+          group.messages.sort((ma, mb) => {
+            const _ma = ma.createdAt.replace(/-/g, '').replace(/T/g, '').replace(/:/g, '').split('.')[0]
+            const _mb = mb.createdAt.replace(/-/g, '').replace(/T/g, '').replace(/:/g, '').split('.')[0]
+            return Number(_ma) - Number(_mb)
+          })
+        }
+        return groups
       }
     }
     getChatMessages()
@@ -560,7 +569,6 @@ export default {
       // ルーム削除
       deleteChatRoom,
       // メッセージ取得
-      getChatMessages,
       message_loading,
       chat_messages,
       judgePoster,
