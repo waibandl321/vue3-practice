@@ -177,7 +177,7 @@
           </v-card>
         </v-menu>
         <div>
-          <DiscordPicker 
+          <DiscordPicker
             @emoji="setEmoji"
           />
         </div>
@@ -350,6 +350,7 @@ export default {
         // 日付グルーピング
         if(results.length > 0) {
           results = reduceArrayGroupDate(results)
+          results = sortMessagesByDate(results)
         }
         chat_messages.value = results
       } catch (error) {
@@ -375,7 +376,11 @@ export default {
         });
       }
       // 日付順にソート
-      // function sortMessagesByDate () {}
+      function sortMessagesByDate (results) {
+        return results.sort(function (a, b) {
+          return Number(a["date"].replace(/-/g, "")) - Number(b["date"].replace(/-/g, ""))
+        });
+      }
     }
     getChatMessages()
     // 画像遅延読み込み
