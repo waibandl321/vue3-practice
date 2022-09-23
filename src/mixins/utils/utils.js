@@ -49,6 +49,22 @@ export default {
       return window.URL.createObjectURL(blob);
     })
   },
+  // 現在時刻
+  currentDateTime () {
+    const now = new Date();
+    const YYYY = now.getFullYear();
+    const MM = zeroPadding(now.getMonth()+1);
+    const DD = zeroPadding(now.getDate());
+    const hh = zeroPadding(now.getHours());
+    const mm = zeroPadding(now.getMinutes());
+    const ss = zeroPadding(now.getSeconds());
+    
+    return YYYY + "-" + MM + "-" + DD + " " + hh + ":" + mm + ":" + ss;
+    
+    function zeroPadding(value) {
+      return value.toString().padStart(2, "0")
+    }
+  }
 
 }
 const CryptHash = 'hcg7ebiisufh'

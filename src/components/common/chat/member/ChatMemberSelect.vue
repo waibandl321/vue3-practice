@@ -70,16 +70,17 @@
 <script>
 import { inject, ref } from '@vue/runtime-core'
 import chatApiFunc from '@/mixins/api/func/chat'
+import utilMixin from '@/mixins/utils/utils.js'
 import OverlayLoading from '../../OverlayLoading.vue';
 
 export default {
   components: { OverlayLoading },
   props: {
     viewRoom: {
-        type: Object
+      type: Object
     },
     closeMemberModal: {
-        type: Function
+      type: Function
     }
   },
   setup(props) {
@@ -109,7 +110,7 @@ export default {
       loading.value = true;
       try {
         for (const is_selected_member of is_selected_members.value) {
-          await chatApiFunc.addChatMember(props.viewRoom, is_selected_member);
+          await chatApiFunc.addChatMember(props.viewRoom, is_selected_member, utilMixin.currentDateTime());
         }
         await getMembers();
         loading.value = false;

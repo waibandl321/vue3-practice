@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createChat, createChatRoom, createChatRoomMember, createChatPost, createChatFile, createChatUrl,
-  updateChatRoom,
+  updateChatRoom, updateChatRoomMember,
   deleteChatRoom, deleteChatRoomMember, deleteChatPost, deleteChatFile, deleteChatUrl } from '@/graphql/mutations'
 import { listChats, getChatRoom, listChatPosts, listChatRoomMembers } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
@@ -47,7 +47,6 @@ export default {
   },
   // 現状トークルーム名変更のみ
   async updateRoom(room, new_room_name) {
-    console.log(new_room_name);
     const filter = {
       id: room.id,
       room_name: new_room_name
@@ -94,7 +93,7 @@ export default {
     });
   },
   // ルーム作成時に
-  async createInitRoomMember (room, datetime, ) {
+  async createInitRoomMember (room, datetime) {
     const init_room_member = this.generateInitRoomMemberObject(room, datetime)
     return await API.graphql({
       query: createChatRoomMember,
@@ -142,6 +141,17 @@ export default {
       ignore: null,
       last_access: datetime
     }
+  },
+  async updateChatMember (current_member, last_access_datetime) {
+    console.log("last access log member", current_member);
+    const filter = {
+      id: current_member.id,
+      last_access: last_access_datetime
+    }
+    return await API.graphql({
+      query: updateChatRoomMember,
+      variables: {input: filter}
+    });
   },
   // メッセージ
   async getMessages (room) {

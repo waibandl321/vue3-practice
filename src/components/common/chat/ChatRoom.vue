@@ -179,6 +179,7 @@
         <div>
           <DiscordPicker
             @emoji="setEmoji"
+            apiKey="undefined"
           />
         </div>
       </div>
@@ -296,15 +297,30 @@ export default {
       () => {
         resetMessage()
         getChatMessages()
+        updateLastAccess()
       }
     )
     const loading = ref(false);
     
-    // MEMO: ファイル選択用でディレクトリ情報事前読み込み
+    // ファイル選択用でディレクトリ情報事前読み込み
     const dir_top = ref({})
     onBeforeMount(async () => {
       dir_top.value = await fileApiFunc.apiGetDirTop()
     })
+
+    // ルーム訪問履歴記録
+    const updateLastAccess = async () => {
+      try {
+        const current_member = params.view_room.members.items.find(
+          v => v.member_id === storeAuth.storeGetStaffId()
+        )
+        await chatApiFunc.updateChatMember(current_member, utilMixin.currentDateTime())
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    updateLastAccess()
+    
 
     // トークルーム削除
     const deleteChatRoom = async () => {

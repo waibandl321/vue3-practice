@@ -54,6 +54,7 @@
 <script>
 import { ref } from '@vue/reactivity'
 import chatApiFunc from '@/mixins/api/func/chat'
+import utilMixin from '@/mixins/utils/utils.js'
 import { inject } from '@vue/runtime-core'
 
 export default {
@@ -76,7 +77,7 @@ export default {
       modal.value = false
       try {
         const result = await chatApiFunc.createRooom(room_obj.value, $params.company_chat)
-        await chatApiFunc.createInitRoomMember(result)
+        await chatApiFunc.createInitRoomMember(result, utilMixin.currentDateTime())
         alert('トークルームを作成しました')
       } catch (error) {
         console.error(error);
