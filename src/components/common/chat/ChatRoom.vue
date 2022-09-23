@@ -111,7 +111,7 @@
 
     <!-- メッセージ送信 -->
     <v-card class="chat-post" elevation="2">
-      <div class="d-flex">
+      <div class="d-flex align-center">
         <v-menu location="end">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -176,6 +176,11 @@
             </v-card-actions>
           </v-card>
         </v-menu>
+        <div>
+          <DiscordPicker 
+            @emoji="setEmoji"
+          />
+        </div>
       </div>
       <div class="d-flex align-end">
         <v-textarea
@@ -267,9 +272,16 @@ import OverlayLoading from '../OverlayLoading.vue'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
 import ChatMemberSelect from './member/ChatMemberSelect.vue'
+import DiscordPicker from 'vue3-discordpicker'
 
 export default {
-  components: { FIleSelectModal, OverlayLoading, ChatRoomEdit, ChatMemberSelect },
+  components: {
+    FIleSelectModal,
+    OverlayLoading,
+    ChatRoomEdit,
+    ChatMemberSelect,
+    DiscordPicker
+  },
   props: {
     changeMode: {
       type: Function
@@ -452,6 +464,10 @@ export default {
       url_setting.value = false
     }
     const file_select_modal = ref(false);
+    // 絵文字
+    const setEmoji = (emoji) => {
+      message.text += emoji
+    }
     // 初期化
     function resetMessage() {
       message.text = ""
@@ -522,6 +538,7 @@ export default {
       // メッセージ送信
       message,
       file_select_modal,
+      setEmoji,
       sendMessage,
       // メッセージ削除
       deleteMessage,
@@ -555,6 +572,7 @@ export default {
   position: fixed;
   padding: 8px 16px;
   left: 300px;
+  overflow: visible;
   right: 0;
   z-index: 2;
 }
@@ -568,5 +586,8 @@ export default {
 }
 .white-space-wrap {
   white-space: pre-wrap;
+}
+.chat-post >>> .vue3-emojipicker .mt-4 {
+  margin-top: 0!important;
 }
 </style>
