@@ -3,37 +3,37 @@
     {{ params.viewer }}
     <v-card-item>
       <v-card-subtitle>企業コード</v-card-subtitle>
-      <v-card-text>{{ detail.company_cd }}</v-card-text>
+      <v-card-text>{{ params.viewer.company_cd }}</v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>企業名</v-card-subtitle>
       <v-card-text
         class="d-flex"
-        :class="{ 'flex-row-reverse': detail.form_name_position === 1 }"
+        :class="{ 'flex-row-reverse': params.viewer.form_name_position === 1 }"
       >
-        <div>{{ detail.company_form_text }}</div>
-        <div class="ml-2">{{ detail.company_name }}</div>
+        <div>{{ company_form_text }}</div>
+        <div class="ml-2">{{ params.viewer.company_name }}</div>
       </v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>企業名（フリガナ）</v-card-subtitle>
       <v-card-text
         class="d-flex"
-        :class="{ 'flex-row-reverse': detail.form_name_position === 1 }"
+        :class="{ 'flex-row-reverse': params.viewer.form_name_position === 1 }"
       >
-        <div>{{ detail.company_form_kana_text }}</div>
-        <div class="ml-2">{{ detail.company_name_kana }}</div>
+        <div>{{ company_form_kana_text }}</div>
+        <div class="ml-2">{{ params.viewer.company_name_kana }}</div>
       </v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>企業ホームページ</v-card-subtitle>
       <v-card-text>
         <a
-          :href="detail.homepage_url"
+          :href="params.viewer.homepage_url"
           target="_blank"
           rel="noopener noreferrer"
         >
-          {{ detail.homepage_url }}
+          {{ params.viewer.homepage_url }}
         </a>
       </v-card-text>
     </v-card-item>
@@ -43,42 +43,45 @@
 <script>
 import utilFunc from '@/mixins/utils/utils.js'
 import PcFooter from '@/components/common/PcFooter.vue'
+import { computed } from '@vue/runtime-core'
 
 export default {
   name: 'company-detail',
   components: { PcFooter },
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
+    setEditor: Function
   },
   setup (props) {
-    // eslint-disable-next-line vue/no-setup-props-destructure
-    const detail = props.params.viewer
-    detail.company_form_text = utilFunc.methods.getCompanyFormText(detail.company_form)
-    detail.company_form_kana_text = utilFunc.methods.getCompanyFormKanaText(detail.company_form)
+    // 会社名テキスト取得
+    const company_form_text = computed(() => {
+      return utilFunc.methods.getCompanyFormText(props.params.viewer.company_form)
+    })
+    const company_form_kana_text = computed(() => {
+      return utilFunc.methods.getCompanyFormKanaText(props.params.viewer.company_form)
+    })
+    // フッターオプション
+    const footer_options = {
+      back: [
+        { text: '一覧へ戻る', callback: props.changeMode }
+      ],
+      next: [
+        { text: '修正', callback: changeModeEdit }
+      ]
+    }
+    // 編集遷移
+    function changeModeEdit() {
+      props.setEditor(props.params.viewer)
+      props.changeMode('edit')
+    }
 
     return {
-      detail
+      company_form_text,
+      company_form_kana_text,
+      footer_options,
+      changeModeEdit
     }
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ],
-        next: [
-          { text: '修正', callback: this.changeModeEdit }
-        ]
-      }
-    }
-  },
-  methods: {
-    changeModeEdit () {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.editor = this.params.viewer
-      this.changeMode('edit')
-    }
-  }
 }
 </script>

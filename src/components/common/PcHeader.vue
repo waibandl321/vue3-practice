@@ -9,7 +9,7 @@
     <v-app-bar-title>
       <v-btn to="/">ホーム</v-btn>
     </v-app-bar-title>
-    <v-btn to="/auth/signout">サインアウト</v-btn>
+    
     <template v-for="(item, idx) in header_icons" :key="idx">
       <v-btn
         :icon="item.icon"
@@ -17,7 +17,25 @@
         :title="item.title"
       ></v-btn>
     </template>
-    <v-btn icon="mdi-dots-vertical"></v-btn>
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn
+          variant="text"
+          v-bind="props"
+          icon="mdi-dots-vertical"
+          size="small"
+        ></v-btn>
+      </template>
+      <v-list>
+        <v-list-item
+          density="compact"
+          link
+          to="/auth/signout"
+        >
+          サインアウト
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
   <FixedSideMenu v-if="side_menu" />
 </template>

@@ -4,29 +4,33 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      <div>
-        <v-table
-          fixed-header
-          height="300px"
-        >
-          <thead>
-            <tr>
-              <th class="text-left">
-                企業名
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="item in items"
-              :key="item.company_id"
-              @click="recordClick(item)"
-            >
-              <td>{{ item.company_name }}</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </div>
+      <v-progress-linear
+      v-if="loading"
+      indeterminate
+      color="green"
+      class="mt-4"
+    ></v-progress-linear>
+      <v-table
+        fixed-header
+        height="300px"
+      >
+        <thead>
+          <tr>
+            <th class="text-left">
+              企業名
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in items"
+            :key="item.company_id"
+            @click="recordClick(item)"
+          >
+            <td>{{ item.company_name }}</td>
+          </tr>
+        </tbody>
+      </v-table>
     </v-col>
   </v-row>
 </template>
@@ -41,24 +45,35 @@ export default {
   components: { MasterLeftMenu },
   props: {
     params: Object,
-    changeMode: Function
+    changeMode: Function,
+    setViewer: Function,
   },
-  setup () {
+  setup (props) {
+    const loading = ref(false)
     const items = ref([])
+
+    // 一覧取得
     const getCompnay = async () => {
-      items.value = await companyApiFunc.apiGetCompany()
+      loading.value = true
+      try {
+        items.value = await companyApiFunc.apiGetCompany()
+      } catch (error) {
+        console.log(error);
+      }
+      loading.value = false
     }
     getCompnay()
 
-    return {
-      items
+    // 詳細へ
+    const recordClick = (item) => {
+      props.setViewer(item)
+      props.changeMode('view')
     }
-  },
-  methods: {
-    recordClick (item) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = item
-      this.changeMode('view')
+
+    return {
+      items,
+      loading,
+      recordClick
     }
   }
 }

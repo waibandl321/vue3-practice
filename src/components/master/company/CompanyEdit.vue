@@ -92,25 +92,32 @@ export default {
     changeMode: Function,
     params: Object
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ],
-        next: [
-          { text: '保存', callback: this.save }
-        ]
+  setup(props) {
+    // 保存
+    const save = async () => {
+      try {
+        await companyApiFunc.apiUpdateCompany(props.params.editor)
+        alert('企業情報を更新しました')
+        props.changeMode('list')
+      } catch (error) {
+        console.error(error);
       }
     }
-  },
-  methods: {
-    async save () {
-      // データ保存処理
-      await companyApiFunc.apiUpdateCompany(this.params.editor)
-      this.changeMode('list')
+    // フッターオプション
+    const footer_options = {
+      back: [
+        { text: '一覧へ戻る', callback: props.changeMode }
+      ],
+      next: [
+        { text: '保存', callback: save }
+      ]
     }
-  }
+
+    return {
+      save,
+      footer_options
+    }
+  },
 }
 </script>
 <style scoped>

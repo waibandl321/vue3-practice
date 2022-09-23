@@ -4,11 +4,13 @@
     <CompanyList
       v-if="mode === 'list'"
       :changeMode="changeMode"
+      :setViewer="setViewer"
       :params="params"
     />
     <CompanyDetail
       v-if="mode === 'view'"
       :changeMode="changeMode"
+      :setEditor="setEditor"
       :params="params"
     />
     <CompanyEdit
@@ -24,7 +26,7 @@ import Header from '@/components/common/PcHeader.vue'
 import CompanyList from '@/components/master/company/CompanyList.vue'
 import CompanyDetail from '@/components/master/company/CompanyDetail.vue'
 import CompanyEdit from '@/components/master/company/CompanyEdit.vue'
-import { ref } from '@vue/reactivity'
+import { reactive, ref } from '@vue/reactivity'
 
 export default {
   name: 'master-company',
@@ -36,17 +38,26 @@ export default {
   },
   setup () {
     const mode = ref('list')
-    const params = ref({
+    const params = reactive({
       viewer: {},
       editor: {}
     })
     const changeMode = (_mode) => {
       mode.value = _mode
     }
+    const setViewer = (item) => {
+      params.viewer = item
+    }
+    const setEditor = (item) => {
+      params.editor = item
+      mode.value = 'edit'
+    }
     return {
       mode,
       params,
-      changeMode
+      changeMode,
+      setViewer,
+      setEditor
     }
   },
 }

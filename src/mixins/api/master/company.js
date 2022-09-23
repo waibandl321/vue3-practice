@@ -65,11 +65,6 @@ async function apiUpdateCompany (_company) {
   await API.graphql({
     query: updateCompany,
     variables: { input: item }
-  }).then(() => {
-    alert(`アイテム「${_company.company_name}」を更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`アイテム「${_company.company_name}」の更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
