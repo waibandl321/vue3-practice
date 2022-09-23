@@ -56,7 +56,7 @@
             v-for="(message, m) in group.messages"
             :key="m"            
             prepend-icon="mdi-account"
-            :subtitle="message.poster_ids"
+            :subtitle="posterStaffName(message.poster_ids)"
             class="chat-message"
           >
             <!-- 削除同線 -->
@@ -291,6 +291,8 @@ export default {
   setup(props) {
     const initChatRoom = inject('init-chat-room')
     const params = inject('params')
+    const room_members = params.view_room.members.items
+    const company_employees = params.company_chat.company_employees.items
     // トークルーム変更時のメッセージ読み込み
     watch(
       () => params.view_room,
@@ -311,7 +313,7 @@ export default {
     // ルーム訪問履歴記録
     const updateLastAccess = async () => {
       try {
-        const current_member = params.view_room.members.items.find(
+        const current_member = room_members.find(
           v => v.member_id === storeAuth.storeGetStaffId()
         )
         await chatApiFunc.updateChatMember(current_member, utilMixin.currentDateTime())
@@ -320,13 +322,19 @@ export default {
       }
     }
     updateLastAccess()
+
+    // 送信者名取得
+    const posterStaffName = (staff_id) => {
+      const employee = company_employees.find(v => v.staff_id === staff_id)
+      return employee.last_name + employee.first_name;
+    }
     
 
     // トークルーム削除
     const deleteChatRoom = async () => {
       try {
         await chatApiFunc.deleteRoom(params.view_room)
-        for (const member of params.view_room.members.items) {
+        for (const member of room_members) {
           await chatApiFunc.deleteRoomMember(member) 
         }
         alert('チャットルームを削除しました')
@@ -556,6 +564,7 @@ export default {
       message_loading,
       chat_messages,
       judgePoster,
+      posterStaffName,
       // メッセージ送信
       message,
       file_select_modal,
