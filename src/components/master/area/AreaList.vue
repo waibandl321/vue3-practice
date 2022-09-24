@@ -20,6 +20,7 @@
             <tr>
               <th class="text-left">コード</th>
               <th class="text-left">エリア名</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -30,6 +31,27 @@
             >
               <td>{{ item.area_cd }}</td>
               <td>{{ item.area_name }}</td>
+              <td>
+                <v-menu>
+                  <template v-slot:activator="{ props }">
+                    <v-btn
+                      variant="text"
+                      v-bind="props"
+                      icon="mdi-dots-horizontal"
+                      size="small"
+                    ></v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      density="compact"
+                      link
+                      @click="deleteArea(item)"
+                    >
+                      エリアを削除
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </td>
             </tr>
           </tbody>
         </v-table>
@@ -73,6 +95,17 @@ export default {
     }
     getAreaList()
 
+    // 削除
+    const deleteArea = async (area) => {
+      try {
+        await areaApiFunc.apiDeleteArea(area)
+        items.value = items.value.filter(v => v.id !== area.id)
+        alert('エリアを削除しました')
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     // 詳細遷移
     const recordClick = (item) => {
       props.setViewer(item)
@@ -89,6 +122,7 @@ export default {
       items,
       is_new,
       recordClick,
+      deleteArea,
       clickNew
     }
   },

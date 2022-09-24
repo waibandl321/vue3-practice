@@ -1,5 +1,5 @@
 import { API } from 'aws-amplify'
-import { createArea, updateArea } from '@/graphql/mutations'
+import { createArea, updateArea, deleteArea } from '@/graphql/mutations'
 import { listAreas } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
@@ -33,6 +33,16 @@ function generateAreaObject (area) {
   }
 }
 
+async function apiDeleteArea (area) {
+  const filter = {
+    id: area.id,
+  }
+  return await API.graphql({
+    query: deleteArea,
+    variables: { input: filter }
+  });
+}
+
 async function apiGetArea () {
   const filter = {
     company_cd: {
@@ -49,5 +59,6 @@ async function apiGetArea () {
 export default {
   apiCreateArea,
   apiUpdateArea,
-  apiGetArea
+  apiGetArea,
+  apiDeleteArea
 }
