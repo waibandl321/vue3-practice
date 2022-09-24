@@ -206,11 +206,12 @@ type ShopStaff @model {
   id: ID!
   shop_staff_id: String
   company_shop_cd: ID! @index(name: "byShop", sortKeyFields: ["createdAt"])
-  staff_id: String
+  staff_id: ID!
   status: Int
   delete: Int
   createdAt: AWSDateTime!
 	updatedAt: AWSDateTime!
+  employee: Employee @hasOne(fields: ["staff_id"])
 }
 
 type ShopStaffGroup @model {

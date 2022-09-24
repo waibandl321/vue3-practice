@@ -1437,6 +1437,25 @@ export const createShopStaff = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      employee {
+        id
+        company_employee_id
+        staff_id
+        company_cd
+        last_name
+        first_name
+        last_name_kana
+        first_name_kana
+        gender
+        birth
+        employee_number
+        permanent
+        official_position
+        delete
+        status
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
@@ -1454,6 +1473,25 @@ export const updateShopStaff = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      employee {
+        id
+        company_employee_id
+        staff_id
+        company_cd
+        last_name
+        first_name
+        last_name_kana
+        first_name_kana
+        gender
+        birth
+        employee_number
+        permanent
+        official_position
+        delete
+        status
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
@@ -1471,6 +1509,25 @@ export const deleteShopStaff = /* GraphQL */ `
       delete
       createdAt
       updatedAt
+      employee {
+        id
+        company_employee_id
+        staff_id
+        company_cd
+        last_name
+        first_name
+        last_name_kana
+        first_name_kana
+        gender
+        birth
+        employee_number
+        permanent
+        official_position
+        delete
+        status
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
