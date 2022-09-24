@@ -1438,23 +1438,39 @@ export const createShopStaff = /* GraphQL */ `
       createdAt
       updatedAt
       employee {
-        id
-        company_employee_id
-        staff_id
-        company_cd
-        last_name
-        first_name
-        last_name_kana
-        first_name_kana
-        gender
-        birth
-        employee_number
-        permanent
-        official_position
-        delete
-        status
-        createdAt
-        updatedAt
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      role {
+        items {
+          id
+          role_cd
+          staff_id
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
     }
   }
@@ -1474,23 +1490,39 @@ export const updateShopStaff = /* GraphQL */ `
       createdAt
       updatedAt
       employee {
-        id
-        company_employee_id
-        staff_id
-        company_cd
-        last_name
-        first_name
-        last_name_kana
-        first_name_kana
-        gender
-        birth
-        employee_number
-        permanent
-        official_position
-        delete
-        status
-        createdAt
-        updatedAt
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      role {
+        items {
+          id
+          role_cd
+          staff_id
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
     }
   }
@@ -1510,23 +1542,39 @@ export const deleteShopStaff = /* GraphQL */ `
       createdAt
       updatedAt
       employee {
-        id
-        company_employee_id
-        staff_id
-        company_cd
-        last_name
-        first_name
-        last_name_kana
-        first_name_kana
-        gender
-        birth
-        employee_number
-        permanent
-        official_position
-        delete
-        status
-        createdAt
-        updatedAt
+        items {
+          id
+          company_employee_id
+          staff_id
+          company_cd
+          last_name
+          first_name
+          last_name_kana
+          first_name_kana
+          gender
+          birth
+          employee_number
+          permanent
+          official_position
+          delete
+          status
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
+      role {
+        items {
+          id
+          role_cd
+          staff_id
+          company_cd
+          status
+          delete
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
     }
   }

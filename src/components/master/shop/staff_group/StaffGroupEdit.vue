@@ -104,7 +104,7 @@
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
-import shopFunc from '../shop'
+// import shopFunc from '../shop'
 import shopApiFunc from '@/mixins/api/master/shop.js'
 import storeFunc from '@/mixins/store/auth'
 
@@ -135,7 +135,7 @@ export default {
       }
       
       loading.value = true
-      shop_staffs.value = await shopFunc.getShopStaff(props.params.viewer)
+      // shop_staffs.value = await shopFunc.getShopStaff(props.params.viewer)
       shop_staffs.value = shop_staffs.value.filter(v => !selected.includes(v.id))
       loading.value = false
     }

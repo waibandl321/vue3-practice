@@ -812,6 +812,33 @@ export const listShops = /* GraphQL */ `
             delete
             createdAt
             updatedAt
+            employee {
+              items {
+                id
+                company_employee_id
+                staff_id
+                company_cd
+                last_name
+                first_name
+                last_name_kana
+                first_name_kana
+                gender
+                birth
+                employee_number
+                permanent
+                official_position
+              }
+              nextToken
+            }
+            role {
+              items {
+                id
+                role_cd
+                staff_id
+                company_cd
+              }
+              nextToken
+            }         
           }
           nextToken
         }

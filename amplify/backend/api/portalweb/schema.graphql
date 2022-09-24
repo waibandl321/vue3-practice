@@ -52,7 +52,9 @@ type Staff @model {
 type StaffRole @model {
   id: ID!
   role_cd: String
-  staff_id: ID! @index(name: "byStaff", sortKeyFields: ["createdAt"])
+  staff_id: ID!
+  @index(name: "byStaff", sortKeyFields: ["createdAt"])
+  @index(name: "byShopStaff", sortKeyFields: ["createdAt"])
   company_cd: String
   status: Int
   delete: Int
@@ -95,7 +97,9 @@ type Company @model {
 type Employee @model {
   id: ID!
   company_employee_id: String
-  staff_id: ID! @index(name: "byStaff", sortKeyFields: ["createdAt"])
+  staff_id: ID!
+  @index(name: "byStaff", sortKeyFields: ["createdAt"])
+  @index(name: "byShopStaff", sortKeyFields: ["createdAt"])
   company_cd: ID!
   @index(name: "byCompany", sortKeyFields: ["createdAt"])
   @index(name: "byChat", sortKeyFields: ["createdAt"])
@@ -211,7 +215,8 @@ type ShopStaff @model {
   delete: Int
   createdAt: AWSDateTime!
 	updatedAt: AWSDateTime!
-  employee: Employee @hasOne(fields: ["staff_id"])
+  employee: [Employee] @hasMany(indexName: "byShopStaff", fields: ["staff_id"])
+  role: [StaffRole] @hasMany(indexName: "byShopStaff", fields: ["staff_id"])
 }
 
 type ShopStaffGroup @model {
