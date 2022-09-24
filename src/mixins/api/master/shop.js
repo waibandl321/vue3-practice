@@ -1,7 +1,7 @@
 import { API } from 'aws-amplify'
 import { createShop, updateShop, createShopStaff, deleteShopStaff, createShopStaffGroup, 
   deleteShopStaffGroup, createShopStaffGroupStaff, updateShopStaffGroup, deleteShopStaffGroupStaff } from '@/graphql/mutations'
-import { listShops, listShopStaffs, listShopStaffGroups, listShopStaffGroupStaffs } from '@/graphql/queries'
+import { listShops, listShopStaffs, listShopStaffGroups, listShopStaffGroupStaffs, getShopStaff } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
@@ -92,6 +92,13 @@ async function apiGetShopStaffList(company_shop_cd) {
     variables: { filter: filter }
   })
   return results.data.listShopStaffs.items
+}
+async function getShopStaffDetail (shop_staff) {
+  const result = await API.graphql({
+    query: getShopStaff,
+    variables: { id: shop_staff.id }
+  })
+  return result.data.getShopStaff
 }
 async function apiDeleteShopStaff (id) {
   const filter = {
@@ -204,6 +211,7 @@ export default {
   apiCreateShopStaff,
   // 店舗スタッフ
   apiGetShopStaffList,
+  getShopStaffDetail,
   apiDeleteShopStaff,
   // スタッフグループ
   apiCreateShopStaffGroup,

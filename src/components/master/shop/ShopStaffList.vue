@@ -99,8 +99,9 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
 import shopApiFunc from '@/mixins/api/master/shop'
+import employeeApiFunc from '@/mixins/api/master/employee'
 import accountApiFunc from '@/mixins/api/account'
-import shopFunc from './shop'
+
 export default {
   name: 'shop-invite',
   components: {
@@ -117,8 +118,12 @@ export default {
     const getShopStaffList = async () => {
       loading.value = true
       try {
-        items.value = await shopFunc.mixinGetShopStaff(props.params.viewer)
-        console.log(items.value);
+        // items.value = await shopMixin.mixinGetShopStaff(props.params.viewer)
+        for (const shop_staff of props.params.viewer.staffs.items) {
+          shop_staff.employee = await employeeApiFunc.apiGetEmployeeRelateStaffId(shop_staff.staff_id)
+          shop_staff.staff_role = await accountApiFunc.apiGetStaffRole(shop_staff.staff_id)
+          items.value.push(shop_staff)
+        }
       } catch (error) {
         console.error(error);
       }

@@ -75,6 +75,59 @@ export const listAccounts = /* GraphQL */ `
         createdAt
         updatedAt
         associate {
+          items {
+            id
+            associate_id
+            account_id
+            invite_key
+            company_group_cd
+            status
+            delete
+            createdAt
+            updatedAt
+            staffs {
+              items {
+                id
+                staff_id
+                associate_id
+                company_cd
+                company_group_cd
+                invite_key
+                status
+                delete
+                createdAt
+                updatedAt
+                roles {
+                  items {
+                    id
+                    role_cd
+                    staff_id
+                    company_cd
+                    status
+                    delete
+                    createdAt
+                    updatedAt
+                  }
+                  nextToken
+                }
+                positions {
+                  items {
+                    id
+                    staff_position_id
+                    position_cd
+                    staff_id
+                    company_cd
+                    status
+                    delete
+                    createdAt
+                    updatedAt
+                  }
+                  nextToken
+                }
+              }
+              nextToken
+            }
+          }
           nextToken
         }
       }
@@ -750,9 +803,28 @@ export const listShops = /* GraphQL */ `
           nextToken
         }
         staffs {
+          items {
+            id
+            shop_staff_id
+            company_shop_cd
+            staff_id
+            status
+            delete
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         groups {
+          items {
+            id
+            staff_group_cd
+            company_shop_cd
+            group_name
+            staff_id
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }
@@ -1224,9 +1296,83 @@ export const listForums = /* GraphQL */ `
         company_group_cd
         owner_id
         posts {
+          items {
+            id
+            post_key
+            forum_id
+            title
+            post_text
+            attached
+            url_links
+            status
+            importance
+            delete
+            createdAt
+            updatedAt
+            files {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                file_id
+                file_name
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            urls {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                url_key
+                url_value
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            eyecatch {
+              items {
+                id
+                post_id
+                post_key
+                file_id
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            tags {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                forum_tag_name
+                company_cd
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         tag_options {
+          items {
+            id
+            forum_id
+            forum_tag_name
+            company_cd
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         createdAt
@@ -1606,9 +1752,50 @@ export const listChats = /* GraphQL */ `
         company_group_cd
         owner_id
         rooms {
+          items {
+            id
+            room_id
+            room_name
+            room_type
+            send_notice
+            owner_staff_id
+            delete
+            chat_id
+            createdAt
+            updatedAt
+            members {
+              items {
+                id
+                room_id
+                member_id
+                send_notice
+                room_name
+                ignore
+                last_access
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         company_employees {
+          items {
+            id
+            company_employee_id
+            staff_id
+            company_cd
+            last_name
+            first_name
+            last_name_kana
+            first_name_kana
+            gender
+            birth
+            employee_number
+            permanent
+            official_position
+          }
           nextToken
         }
         createdAt
@@ -1792,9 +1979,28 @@ export const listChatPosts = /* GraphQL */ `
         createdAt
         updatedAt
         files {
+          items {
+            id
+            chat_key
+            sort_number
+            file_id
+            file_name
+            data_url
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         urls {
+          items {
+            id
+            chat_key
+            sort_number
+            url_key
+            url_value
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }
