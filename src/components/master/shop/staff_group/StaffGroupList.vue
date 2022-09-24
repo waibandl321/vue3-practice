@@ -79,6 +79,7 @@ export default {
     const groups = ref([])
     const getStaffGroup = () => {
       groups.value = props.params.viewer.groups.items
+      console.log(groups.value);
     }
     getStaffGroup()
 
@@ -87,10 +88,9 @@ export default {
     const createStaffGroup = async () => {
       try {
         const shop = props.params.viewer
-        await shopApiFunc.apiCreateShopStaffGroup(shop, staff_group_name.value).then((res) => {
-          groups.value.push(res.data.createShopStaffGroup)
-          alert('スタッフグループを作成しました')
-        })
+        const result = await shopApiFunc.apiCreateShopStaffGroup(shop, staff_group_name.value)
+        groups.value.push(result)
+        alert('スタッフグループを作成しました')
       } catch (error) {
         alert(error);
         console.log(error);

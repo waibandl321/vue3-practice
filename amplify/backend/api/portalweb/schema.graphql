@@ -98,11 +98,11 @@ type Employee @model {
   id: ID!
   company_employee_id: String
   staff_id: ID!
-  @index(name: "byStaff", sortKeyFields: ["createdAt"])
-  @index(name: "byShopStaff", sortKeyFields: ["createdAt"])
+    @index(name: "byStaff", sortKeyFields: ["createdAt"])
+    @index(name: "byShopStaff", sortKeyFields: ["createdAt"])
   company_cd: ID!
-  @index(name: "byCompany", sortKeyFields: ["createdAt"])
-  @index(name: "byChat", sortKeyFields: ["createdAt"])
+    @index(name: "byCompany", sortKeyFields: ["createdAt"])
+    @index(name: "byChat", sortKeyFields: ["createdAt"])
   last_name: String
   first_name: String
   last_name_kana: String

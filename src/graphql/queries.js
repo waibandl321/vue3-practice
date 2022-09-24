@@ -798,6 +798,14 @@ export const listShops = /* GraphQL */ `
             staff_id
             createdAt
             updatedAt
+            members {
+              items {
+                id
+                staff_group_cd
+                shop_staff_id
+              }
+              nextToken
+            }
           }
           nextToken
         }

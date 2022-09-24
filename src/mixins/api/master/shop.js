@@ -112,10 +112,11 @@ async function apiDeleteShopStaff (id) {
 // スタッフグループ作成
 async function apiCreateShopStaffGroup (shop, staff_group_name) {
   const shop_staff_group = generateCreateShopStaffObject(shop, staff_group_name)
-  return await API.graphql({
+  const result = await API.graphql({
     query: createShopStaffGroup,
     variables: { input: shop_staff_group }
   })
+  return result.data.createShopStaffGroup
 }
 function generateCreateShopStaffObject (shop, staff_group_name) {
   return {
