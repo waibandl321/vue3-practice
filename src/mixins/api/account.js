@@ -145,11 +145,6 @@ async function apiUpdateStaffRole (staff_id, role) {
   await API.graphql({
     query: updateStaffRole,
     variables: { input: staff_role }
-  }).then(() => {
-    alert(`スタッフの権限を更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`スタッフの権限の更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 

@@ -81,7 +81,7 @@ export default {
       groups.value = props.params.viewer.groups.items
     }
     getStaffGroup()
-    
+
     // スタッフグループ作成
     const staff_group_name = ref('')
     const createStaffGroup = async () => {
