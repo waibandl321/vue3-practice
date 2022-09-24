@@ -3,7 +3,7 @@ import employeeApiFunc from '@/mixins/api/master/employee'
 import accountApiFunc from '@/mixins/api/account'
 
 export default {
-  async getShopStaff (_shop) {
+  async mixinGetShopStaff (_shop) {
     const results = await shopApiFunc.apiGetShopStaffList(_shop.company_shop_cd)
     for (const staff of results) {
       staff.employee = await employeeApiFunc.apiGetEmployeeRelateStaffId(staff.staff_id)

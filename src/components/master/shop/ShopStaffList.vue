@@ -116,7 +116,12 @@ export default {
     const items = ref([])
     const getShopStaffList = async () => {
       loading.value = true
-      items.value = await shopFunc.getShopStaff(props.params.viewer)
+      try {
+        items.value = await shopFunc.mixinGetShopStaff(props.params.viewer)
+        console.log(items.value);
+      } catch (error) {
+        console.error(error);
+      }
       loading.value = false
     }
     getShopStaffList()
