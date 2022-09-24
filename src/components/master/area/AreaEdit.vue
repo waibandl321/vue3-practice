@@ -38,31 +38,37 @@ export default {
     changeMode: Function,
     params: Object
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ],
-        next: [
-          { text: '保存', callback: this.save }
-        ]
-      }
-    }
-  },
-  methods: {
-    async save () {
-      // データ保存処理
-      if(this.params.is_new) {
-        await areaApiFunc.apiCreateArea(this.params.editor)
-      } else {
-        await areaApiFunc.apiUpdateArea(this.params.editor)
+  setup (props) {
+    // データ保存
+    async function save () {
+      try {
+        if(props.params.is_new) {
+          await areaApiFunc.apiCreateArea(props.params.editor)
+          alert('エリアを登録しました')
+        } else {
+          await areaApiFunc.apiUpdateArea(props.params.editor)
+          alert('エリアを更新しました')
+        }
+      } catch (error) {
+        console.error(error);
       }
       // eslint-disable-next-line vue/no-mutating-props
-      this.params.is_new = false
-      this.changeMode('list')
+      props.params.is_new = false
+      props.changeMode('list')
     }
-  }
+    // フッターオプション
+    const footer_options = {
+      back: [
+        { text: '一覧へ戻る', callback: props.changeMode }
+      ],
+      next: [
+        { text: '保存', callback: save }
+      ]
+    }
+    return {
+      footer_options
+    }
+  },
 }
 </script>
 <style scoped>

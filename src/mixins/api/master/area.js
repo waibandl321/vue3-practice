@@ -9,12 +9,6 @@ async function apiCreateArea (area) {
   return await API.graphql({
     query: createArea,
     variables: { input: _area }
-  }).then((res) => {
-    alert(`「${res.data.createArea.area_name}」を作成しました。`)
-    return res.data.createArea
-  }).catch((error) => {
-    console.log(error)
-    return null
   })
 }
 
@@ -25,11 +19,6 @@ async function apiUpdateArea (_area) {
   await API.graphql({
     query: updateArea,
     variables: { input: item }
-  }).then(() => {
-    alert(`エリアを更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`エリアの更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
