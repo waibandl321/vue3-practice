@@ -4,6 +4,7 @@ import { listInvitations } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 // import crypto from 'crypto-js';
 import store from '@/store/index.js'
+import environment from '@/mixins/utils/environment.js'
 
 // 招待社員作成
 async function apiCreateInvitationEmployee (employee) {
@@ -73,8 +74,7 @@ function generateInvitationObject (employee, invitation) {
 }
 // 招待URL生成
 function createEmployeeInvitationUrl (data) {
-  let basepath = "http://localhost:8080?ivc="
-  basepath += data.company_cd
+  let basepath = environment.getEnvHost() + "?ivc=" + data.company_cd
   // TODO: 暗号化予定
   // basepath += '&to=' + data.send_to
   basepath += '&emp=' + data.employee_id
@@ -85,10 +85,7 @@ function createEmployeeInvitationUrl (data) {
 }
 
 function createShopInvitationUrl(shop) {
-  let basepath = "http://localhost:8080?ivs="
-  basepath += shop.company_shop_cd
-
-  return basepath
+  return environment.getEnvHost() + "?ivs=" + shop.company_shop_cd
 }
 
 async function apiGetInvitation () {

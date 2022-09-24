@@ -2,7 +2,6 @@
 <template>
   <v-container class="im-container">
     <div>
-      店舗編集<br>
       {{ params.editor }}
     </div>
     <v-card-title>店舗登録</v-card-title>
@@ -98,10 +97,14 @@ export default {
   setup (props) {
     // 店舗情報保存
     const save = async () => {
-      if(props.params.is_new) {
-        await shopApiFunc.apiCreateShop(props.params.editor)
-      } else {
-        await shopApiFunc.apiUpdateShop(props.params.editor)
+      try {
+        if(props.params.is_new) {
+          await shopApiFunc.apiCreateShop(props.params.editor)
+        } else {
+          await shopApiFunc.apiUpdateShop(props.params.editor)
+        }
+      } catch (error) {
+        console.error(error);
       }
       // eslint-disable-next-line vue/no-mutating-props
       props.params.is_new = false

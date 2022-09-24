@@ -5,6 +5,12 @@
     </v-col>
     <v-col cols="10">
       <div>
+        <v-progress-linear
+          v-if="loading"
+          indeterminate
+          color="green"
+          class="mt-4"
+        ></v-progress-linear>
         <v-table
           fixed-header
           height="300px"
@@ -29,49 +35,41 @@
               <td>{{ item.area_cd }}</td>
               <td>{{ item.brand_cd }}</td>
               <td>
-                <div class="drop-menu">
-                  <v-btn
-                      icon="mdi-dots-vertical"
-                      size="small"
+                <v-menu>
+                  <template v-slot:activator="{ props }">
+                    <v-btn
                       variant="text"
-                      @click.stop="clickListMenu(item.shop_cd)"
+                      v-bind="props"
+                      icon="mdi-dots-horizontal"
+                      size="small"
                     ></v-btn>
-                    <v-list
-                      v-if="list_menu === item.shop_cd"
-                      class="drop-items"
-                      border
-                    >
-                      <v-list-item>
-                        <v-btn
-                          variant="text"
-                          color="primary"
-                          block
-                          @click.stop="clickInviteShop(item)"
-                        >店舗参加用QRを表示</v-btn>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-btn variant="text"
-                          color="primary"
-                          block
-                          @click.stop="clickStaffGroup(item)"
-                        >スタッフグループ</v-btn>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-btn 
-                          variant="text"
-                          color="primary"
-                          block
-                          @click.stop="clickStaffList(item)"
-                        >従業員一覧</v-btn>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-btn variant="text"
-                          color="primary"
-                          block
-                        >店舗削除</v-btn>
-                      </v-list-item>
-                    </v-list>
-                </div>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      density="compact"
+                      link
+                      title="店舗参加用QRを表示"
+                      @click.stop="clickInviteShop(item)"
+                    ></v-list-item>
+                    <v-list-item
+                      density="compact"
+                      link
+                      title="スタッフグループ"
+                      @click.stop="clickStaffGroup(item)"
+                    ></v-list-item>
+                    <v-list-item
+                      density="compact"
+                      link
+                      title="従業員一覧"
+                      @click.stop="clickStaffList(item)"
+                    ></v-list-item>
+                    <v-list-item
+                      density="compact"
+                      link
+                      title="店舗削除"
+                    ></v-list-item>
+                  </v-list>
+                </v-menu>
               </td>
             </tr>
           </tbody>
@@ -103,26 +101,26 @@ export default {
     setEditor: Function,
   },
   setup (props) {
+    const loading = ref(false)
     // 店舗一覧取得
     const items = ref([])
     const getShopList = async () => {
-      items.value = await shopApiFunc.apiGetShops()
+      loading.value = true
+      try {
+        items.value = await shopApiFunc.apiGetShops()
+      } catch (error) {
+        console.error(error);
+      }
+      loading.value = false
     }
     getShopList()
-    // リストクリックで詳細へ
+
+    // 詳細遷移
     const recordClick = (item) => {
       props.setViewer(item)
       props.changeMode('view')
     }
-    // リストメニュー展開
-    const list_menu = ref(null)
-    const clickListMenu = (shop_cd) => {
-      if(list_menu.value) {
-        list_menu.value = !list_menu.value
-      } else {
-        list_menu.value = shop_cd
-      }
-    }
+    
     // 店舗参加用QR表示
     const clickInviteShop = (shop) => {
       props.setViewer(shop)
@@ -142,14 +140,12 @@ export default {
     const is_new = true
     const clickNew = () => {
       props.setEditor(null, is_new)
-      props.changeMode('edit', is_new)
     }
 
     return {
+      loading,
       items,
       is_new,
-      list_menu,
-      clickListMenu,
       clickInviteShop,
       clickStaffGroup,
       clickStaffList,

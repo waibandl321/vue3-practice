@@ -1,7 +1,6 @@
 <template>
   <v-container class="im-container">
     <div>
-      店舗<br>
       {{ params.viewer }}
     </div>
     <v-card-item>
@@ -18,11 +17,11 @@
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>ブランド</v-card-subtitle>
-      <v-card-text>{{ brandText }}</v-card-text>
+      <v-card-text>{{ brand_obj.brand_name }}</v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>エリア</v-card-subtitle>
-      <v-card-text>{{ areaText }}</v-card-text>
+      <v-card-text>{{ area_obj.area_name }}</v-card-text>
     </v-card-item>
     <v-card-item>
       <v-card-subtitle>住所</v-card-subtitle>
@@ -60,18 +59,18 @@ export default {
   },
   setup (props) {
     // ブランド、エリアテキスト表示
-    const brandText = computed(() => {
+    const brand_obj = computed(() => {
       const brand_cd = props.params.viewer.brand_cd
-      return props.params.brands.find(v => v.brand_cd === brand_cd).brand_name
+      console.log(props.params.brands.find(v => v.brand_cd === brand_cd));
+      return props.params.brands.find(v => v.brand_cd === brand_cd)
     })
-    const areaText = computed(() => {
+    const area_obj = computed(() => {
       const area_cd = props.params.viewer.area_cd
-      return props.params.areas.find(v => v.area_cd === area_cd).area_name
+      return props.params.areas.find(v => v.area_cd === area_cd)
     })
     // 編集画面へ遷移
     const changeModeEdit = () => {
       props.setEditor(props.params.viewer)
-      props.changeMode('edit')
     }
     // フッターオプション
     const footer_options = {
@@ -84,8 +83,8 @@ export default {
     }
 
     return {
-      brandText,
-      areaText,
+      brand_obj,
+      area_obj,
       changeModeEdit,
       footer_options,
     }
