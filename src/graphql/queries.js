@@ -803,9 +803,28 @@ export const listShops = /* GraphQL */ `
           nextToken
         }
         staffs {
+          items {
+            id
+            shop_staff_id
+            company_shop_cd
+            staff_id
+            status
+            delete
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         groups {
+          items {
+            id
+            staff_group_cd
+            company_shop_cd
+            group_name
+            staff_id
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }

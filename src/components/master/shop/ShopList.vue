@@ -108,6 +108,7 @@ export default {
       loading.value = true
       try {
         items.value = await shopApiFunc.apiGetShops()
+        console.log(items.value);
       } catch (error) {
         console.error(error);
       }

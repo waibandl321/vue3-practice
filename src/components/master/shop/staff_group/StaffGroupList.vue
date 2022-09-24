@@ -77,11 +77,11 @@ export default {
     const staff_group_create_modal = ref(false)
     // スタッフグループ一覧取得
     const groups = ref([])
-    const getStaffGroup = async () => {
-      const shop = props.params.viewer
-      groups.value = await shopApiFunc.apiGetShopStaffGroup(shop)
+    const getStaffGroup = () => {
+      groups.value = props.params.viewer.groups.items
     }
     getStaffGroup()
+    
     // スタッフグループ作成
     const staff_group_name = ref('')
     const createStaffGroup = async () => {
