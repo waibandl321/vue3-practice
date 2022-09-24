@@ -6,6 +6,12 @@
     <v-col cols="10">
       {{ items }}
       <div>
+        <v-progress-linear
+          v-if="loading"
+          indeterminate
+          color="green"
+          class="mt-4"
+        ></v-progress-linear>
         <v-table
           fixed-header
           height="300px"
@@ -50,39 +56,43 @@ export default {
   components: { MasterLeftMenu },
   props: {
     params: Object,
-    changeMode: Function
+    setEditor: Function,
+    setViewer: Function,
   },
-  setup () {
+  setup (props) {
+    const loading = ref(false)
     const items = ref([])
+    // 一覧取得
     const getBrands = async () => {
-      items.value = await brandApiFunc.apiGetBrand()
+      loading.value = true
+      try {
+        items.value = await brandApiFunc.apiGetBrand()
+      } catch (error) {
+        console.error(error);
+      }
+      loading.value = false
     }
     getBrands()
 
+    // 詳細遷移
+    const recordClick = (item) => {
+      props.setViewer(item)
+    }
+
+    // 新規作成遷移
     const is_new = true
+    const clickNew = () => {
+      props.setEditor(undefined, is_new)
+    }
 
     return {
+      loading,
       items,
-      is_new
+      is_new,
+      recordClick,
+      clickNew
     }
   },
-  methods: {
-    recordClick (item) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = item
-      this.changeMode('view')
-    },
-    clickNew () {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.editor = {
-        brand_cd: "",
-        brand_name: "",
-        status: 0,
-        delete: 0
-      }
-      this.changeMode('edit', this.is_new)
-    }
-  }
 }
 </script>
 <style scoped>
