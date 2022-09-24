@@ -28,31 +28,38 @@ export default {
     changeMode: Function,
     params: Object
   },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ],
-        next: [
-          { text: '保存', callback: this.save }
-        ]
+  setup (props) {
+    async function save () {
+      // データ保存処理
+      try {
+        if(props.params.is_new) {
+          await positionApiFunc.apiCreatePosition(props.params.editor)
+          alert('ポジションを登録しました')
+        } else {
+          await positionApiFunc.apiUpdatePosition(props.params.editor)
+          alert('ポジションを更新しました')
+        }
+      } catch (error) {
+        console.error(error);
       }
+      
+      // eslint-disable-next-line vue/no-mutating-props
+      props.params.is_new = false
+      props.changeMode('list')
+    }
+    // フッターオプション
+    const footer_options = {
+      back: [
+        { text: '一覧へ戻る', callback: props.changeMode }
+      ],
+      next: [
+        { text: '保存', callback: save }
+      ]
+    }
+    return {
+      footer_options
     }
   },
-  methods: {
-    async save () {
-      // データ保存処理
-      if(this.params.is_new) {
-        await positionApiFunc.apiCreatePosition(this.params.editor)
-      } else {
-        await positionApiFunc.apiUpdatePosition(this.params.editor)
-      }
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.is_new = false
-      this.changeMode('list')
-    }
-  }
 }
 </script>
 <style scoped>

@@ -1,7 +1,7 @@
 <template>
   <Header />
   <v-main class="d-flex">
-    <ChatList      
+    <ChatList
       :changeMode="changeMode"
       :changeRoom="changeRoom"
       ref="roomlistRef"

@@ -3,12 +3,14 @@
   <v-main>
     <PositionList
       v-if="mode === 'list'"
-      :changeMode="changeMode"
+      :setViewer="setViewer"
+      :setEditor="setEditor"
       :params="params"
     />
     <PositionDetail
       v-if="mode === 'view'"
       :changeMode="changeMode"
+      :setEditor="setEditor"
       :params="params"
     />
     <PositionEdit
@@ -24,7 +26,7 @@ import Header from '@/components/common/PcHeader.vue'
 import PositionList from '@/components/master/position/PositionList.vue'
 import PositionDetail from '@/components/master/position/PositionDetail.vue'
 import PositionEdit from '@/components/master/position/PositionEdit.vue'
-import { ref } from '@vue/reactivity'
+import { reactive, ref } from '@vue/reactivity'
 
 export default {
   name: 'master-position',
@@ -36,21 +38,40 @@ export default {
   },
   setup () {
     const mode = ref('list')
-    const params = ref({
+    const params = reactive({
       viewer: {},
       editor: {},
       is_new: false
     })
     const changeMode = (_mode, is_new = false) => {
       if(is_new) {
-        params.value.is_new = true
+        params.is_new = true
       }
       mode.value = _mode
+    }
+    const setViewer = (item) => {
+      params.viewer = item
+      mode.value = 'view'
+    }
+    const setEditor = (item, is_new = false) => {
+      if(is_new) {
+        params.is_new = true
+        params.editor = {
+          position_cd: "",
+          status: 0,
+          delete: 0
+        }
+      } else {
+        params.editor = item
+      }
+      mode.value = 'edit'
     }
     return {
       mode,
       params,
-      changeMode
+      changeMode,
+      setViewer,
+      setEditor
     }
   },
 }

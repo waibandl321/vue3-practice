@@ -1,5 +1,5 @@
 import { API } from 'aws-amplify'
-import { createPosition, updatePosition } from '@/graphql/mutations'
+import { createPosition, updatePosition, deletePosition } from '@/graphql/mutations'
 import { listPositions } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
@@ -9,12 +9,6 @@ async function apiCreatePosition (position) {
   return await API.graphql({
     query: createPosition,
     variables: { input: _position }
-  }).then((res) => {
-    alert(`「${res.data.createPosition.position_cd}」を作成しました。`)
-    return res.data.createPosition
-  }).catch((error) => {
-    console.log(error)
-    return null
   })
 }
 
@@ -25,11 +19,6 @@ async function apiUpdatePosition (_position) {
   await API.graphql({
     query: updatePosition,
     variables: { input: item }
-  }).then(() => {
-    alert(`ポジションを更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`ポジションの更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
@@ -42,6 +31,16 @@ function generatePositionObject (position) {
     status: 0,
     delete: 0
   }
+}
+
+async function apiDeletePosition (position) {
+  const filter = {
+    id: position.id,
+  }
+  return await API.graphql({
+    query: deletePosition,
+    variables: { input: filter }
+  });
 }
 
 async function apiGetPosition () {
@@ -60,5 +59,6 @@ async function apiGetPosition () {
 export default {
   apiCreatePosition,
   apiUpdatePosition,
-  apiGetPosition
+  apiGetPosition,
+  apiDeletePosition
 }
