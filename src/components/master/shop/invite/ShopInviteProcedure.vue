@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import storeAuth from '@/mixins/store/auth';
 
 export default {
-  name: "shop-invite-procedure",
+  name: "invite-procedure",
   components: { OverlayLoading },
   setup () {
     const router = useRouter()
@@ -21,7 +21,7 @@ export default {
           name: 'home'
         })
       } catch (error) {
-        alert(error)
+        console.error(error)
         router.push({
           name: 'master-shop'
         })

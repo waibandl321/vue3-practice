@@ -36,7 +36,7 @@
             cols="6"
           >
             <v-card flat border class="pa-4">
-              {{ staff.shop_staff_id }}
+              {{ viewStaff(staff.shop_staff_id) }}
               <v-btn
                 icon="mdi-delete"
                 variant="text"
@@ -53,34 +53,28 @@
     <v-dialog v-model="staff_select_modal">
       <v-card width="500">
         <v-card-title>スタッフ選択</v-card-title>
-        <v-progress-circular
-          v-if="loading"
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
         <v-table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>氏名</th>
               <th></th>
+              <th>氏名</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              v-for="staff in shop_staffs"
+              v-for="staff in selectable_staffs"
               :key="staff.id"
             >
-              <td>{{ staff.id }}</td>
-              <td>{{ staff.employee.last_name }}{{ staff.employee.first_name }}</td>
               <td>
                 <v-checkbox
                   v-model="add_staff_value"
                   :id="staff.id"
-                  :value="staff.id"
+                  :value="staff.staff_id"
                   color="primary"
+                  hide-details="auto"
                 ></v-checkbox>
               </td>
+              <td>{{ viewStaff(staff.staff_id) }}</td>
             </tr>
           </tbody>
         </v-table>
@@ -123,66 +117,61 @@ export default {
     const staff_group_staffs = ref([])
     staff_group_staffs.value = storeFunc.storeGetStaffGroupStaffs()
     
-    // 店舗従業員取得
-    const loading = ref(false)
-    const shop_staffs = ref([])
-    const getShopStaffs = async () => {
-      const selected = []
+    // 選択可能なメンバー
+    const selectable_staffs = ref([])
+    selectable_staffs.value = getSelectableStaffs()
+    function getSelectableStaffs () {
       if(staff_group_staffs.value.length > 0) {
-        for (const item of staff_group_staffs.value) {
-          selected.push(item.shop_staff_id)
-        }
+        let results = []
+        results = props.params.viewer.staffs.items.filter((v) => {
+          console.log(staff_group_staffs.value.find(r => v.staff_id !== r.shop_staff_id));       
+          return staff_group_staffs.value.find(r => {
+            return v.staff_id !== r.shop_staff_id
+          })
+        })
+        return results
       }
-      
-      loading.value = true
-      // shop_staffs.value = await shopFunc.getShopStaff(props.params.viewer)
-      shop_staffs.value = shop_staffs.value.filter(v => !selected.includes(v.id))
-      loading.value = false
+      return props.params.viewer.staffs.items
+    }
+    // 名前表示
+    const viewStaff = (staff_id) => {
+      const staff = props.params.viewer.staffs.items.find((r) => {
+        return r.staff_id === staff_id
+      })
+      return staff.employee.items[0].last_name + staff.employee.items[0].first_name
     }
     
     // スタッフグループメンバー追加
-    const add_staff_value = ref([])
     const staff_select_modal = ref(false)
+    const add_staff_value = ref([])
     const saveGroupStaffAdd = async () => {
-      const staff_group = props.editor
+      staff_select_modal.value = false
       try {
-        for (const staff of add_staff_value.value) {
-          await shopApiFunc.apiCreateStaffGroupStaff(staff_group, staff)
-          .then((res) => {
-            staff_group_staffs.value.push(
-              res.data.createShopStaffGroupStaff
-            )
-            storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
-          })
+        for (const staff_id of add_staff_value.value) {
+          const result = await shopApiFunc.apiCreateStaffGroupStaff(props.editor, staff_id)
+          staff_group_staffs.value.push(result)
+          storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
         }
         alert('スタッフグループにメンバーを追加しました')
       } catch (error) {
         console.log(error)
-        alert(error)
       }
-      add_staff_value.value = []
-      shop_staffs.value = []
-      staff_select_modal.value = false
+      add_staff_value.value = []      
     }
     const closeStaffSelect = () => {
-      staff_select_modal.value = false
-      shop_staffs.value = []
+      staff_select_modal.value = false      
     }
     const clickStaffAdd = async () => {
       staff_select_modal.value = true
-      getShopStaffs()
     }
     // スタッフグループ所属メンバー削除
     const deleteStaffGroupStaff = async (staff) => {
       try {
         await shopApiFunc.apiDeleteStaffGroupStaff(staff)
-        staff_group_staffs.value = staff_group_staffs.value.filter(
-          v => v.id !== staff.id
-        )
+        staff_group_staffs.value = staff_group_staffs.value.filter(v => v.id !== staff.id)
         storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
         alert('メンバーを削除しました')
       } catch (error) {
-        alert(error)
         console.log(error);
       }
     }
@@ -216,8 +205,8 @@ export default {
     }
     return {
       staff_group_staffs,
-      loading,
-      shop_staffs,
+      selectable_staffs,
+      viewStaff,
       footer_options,
       staff_select_modal,
       add_staff_value,

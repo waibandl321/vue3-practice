@@ -10,7 +10,7 @@
     v-if="mode === 'staff-group-detail'"
     :changeModeStaffGroup="changeModeStaffGroup"
     :params="params"
-    :viewer="viewer_staff_group"
+    :viewer="staff_group_viewer"
     :setEditor="setEditor"
   />
   <StaffGroupEdit
@@ -41,9 +41,9 @@ export default {
       mode.value = _mode
     }
     // 詳細データセット
-    const viewer_staff_group = ref({})
+    const staff_group_viewer = ref({})
     const setViewer = (item) => {
-      viewer_staff_group.value = item
+      staff_group_viewer.value = item
     }
     // 編集データセット
     const editor_staff_group = ref({})
@@ -53,7 +53,7 @@ export default {
 
     return {
       mode,
-      viewer_staff_group,
+      staff_group_viewer,
       editor_staff_group,
       changeModeStaffGroup,
       setViewer,

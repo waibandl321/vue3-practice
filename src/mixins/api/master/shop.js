@@ -168,17 +168,18 @@ async function apiDeleteShopStaffGroup (shop_staff_group) {
   });
 }
 // スタッフグループ所属メンバー登録
-async function apiCreateStaffGroupStaff (staff_group, shop_staff_id) {
-  const data = generateStaffGroupStaffObject(staff_group, shop_staff_id)
-  return await API.graphql({
+async function apiCreateStaffGroupStaff (staff_group, staff_id) {
+  const data = generateStaffGroupStaffObject(staff_group, staff_id)
+  const result =  await API.graphql({
     query: createShopStaffGroupStaff,
     variables: { input: data }
   })
+  return result.data.createShopStaffGroupStaff
 }
-function generateStaffGroupStaffObject (staff_group, shop_staff_id) {
+function generateStaffGroupStaffObject (staff_group, staff_id) {
   return {
     staff_group_cd: staff_group.staff_group_cd,
-    shop_staff_id: shop_staff_id
+    shop_staff_id: staff_id
   }
 }
 // スタッフグループ所属メンバー取得

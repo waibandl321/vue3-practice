@@ -82,8 +82,9 @@ export default {
     })
     // 招待遷移
     if (store.getters.invitationShopCode) {
+      console.log('店舗招待コードあり');
       mode.value = 'invite-procedure'
-      return;
+      // return;
     }
     // 店舗以外のマスタデータ読み込み
     const init = async () => {
