@@ -5,6 +5,7 @@
       v-if="mode === 'list'"
       :setViewer="setViewer"
       :setEditor="setEditor"
+      :initList="initList"
       :params="params"
     />
     <PositionDetail
@@ -16,6 +17,7 @@
     <PositionEdit
       v-if="mode === 'edit'"
       :changeMode="changeMode"
+      :initList="initList"
       :params="params"
     />
   </v-main>
@@ -26,6 +28,8 @@ import Header from '@/components/common/PcHeader.vue'
 import PositionList from '@/components/master/position/PositionList.vue'
 import PositionDetail from '@/components/master/position/PositionDetail.vue'
 import PositionEdit from '@/components/master/position/PositionEdit.vue'
+
+import positionApiFunc from '@/mixins/api/master/position.js'
 import { reactive, ref } from '@vue/reactivity'
 
 export default {
@@ -39,6 +43,7 @@ export default {
   setup () {
     const mode = ref('list')
     const params = reactive({
+      items: [],
       viewer: {},
       editor: {},
       is_new: false
@@ -47,8 +52,18 @@ export default {
       if(is_new) {
         params.is_new = true
       }
+      params.is_new = false
       mode.value = _mode
     }
+    const initList = async () => {
+      try {
+        params.items = await positionApiFunc.apiGetPosition()
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    initList()
+
     const setViewer = (item) => {
       params.viewer = item
       mode.value = 'view'
@@ -71,7 +86,8 @@ export default {
       params,
       changeMode,
       setViewer,
-      setEditor
+      setEditor,
+      initList
     }
   },
 }

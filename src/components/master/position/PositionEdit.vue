@@ -26,11 +26,11 @@ export default {
   components: { PcFooter },
   props: {
     changeMode: Function,
+    initList: Function,
     params: Object
   },
   setup (props) {
     async function save () {
-      // データ保存処理
       try {
         if(props.params.is_new) {
           await positionApiFunc.apiCreatePosition(props.params.editor)
@@ -46,6 +46,7 @@ export default {
       // eslint-disable-next-line vue/no-mutating-props
       props.params.is_new = false
       props.changeMode('list')
+      props.initList()
     }
     // フッターオプション
     const footer_options = {

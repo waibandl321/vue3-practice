@@ -1,23 +1,27 @@
 <template>
   <v-container class="im-container">
-    店舗<br>
-    {{ params.viewer }}
     <v-card>
-      <v-card-title>店舗招待用URL</v-card-title>
-      <v-card-text>
-        <a :href="invite_url">{{ invite_url }}</a>
-      </v-card-text>
-      <v-card-text>
-        <QRCodeVue3
-          :value="invite_url"
-          :width="200"
-          :height="200"
-          :qrOptions="{ typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' }"
-          :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }"
-          :dotsOptions="{ type: 'square', color: '#05004d' }"
-          :cornersSquareOptions="{ type: 'square', color: '#0e013c' }"
-        />
-      </v-card-text>
+      <v-card-title>店舗招待</v-card-title>
+      <v-card-item>
+        <v-card-subtitle>招待URL</v-card-subtitle>
+        <v-card-text>
+          <a :href="invite_url">{{ invite_url }}</a>
+        </v-card-text>
+      </v-card-item>
+      <v-card-item>
+        <v-card-text>
+          <v-card-subtitle>QRコード</v-card-subtitle>
+          <QRCodeVue3
+            :value="invite_url"
+            :width="200"
+            :height="200"
+            :qrOptions="{ typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' }"
+            :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }"
+            :dotsOptions="{ type: 'square', color: '#05004d' }"
+            :cornersSquareOptions="{ type: 'square', color: '#0e013c' }"
+          />
+        </v-card-text>
+      </v-card-item>
     </v-card>
     <footer class="fixed-footer">
       <div class="back">

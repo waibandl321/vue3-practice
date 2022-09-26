@@ -4,7 +4,7 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ items }}
+      {{ params.items }}
       <div>
         <v-progress-linear
           v-if="loading"
@@ -69,7 +69,7 @@
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 import positionApiFunc from '@/mixins/api/master/position.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 export default {
   name: 'position-list',
   components: { MasterLeftMenu },
@@ -77,31 +77,32 @@ export default {
     params: Object,
     setEditor: Function,
     setViewer: Function,
+    initList: Function,
   },
   setup (props) {
     const loading = ref(false)
     const items = ref([])
     // 一覧読み込み
-    const getPositionList = async () => {
-      loading.value = true
-      try {
-        items.value = await positionApiFunc.apiGetPosition()
-      } catch (error) {
-        console.error(error);
-      }
-      loading.value = false
+    const initPositionList = () => {
+      items.value = props.params.items
     }
-    getPositionList()
+    watch(
+      () => props.params.items,
+      () => {
+        initPositionList()
+      }
+    )
+    initPositionList()
 
     // 削除
     const deletePosition = async (position) => {
       try {
         await positionApiFunc.apiDeletePosition(position)
-        items.value = items.value.filter(v => v.id !== position.id)
         alert('ポジションを削除しました')
       } catch (error) {
         console.error(error);
       }
+      props.initList()
     }
 
     // 詳細遷移
