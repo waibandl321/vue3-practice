@@ -1,48 +1,39 @@
 <template>
   <v-container>
-    店舗招待
+    店舗<br>
     {{ params.viewer }}
     <v-card>
       <v-card-title>店舗招待用URL</v-card-title>
       <v-card-text>
-        <a :href="invite_url">{{ invite_url }}</a>
+        <a :href="createInviteUrl()">{{ createInviteUrl() }}</a>
       </v-card-text>
     </v-card>
-    <PcFooter :options="footer_options" />
+    <footer class="fixed-footer">
+      <div class="back">
+        <v-btn
+          @click="changeMode('list')"
+        >店舗一覧へ戻る
+        </v-btn>
+      </div>
+    </footer>
   </v-container>
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
 import invitationApiFunc from '@/mixins/api/invitation.js'
-import PcFooter from '@/components/common/PcFooter.vue'
 export default {
   name: 'shop-invite',
-  components: {
-    PcFooter
-  },
   props: {
     params: Object,
     changeMode: Function
   },
   setup (props) {
-    const invite_url = ref("")
     const createInviteUrl = () => {
-      invite_url.value = invitationApiFunc.createShopInvitationUrl(props.params.viewer)
+      return invitationApiFunc.createShopInvitationUrl(props.params.viewer)
     }
-    createInviteUrl()
 
     return {
-      invite_url
-    }
-  },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ]
-      }
+      createInviteUrl
     }
   },
 }

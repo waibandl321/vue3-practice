@@ -44,7 +44,7 @@
 import areaApiFunc from '@/mixins/api/master/area.js'
 import brandApiFunc from '@/mixins/api/master/brand.js'
 import roleFunc from '@/mixins/api/master/role.js'
-import store from '@/store'
+import storeAuth from '@/mixins/store/auth.js'
 
 import Header from '@/components/common/PcHeader.vue'
 import ShopList from '@/components/master/shop/ShopList.vue'
@@ -71,7 +71,12 @@ export default {
   },
   setup () {
     const mode = ref('list')
-    // props初期値
+    // 招待遷移
+    if (storeAuth.storeGetInvitationShopCode()) {
+      console.log('店舗招待コード', storeAuth.storeGetInvitationShopCode());
+      mode.value = 'invite-procedure'
+    }
+    
     const params = reactive({
       viewer: {},
       editor: {},
@@ -80,12 +85,7 @@ export default {
       areas: [],
       roles: []
     })
-    // 招待遷移
-    if (store.getters.invitationShopCode) {
-      console.log('店舗招待コードあり');
-      mode.value = 'invite-procedure'
-      // return;
-    }
+   
     // 店舗以外のマスタデータ読み込み
     const init = async () => {
       params.brands = await brandApiFunc.apiGetBrand()

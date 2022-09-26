@@ -22,6 +22,7 @@ export default {
         })
       } catch (error) {
         console.error(error)
+        alert('店舗招待に失敗しました。')
         router.push({
           name: 'master-shop'
         })

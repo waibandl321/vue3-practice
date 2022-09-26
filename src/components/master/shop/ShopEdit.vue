@@ -100,8 +100,10 @@ export default {
       try {
         if(props.params.is_new) {
           await shopApiFunc.apiCreateShop(props.params.editor)
+          alert('店舗を登録しました')
         } else {
           await shopApiFunc.apiUpdateShop(props.params.editor)
+          alert('店舗情報を更新しました')
         }
       } catch (error) {
         console.error(error);
