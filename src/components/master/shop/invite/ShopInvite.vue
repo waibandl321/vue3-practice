@@ -1,11 +1,22 @@
 <template>
-  <v-container>
+  <v-container class="im-container">
     店舗<br>
     {{ params.viewer }}
     <v-card>
       <v-card-title>店舗招待用URL</v-card-title>
       <v-card-text>
-        <a :href="createInviteUrl()">{{ createInviteUrl() }}</a>
+        <a :href="invite_url">{{ invite_url }}</a>
+      </v-card-text>
+      <v-card-text>
+        <QRCodeVue3
+          :value="invite_url"
+          :width="200"
+          :height="200"
+          :qrOptions="{ typeNumber: '0', mode: 'Byte', errorCorrectionLevel: 'Q' }"
+          :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }"
+          :dotsOptions="{ type: 'square', color: '#05004d' }"
+          :cornersSquareOptions="{ type: 'square', color: '#0e013c' }"
+        />
       </v-card-text>
     </v-card>
     <footer class="fixed-footer">
@@ -20,20 +31,27 @@
 </template>
 
 <script>
+import QRCodeVue3 from "qrcode-vue3";
 import invitationApiFunc from '@/mixins/api/invitation.js'
+import { ref } from '@vue/reactivity';
 export default {
   name: 'shop-invite',
+  components: {
+    QRCodeVue3
+  },
   props: {
     params: Object,
     changeMode: Function
   },
   setup (props) {
+    const invite_url = ref()
     const createInviteUrl = () => {
-      return invitationApiFunc.createShopInvitationUrl(props.params.viewer)
+      invite_url.value = invitationApiFunc.createShopInvitationUrl(props.params.viewer)
     }
+    createInviteUrl()
 
     return {
-      createInviteUrl
+      invite_url
     }
   },
 }
