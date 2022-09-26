@@ -3,7 +3,6 @@
     v-if="mode === 'staff-group-list'"
     :changeMode="changeMode"
     :params="params"
-    :changeModeStaffGroup="changeModeStaffGroup"
     :setViewer="setViewer"
   />
   <StaffGroupDetail
@@ -17,7 +16,8 @@
     v-if="mode === 'staff-group-edit'" 
     :changeModeStaffGroup="changeModeStaffGroup"
     :params="params"
-    :editor="editor_staff_group"
+    :editor="staff_group_editor"
+    :refreshMember="refreshMember"
   />
 </template>
 
@@ -25,6 +25,8 @@
 import StaffGroupList from './StaffGroupList.vue';
 import StaffGroupDetail from './StaffGroupDetail.vue';
 import StaffGroupEdit from './StaffGroupEdit.vue';
+
+import shopApiFunc from '@/mixins/api/master/shop.js'
 import { ref } from '@vue/reactivity';
 
 export default {
@@ -44,20 +46,34 @@ export default {
     const staff_group_viewer = ref({})
     const setViewer = (item) => {
       staff_group_viewer.value = item
+      mode.value = 'staff-group-detail'
     }
     // 編集データセット
-    const editor_staff_group = ref({})
+    const staff_group_editor = ref({})
     const setEditor = (item) => {
-      editor_staff_group.value = item
+      staff_group_editor.value = item
+      mode.value = 'staff-group-edit'
+    }
+    // メンバー再読み込み
+    const refreshMember = async () => {
+      let results = []
+      try {
+        results = await shopApiFunc.apiGetStaffGroupStaff(staff_group_editor.value)
+      } catch (error) {
+        console.log(error);
+      }
+      staff_group_viewer.value.members.items = results
+      staff_group_editor.value.members.items = results
     }
 
     return {
       mode,
       staff_group_viewer,
-      editor_staff_group,
+      staff_group_editor,
       changeModeStaffGroup,
       setViewer,
-      setEditor
+      setEditor,
+      refreshMember
     }
   }
 }

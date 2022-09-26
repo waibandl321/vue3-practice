@@ -1,8 +1,8 @@
 <template>
-  <v-container>
+  <v-container class="im-container">
     <div>
-      店舗<br>
-      {{ params.viewer }}
+      グループ<br>
+      {{ groups }}
     </div>
     <v-card-title>{{ params.viewer.shop_name }} スタッフグループ</v-card-title>
     <v-card
@@ -55,9 +55,12 @@
       </v-card>
     </v-dialog>
   </v-container>
+
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from 'vue'
 import shopApiFunc from '@/mixins/api/master/shop.js'
@@ -65,55 +68,77 @@ import shopApiFunc from '@/mixins/api/master/shop.js'
 export default {
   name: 'staff-group-list',
   components: {
-    PcFooter
+    PcFooter,
+    OverlayLoading
   },
   props: {
     params: Object,
     changeMode: Function,
-    changeModeStaffGroup: Function,
     setViewer: Function
   },
   setup (props) {
-    const staff_group_create_modal = ref(false)
-    // スタッフグループ一覧取得
+    const loading = ref(false)
+    // スタッフグループ一覧
     const groups = ref([])
     const getStaffGroup = () => {
       groups.value = props.params.viewer.groups.items
-      console.log(groups.value);
     }
     getStaffGroup()
 
     // スタッフグループ作成
+    const staff_group_create_modal = ref(false)
     const staff_group_name = ref('')
     const createStaffGroup = async () => {
+      staff_group_create_modal.value = false
+      loading.value = true
       try {
-        const shop = props.params.viewer
-        const result = await shopApiFunc.apiCreateShopStaffGroup(shop, staff_group_name.value)
+        const result = await shopApiFunc.apiCreateShopStaffGroup(props.params.viewer, staff_group_name.value)
         groups.value.push(result)
         alert('スタッフグループを作成しました')
       } catch (error) {
-        alert(error);
         console.log(error);
       }
-      staff_group_create_modal.value = false
+      loading.value = false
+      staff_group_name.value = ""
     }
+
     // スタッフグループ削除
     const deleteStaffGroup = async (staff_group) => {
+      if(!confirm('削除後は復元できません。よろしいですか？')) return;
+      loading.value = true
       try {
-        await shopApiFunc.apiDeleteShopStaffGroup(staff_group).then(() => {
-          groups.value = groups.value.filter(v => v.id !== staff_group.id)
-          alert(`スタッフグループ${staff_group.group_name}を削除しました。`)
-        })
+        await shopApiFunc.apiDeleteShopStaffGroup(staff_group)
+        await deleteStaffGroupMembers(staff_group)
+        await refreshGroups()
+        alert(`スタッフグループを削除しました。`)
       } catch (error) {
         console.log(error);
-        alert(error)
+      }
+      loading.value = false
+      // メンバー削除
+      async function deleteStaffGroupMembers (staff_group) {
+        const members = staff_group.members.items
+        if(members.length > 0) {
+          for (const member of members) {
+            await shopApiFunc.apiDeleteStaffGroupStaff(member) 
+          }
+        }
       }
     }
+    // 再読み込み
+    async function refreshGroups () {
+      try {
+        groups.value = await shopApiFunc.apiGetShopStaffGroup(props.params.viewer)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     // スタッフグループ詳細へ
     const viewStaffGroup = (group) => {
       props.setViewer(group)
-      props.changeModeStaffGroup('staff-group-detail')
     }
+
     // スタッフグループ一覧へ
     const backFunc = () => {
       props.changeMode('list')
@@ -125,6 +150,7 @@ export default {
     }
 
     return {
+      loading,
       staff_group_create_modal,
       staff_group_name,
       groups,

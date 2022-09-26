@@ -1,10 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
   <v-container class="im-container">
-    <div>
-      店舗<br>
-      {{ params.viewer }}
-    </div>
     <div class="mt-4">
       スタッフグループ<br>
       {{ editor }}
@@ -26,7 +22,7 @@
           <v-btn
             append-icon="mdi-plus"
             color="primary"
-            @click="clickStaffAdd()"
+            @click="staff_select_modal = !staff_select_modal"
           >追加</v-btn>
         </v-card-text>
         <v-row v-show="staff_group_staffs.length !== 0">
@@ -49,11 +45,32 @@
         </v-row>
       </v-card-item>
     </v-card>
+    <footer class="fixed-footer">
+      <div class="back">
+        <v-btn
+          @click="backFunc('staff-group-list')"
+        >スタッフグループ一覧へ
+        </v-btn>
+      </div>
+      <div class="next">
+        <v-btn
+          @click="backFunc('staff-group-detail')"
+          class="mr-4"
+          variant="outlined"
+        >キャンセル
+        </v-btn>
+        <v-btn
+          color="primary"
+          @click="updateStaffGroup()"
+        >保存</v-btn>
+      </div>
+    </footer>
+
     <!-- スタッフ追加モーダル -->
     <v-dialog v-model="staff_select_modal">
       <v-card width="500">
         <v-card-title>スタッフ選択</v-card-title>
-        <v-table>
+        <v-table v-if="selectable_staffs.length > 0">
           <thead>
             <tr>
               <th></th>
@@ -67,7 +84,7 @@
             >
               <td>
                 <v-checkbox
-                  v-model="add_staff_value"
+                  v-model="add_staff_array"
                   :id="staff.id"
                   :value="staff.staff_id"
                   color="primary"
@@ -78,56 +95,57 @@
             </tr>
           </tbody>
         </v-table>
+        <v-card-text v-else>追加できるスタッフがいません</v-card-text>
         <v-card-actions class="justify-end">
           <v-btn
             variant="outlined"
-            @click="closeStaffSelect()"
+            @click="staff_select_modal = false"
           >キャンセル</v-btn>
           <v-btn
             color="primary"
             variant="outlined"
-            @click="saveGroupStaffAdd()"
+            @click="staffAdd()"
           >追加</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <PcFooter :options="footer_options" />
+    
+    <OverlayLoading v-if="loading" />
   </v-container>
 </template>
 
 <script>
-import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
-// import shopFunc from '../shop'
 import shopApiFunc from '@/mixins/api/master/shop.js'
-import storeFunc from '@/mixins/store/auth'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
 
 export default {
   name: 'staff-group-detail',
   components: {
-    PcFooter
+    OverlayLoading
   },
   props: {
     editor: Object,
     params: Object,
-    changeModeStaffGroup: Function
+    changeModeStaffGroup: Function,
+    refreshMember: Function,
   },
   setup (props) {
-    // スタッフグループ所属メンバー取得（vuexから）
+    const loading = ref(false)
+    // スタッフグループ所属メンバー取得
     const staff_group_staffs = ref([])
-    staff_group_staffs.value = storeFunc.storeGetStaffGroupStaffs()
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    staff_group_staffs.value = props.editor.members.items
     
-    // 選択可能なメンバー
+    // 選択可能メンバーフィルタ
     const selectable_staffs = ref([])
     selectable_staffs.value = getSelectableStaffs()
     function getSelectableStaffs () {
+      let results = []
       if(staff_group_staffs.value.length > 0) {
-        let results = []
-        results = props.params.viewer.staffs.items.filter((v) => {
-          console.log(staff_group_staffs.value.find(r => v.staff_id !== r.shop_staff_id));       
-          return staff_group_staffs.value.find(r => {
-            return v.staff_id !== r.shop_staff_id
-          })
+        results = props.params.viewer.staffs.items
+        results = results.filter((v) => {
+          return !staff_group_staffs.value.find(r => r.shop_staff_id === v.staff_id)
         })
         return results
       }
@@ -141,81 +159,76 @@ export default {
       return staff.employee.items[0].last_name + staff.employee.items[0].first_name
     }
     
-    // スタッフグループメンバー追加
+    // スタッフグループメンバー
     const staff_select_modal = ref(false)
-    const add_staff_value = ref([])
-    const saveGroupStaffAdd = async () => {
+    const add_staff_array = ref([])
+    const delete_staffs = ref([])
+    // 追加
+    const staffAdd = async () => {
       staff_select_modal.value = false
-      try {
-        for (const staff_id of add_staff_value.value) {
-          const result = await shopApiFunc.apiCreateStaffGroupStaff(props.editor, staff_id)
-          staff_group_staffs.value.push(result)
-          storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
-        }
-        alert('スタッフグループにメンバーを追加しました')
-      } catch (error) {
-        console.log(error)
+      for (const staff_id of add_staff_array.value) {
+        staff_group_staffs.value.push({
+          shop_staff_id: staff_id
+        })
+        selectable_staffs.value = getSelectableStaffs()
       }
-      add_staff_value.value = []      
     }
-    const closeStaffSelect = () => {
-      staff_select_modal.value = false      
-    }
-    const clickStaffAdd = async () => {
-      staff_select_modal.value = true
-    }
-    // スタッフグループ所属メンバー削除
+    // 削除
     const deleteStaffGroupStaff = async (staff) => {
-      try {
-        await shopApiFunc.apiDeleteStaffGroupStaff(staff)
-        staff_group_staffs.value = staff_group_staffs.value.filter(v => v.id !== staff.id)
-        storeFunc.storeSetStaffGroupStaffs(staff_group_staffs.value)
-        alert('メンバーを削除しました')
-      } catch (error) {
-        console.log(error);
-      }
+      delete_staffs.value.push(staff)
+      staff_group_staffs.value = staff_group_staffs.value.filter(v => v.id !== staff.id)
+      selectable_staffs.value = getSelectableStaffs()
     }
-    // スタッフグループ更新
+    // 更新
     const updateStaffGroup = async () => {
+      loading.value = true
       try {
         await shopApiFunc.apiUpdateShopStaffGroup(props.params.viewer, props.editor)
-        // store初期化
-        storeFunc.storeSetStaffGroupStaffs(null)
+        await _deleteStaffs()
+        await _addStaffs()
         alert('スタッフグループを更新しました。')
       } catch (error) {
-        alert(error)
         console.log(error);
       }
+      loading.value = false
+      add_staff_array.value = []
+      delete_staffs.value = []
+      props.refreshMember()
       props.changeModeStaffGroup('staff-group-list')
+
+      async function _deleteStaffs () {
+        if(delete_staffs.value.length > 0) {
+          for (const delete_staff of delete_staffs.value) {
+            await shopApiFunc.apiDeleteStaffGroupStaff(delete_staff)
+          }
+        }
+      }
+      async function _addStaffs () {
+        if(add_staff_array.value.length > 0) {
+          for (const staff_id of add_staff_array.value) {
+            const result = await shopApiFunc.apiCreateStaffGroupStaff(props.editor, staff_id)
+            staff_group_staffs.value.push(result)
+            selectable_staffs.value = getSelectableStaffs()
+          }
+        }
+      }
     }
     // スタッフグループ一覧に戻る
-    const backFunc = () => {
-      // store初期化
-      storeFunc.storeSetStaffGroupStaffs(null)
-      props.changeModeStaffGroup('staff-group-list')
+    const backFunc = (mode) => {
+      props.changeModeStaffGroup(mode)
     }
-    // フッターオプション
-    const footer_options = {
-      back: [
-        { text: 'スタッフグループ一覧へ', callback: backFunc }
-      ],
-      next: [
-        { text: '保存', callback: updateStaffGroup }
-      ]
-    }
+    
     return {
+      loading,
       staff_group_staffs,
       selectable_staffs,
       viewStaff,
-      footer_options,
       staff_select_modal,
-      add_staff_value,
+      add_staff_array,
       backFunc,
       updateStaffGroup,
-      closeStaffSelect,
-      saveGroupStaffAdd,
+      staffAdd,
       deleteStaffGroupStaff,
-      clickStaffAdd
     }
   }
 }
