@@ -71,7 +71,7 @@
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 import areaApiFunc from '@/mixins/api/master/area.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 export default {
   name: 'area-list',
   components: { MasterLeftMenu },
@@ -79,20 +79,22 @@ export default {
     params: Object,
     setViewer: Function,
     setEditor: Function,
+    initList: Function,
   },
   setup (props) {
     const loading = ref(false)
     const items = ref([])
     // 一覧取得
-    const getAreaList = async () => {
-      loading.value = true
-      try {
-        items.value = await areaApiFunc.apiGetArea()
-      } catch (error) {
-        console.error(error);
-      }
-      loading.value = false
+    const getAreaList = () => {
+      items.value = props.params.items
     }
+    watch(
+      () => props.params.items,
+      () => {
+        getAreaList()
+      },
+      { deep: true }
+    )
     getAreaList()
 
     // 削除
@@ -100,6 +102,7 @@ export default {
       try {
         await areaApiFunc.apiDeleteArea(area)
         items.value = items.value.filter(v => v.id !== area.id)
+        props.initList()
         alert('エリアを削除しました')
       } catch (error) {
         console.error(error);

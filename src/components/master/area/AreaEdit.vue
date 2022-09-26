@@ -36,6 +36,7 @@ export default {
   components: { PcFooter },
   props: {
     changeMode: Function,
+    initList: Function,
     params: Object
   },
   setup (props) {
@@ -49,6 +50,7 @@ export default {
           await areaApiFunc.apiUpdateArea(props.params.editor)
           alert('エリアを更新しました')
         }
+        props.initList()
       } catch (error) {
         console.error(error);
       }

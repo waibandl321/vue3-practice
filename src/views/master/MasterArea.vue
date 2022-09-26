@@ -5,6 +5,7 @@
       v-if="mode === 'list'"
       :setViewer="setViewer"
       :setEditor="setEditor"
+      :initList="initList"
       :params="params"
     />
     <AreaDetail
@@ -16,6 +17,7 @@
     <AreaEdit
       v-if="mode === 'edit'"
       :changeMode="changeMode"
+      :initList="initList"
       :params="params"
     />
   </v-main>
@@ -26,6 +28,8 @@ import Header from '@/components/common/PcHeader.vue'
 import AreaList from '@/components/master/area/AreaList.vue'
 import AreaDetail from '@/components/master/area/AreaDetail.vue'
 import AreaEdit from '@/components/master/area/AreaEdit.vue'
+
+import areaApiFunc from '@/mixins/api/master/area.js'
 import { reactive, ref } from '@vue/reactivity'
 
 export default {
@@ -39,14 +43,21 @@ export default {
   setup () {
     const mode = ref('list')
     const params = reactive({
+      items: [],
       viewer: {},
       editor: {},
       is_new: false
     })
+    const initList = async () => {
+      params.items = await areaApiFunc.apiGetArea()
+    }
+    initList()
+
     const changeMode = (_mode, is_new = false) => {
       if(is_new) {
         params.is_new = true
       }
+      params.is_new = false
       mode.value = _mode
     }
     const setViewer = (item) => {
@@ -73,7 +84,8 @@ export default {
       params,
       changeMode,
       setViewer,
-      setEditor
+      setEditor,
+      initList
     }
   },
 }
