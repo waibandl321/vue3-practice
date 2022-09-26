@@ -1,13 +1,8 @@
 <template>
   <v-container class="im-container">
-    {{ params.viewer.staffs.items[0] }}
+    {{ params.viewer.groups.items }}
     <v-card>
       <v-card-title>「{{ params.viewer.shop_name }}」 従業員一覧</v-card-title>
-      <v-progress-circular
-          v-if="loading"
-          indeterminate
-          color="primary"
-      ></v-progress-circular>
       <v-table height="50vh">
         <thead>
           <tr>
@@ -53,6 +48,7 @@
         </tbody>
       </v-table>
     </v-card>
+
     <!-- 権限変更ダイアログ -->
     <v-dialog v-model="role_change_dialog">
       <v-card width="500">
@@ -86,39 +82,35 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <PcFooter :options="footer_options" />
+    <footer class="fixed-footer">
+      <div class="back">
+        <v-btn
+          @click="changeMode('list')"
+        >店舗一覧へ戻る
+        </v-btn>
+      </div>
+    </footer>
   </v-container>
 </template>
 
 <script>
-import PcFooter from '@/components/common/PcFooter.vue'
 import { ref } from '@vue/reactivity'
 import shopApiFunc from '@/mixins/api/master/shop'
-// import employeeApiFunc from '@/mixins/api/master/employee'
 import accountApiFunc from '@/mixins/api/account'
 
 export default {
-  name: 'shop-invite',
-  components: {
-    PcFooter
-  },
   props: {
     params: Object,
     changeMode: Function
   },
   setup (props) {
-    const loading = ref(false)
     // 店舗従業員取得
     const items = ref([])
     const getShopStaffList = async () => {
-      try {
-        for (const shop_staff of props.params.viewer.staffs.items) {
-          shop_staff.employee = shop_staff.employee.items[0]
-          shop_staff.staff_role = shop_staff.role.items[0]
-          items.value.push(shop_staff)
-        }
-      } catch (error) {
-        console.error(error);
+      for (const shop_staff of props.params.viewer.staffs.items) {
+        shop_staff.employee = shop_staff.employee.items[0]
+        shop_staff.staff_role = shop_staff.role.items[0]
+        items.value.push(shop_staff)
       }
     }
     getShopStaffList()
@@ -132,6 +124,7 @@ export default {
     }
     // 店舗スタッフ権限変更
     const saveChangeRole = async () => {
+      role_change_dialog.value = false
       const role = role_change_staff.value.staff_role
       const staff_id = role_change_staff.value.employee.staff_id
       try {
@@ -140,33 +133,32 @@ export default {
       } catch (error) {
         console.error(error);
       }
-      role_change_dialog.value = false
     }
     // 店舗スタッフ削除
     const clickDeleteShopStaff = async (staff) => {
       try {
         await shopApiFunc.apiDeleteShopStaff(staff.id)
-        // TODO: スタッフグループからも削除する
+        // スタッフグループからも削除する
+        await deleteFromStaffGroup()
         alert('店舗従業員を削除しました。')
         items.value = items.value.filter(v => v.staff_id !== staff.staff_id)
       } catch (error) {
         console.error(error)
       }
 
-      // function deleteFromStaffGroup (staff) {}
-    }
-
-    // フッターオプション
-    const footer_options = {
-      back: [
-        { text: '店舗一覧へ戻る', callback: props.changeMode }
-      ]
+      async function deleteFromStaffGroup () {
+        const groups = props.params.viewer.groups.items
+        for (const group of groups) {
+          const delete_staff = group.members.items.find(r => r.shop_staff_id === staff.staff_id)
+          if(delete_staff) {
+            await shopApiFunc.apiDeleteStaffGroupStaff(delete_staff)
+          }
+        }
+      }
     }
 
     return {
-      loading,
       items,
-      footer_options,
       role_change_dialog,
       role_change_staff,
       clickChangeRole,

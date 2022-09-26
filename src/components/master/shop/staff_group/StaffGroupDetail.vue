@@ -12,7 +12,9 @@
       </v-card-item>
       <v-card-item>
         <v-card-subtitle>作成者スタッフ</v-card-subtitle>
-        <v-card-text>{{ viewStaff(viewer.staff_id) }}</v-card-text>
+        <v-card-text>
+          {{ viewStaff(viewer.staff_id) }}
+        </v-card-text>
       </v-card-item>
       <v-card-item>
         <v-card-subtitle>参加スタッフ</v-card-subtitle>
@@ -57,7 +59,7 @@ export default {
       const staff = props.params.viewer.staffs.items.find((r) => {
         return r.staff_id === staff_id
       })
-      return staff.employee.items[0].last_name + staff.employee.items[0].first_name
+      return staff ? staff.employee.items[0].last_name + staff.employee.items[0].first_name : ""
     }
     
     // 編集モード切り替え
