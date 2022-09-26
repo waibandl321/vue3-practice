@@ -6,12 +6,6 @@
     <v-col cols="10">
       {{ items }}
       <div>
-        <v-progress-linear
-          v-if="loading"
-          indeterminate
-          color="green"
-          class="mt-4"
-        ></v-progress-linear>
         <v-table
           fixed-header
           height="300px"
@@ -82,7 +76,6 @@ export default {
     initList: Function,
   },
   setup (props) {
-    const loading = ref(false)
     const items = ref([])
     // 一覧取得
     const getAreaList = () => {
@@ -121,7 +114,6 @@ export default {
     }
 
     return {
-      loading,
       items,
       is_new,
       recordClick,

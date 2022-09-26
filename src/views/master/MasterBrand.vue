@@ -5,6 +5,7 @@
       v-if="mode === 'list'"
       :setEditor="setEditor"
       :setViewer="setViewer"
+      :initList="initList"
       :params="params"
     />
     <BrandDetail
@@ -16,6 +17,7 @@
     <BrandEdit
       v-if="mode === 'edit'"
       :changeMode="changeMode"
+      :initList="initList"
       :params="params"
     />
   </v-main>
@@ -26,6 +28,8 @@ import Header from '@/components/common/PcHeader.vue'
 import BrandList from '@/components/master/brand/BrandList.vue'
 import BrandDetail from '@/components/master/brand/BrandDetail.vue'
 import BrandEdit from '@/components/master/brand/BrandEdit.vue'
+
+import brandApiFunc from '@/mixins/api/master/brand.js'
 import { reactive, ref } from '@vue/reactivity'
 
 export default {
@@ -39,10 +43,20 @@ export default {
   setup () {
     const mode = ref('list')
     const params = reactive({
+      items: [],
       viewer: {},
       editor: {},
       is_new: false
     })
+    const initList = async () => {
+      try {
+        params.items = await brandApiFunc.apiGetBrand()
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    initList()
+
     const changeMode = (_mode, is_new = false) => {
       if(is_new) {
         params.is_new = true
@@ -53,10 +67,12 @@ export default {
       }
       mode.value = _mode
     }
+
     const setViewer = (item) => {
       params.viewer = item
       mode.value = 'view'
     }
+    
     const setEditor = (item, is_new = false) => {
       if(is_new) {
         params.is_new = true
@@ -67,6 +83,7 @@ export default {
           delete: 0
         }
       } else {
+        params.is_new = false
         params.editor = item
       }
       mode.value = 'edit'
@@ -76,7 +93,8 @@ export default {
       params,
       changeMode,
       setViewer,
-      setEditor
+      setEditor,
+      initList
     }
   },
 }

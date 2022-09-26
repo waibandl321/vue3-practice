@@ -47,8 +47,9 @@ export default {
   components: { PcFooter },
   mixins: [utilsMixin],
   props: {
+    params: Object,
     changeMode: Function,
-    params: Object
+    initList: Function,
   },
   setup (props) {
     // 時間選択
@@ -70,6 +71,7 @@ export default {
           await brandApiFunc.apiUpdateBrand(props.params.editor)
           alert('ブランドを更新しました')
         }
+        props.initList()
       } catch (error) {
         console.error(error);
       }

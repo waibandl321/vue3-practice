@@ -6,12 +6,6 @@
     <v-col cols="10">
       {{ items }}
       <div>
-        <v-progress-linear
-          v-if="loading"
-          indeterminate
-          color="green"
-          class="mt-4"
-        ></v-progress-linear>
         <v-table
           fixed-header
           height="300px"
@@ -48,8 +42,8 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-import brandApiFunc from '@/mixins/api/master/brand.js'
-import { ref } from 'vue'
+// import brandApiFunc from '@/mixins/api/master/brand.js'
+import { ref, watch } from 'vue'
 
 export default {
   name: 'brand-list',
@@ -58,20 +52,21 @@ export default {
     params: Object,
     setEditor: Function,
     setViewer: Function,
+    initList: Function,
   },
   setup (props) {
-    const loading = ref(false)
     const items = ref([])
     // 一覧取得
     const getBrands = async () => {
-      loading.value = true
-      try {
-        items.value = await brandApiFunc.apiGetBrand()
-      } catch (error) {
-        console.error(error);
-      }
-      loading.value = false
+      items.value = props.params.items
     }
+    watch(
+      () => props.params.items,
+      () => {
+        getBrands()
+      },
+      { deep: true }
+    )
     getBrands()
 
     // 詳細遷移
@@ -86,7 +81,6 @@ export default {
     }
 
     return {
-      loading,
       items,
       is_new,
       recordClick,
