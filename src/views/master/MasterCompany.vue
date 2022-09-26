@@ -5,6 +5,7 @@
       v-if="mode === 'list'"
       :changeMode="changeMode"
       :setViewer="setViewer"
+      :initList="initList"
       :params="params"
     />
     <CompanyDetail
@@ -16,6 +17,7 @@
     <CompanyEdit
       v-if="mode === 'edit'"
       :changeMode="changeMode"
+      :initList="initList"
       :params="params"
     />
   </v-main>
@@ -26,6 +28,8 @@ import Header from '@/components/common/PcHeader.vue'
 import CompanyList from '@/components/master/company/CompanyList.vue'
 import CompanyDetail from '@/components/master/company/CompanyDetail.vue'
 import CompanyEdit from '@/components/master/company/CompanyEdit.vue'
+
+import companyApiFunc from '@/mixins/api/master/company.js'
 import { reactive, ref } from '@vue/reactivity'
 
 export default {
@@ -39,9 +43,20 @@ export default {
   setup () {
     const mode = ref('list')
     const params = reactive({
+      items: [],
       viewer: {},
       editor: {}
     })
+
+    const initList = async () => {
+      try {
+        params.items = await companyApiFunc.apiGetCompany()
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    initList()
+
     const changeMode = (_mode) => {
       mode.value = _mode
     }
@@ -57,7 +72,8 @@ export default {
       params,
       changeMode,
       setViewer,
-      setEditor
+      setEditor,
+      initList
     }
   },
 }

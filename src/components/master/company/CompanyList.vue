@@ -37,8 +37,7 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-import companyApiFunc from '@/mixins/api/master/company.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 export default {
   name: 'company-list',
@@ -53,15 +52,16 @@ export default {
     const items = ref([])
 
     // 一覧取得
-    const getCompnay = async () => {
-      loading.value = true
-      try {
-        items.value = await companyApiFunc.apiGetCompany()
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false
+    const getCompnay = () => {
+      items.value = props.params.items
     }
+    watch(
+      () => props.params.items,
+      () => {
+        getCompnay()
+      },
+      { deep: true }
+    )
     getCompnay()
 
     // 詳細へ
