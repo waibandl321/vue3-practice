@@ -52,6 +52,7 @@ export default {
       try {
         params.items = await brandApiFunc.apiGetBrand()
       } catch (error) {
+        params.items = []
         console.error(error);
       }
     }

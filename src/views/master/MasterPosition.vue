@@ -59,6 +59,7 @@ export default {
       try {
         params.items = await positionApiFunc.apiGetPosition()
       } catch (error) {
+        params.items = []
         console.error(error);
       }
     }

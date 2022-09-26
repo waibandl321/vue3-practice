@@ -52,6 +52,7 @@ export default {
       try {
         params.items = await companyApiFunc.apiGetCompany()
       } catch (error) {
+        params.items = []
         console.error(error);
       }
     }

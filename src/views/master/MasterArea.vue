@@ -49,7 +49,13 @@ export default {
       is_new: false
     })
     const initList = async () => {
-      params.items = await areaApiFunc.apiGetArea()
+      try {
+        params.items = await areaApiFunc.apiGetArea()
+      } catch (error) {
+        params.items = []
+        console.error(error);
+      }
+      
     }
     initList()
 
