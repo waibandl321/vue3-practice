@@ -154,21 +154,29 @@
         </div>
       </footer>
   </v-container>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
+
 import utilsMixin from '@/mixins/utils/utils.js'
 import invitationApiFunc from '@/mixins/api/invitation.js'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+
 export default {
   name: 'employee-new',
-
+  components: {
+    OverlayLoading
+  },
   mixins: [utilsMixin],
   props: {
     changeMode: Function,
+    messageSet: Function,
     params: Object
   },
   setup (props) {
+    const loading = ref(false)
     let invitation = reactive({
       send_to: "",
       shop_cd: null,
@@ -178,13 +186,16 @@ export default {
     })
 
     const save = async () => {
+      loading.value = true
       try {
         const employee = await invitationApiFunc.apiCreateInvitationEmployee(this.params.editor)
         await invitationApiFunc.apiCreateInvitation(employee, invitation)
+        props.messageSet('従業員を新規作成しました。', 'success')
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
       invitation = {}
+      loading.value = false
       props.changeMode('list')
     } 
 

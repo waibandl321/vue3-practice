@@ -16,12 +16,15 @@
     <EmployeeEdit
       v-if="mode === 'edit'"
       :changeMode="changeMode"
+      :initData="initData"
+      :messageSet="messageSet"
       :params="params"
     />
     <EmployeeNew
       v-if="mode === 'new'"
       :changeMode="changeMode"
       :initData="initData"
+      :messageSet="messageSet"
       :params="params"
     />
   </v-main>
@@ -60,16 +63,26 @@ export default {
       shops: [],
       roles: [],
 
+      success: "",
+      error: "",
+
       is_new: false
     })
     const initData = async () => {
-      params.items = await employeeApiFunc.apiGetEmployeeList()
-      params.shops = await shopApiFunc.apiGetShops()
-      params.roles = roleFunc.getSystemRoleList()
+      try {
+        params.items = await employeeApiFunc.apiGetEmployeeList()
+        params.shops = await shopApiFunc.apiGetShops()
+        params.roles = roleFunc.getSystemRoleList()
+      } catch (error) {
+        params.error = "読み込みに失敗しました。"
+        console.error(error);
+      }
     }
     initData()
 
     const setViewer = (item) => {
+      params.success = ""
+      params.error = ""
       params.viewer = item
       mode.value = 'view'
     }
@@ -90,11 +103,17 @@ export default {
         params.is_new = false
         params.editor = _.cloneDeep(params.viewer)
       }
+      params.success = ""
+      params.error = ""
       mode.value = 'edit'
     }
 
     const changeMode = (_mode) => {
       mode.value = _mode
+    }
+
+    const messageSet = (message, type) => {
+      params[type] = message
     }
 
     return {
@@ -103,7 +122,8 @@ export default {
       changeMode,
       initData,
       setViewer,
-      setEditor
+      setEditor,
+      messageSet
     }
   },
 }

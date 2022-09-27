@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-mutating-props -->
 <template>
   <v-container>
     <v-card-title>従業員情報 編集</v-card-title>
@@ -114,37 +113,46 @@
         </div>
       </footer>
   </v-container>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import utilsMixin from '@/mixins/utils/utils.js'
 import employeeApiFunc from '@/mixins/api/master/employee.js'
-import { reactive } from '@vue/reactivity'
+import { reactive, ref } from '@vue/reactivity'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
 
 export default {
-  name: 'employee-edit',
+  name: "employee-edit",
+  components: { OverlayLoading },
   mixins: [utilsMixin],
   props: {
-    initList: Function,
+    initData: Function,
     changeMode: Function,
+    messageSet: Function,
     params: Object
   },
-  setup (props) {
-    const editor = reactive(props.params.editor)
-
+  setup(props) {
+    const loading = ref(false)
+    const editor = reactive(props.params.editor);
     const update = async () => {
+      loading.value = true
       try {
-        await employeeApiFunc.apiUpdateEmployee(editor)
-      } catch (error) {
+        await employeeApiFunc.apiUpdateEmployee(editor);
+        props.messageSet("従業員情報を更新しました", "success");
+      }
+      catch (error) {
         console.error(error);
       }
-      props.changeMode('list')
-    }
-
+      loading.value = false
+      props.initData();
+      props.changeMode("list");
+    };
     return {
+      loading,
       update,
       editor
-    }
+    };
   },
 }
 </script>

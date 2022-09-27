@@ -4,7 +4,10 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ items }}
+      <AppAlert
+        :success="params.success"
+        :error="params.error"
+      />
       <div>
         <v-table
           fixed-header
@@ -47,10 +50,11 @@
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 import { ref, watch } from 'vue'
+import AppAlert from '@/components/common/AppAlert.vue'
 
 export default {
   name: 'employee-list',
-  components: { MasterLeftMenu },
+  components: { MasterLeftMenu, AppAlert },
   props: {
     params: Object,
     setViewer: Function,

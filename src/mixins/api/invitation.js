@@ -12,13 +12,6 @@ async function apiCreateInvitationEmployee (employee) {
   return await API.graphql({
     query: createEmployee,
     variables: { input: _employee }
-  }).then((res) => {
-    alert('招待従業員を作成しました。')
-    return res.data.createEmployee
-  }).catch((error) => {
-    alert('招待従業員の作成に失敗しました。')
-    console.log(error)
-    return null
   })
 }
 // 招待社員データ生成
@@ -47,13 +40,6 @@ async function apiCreateInvitation (employee, invitation) {
   return await API.graphql({
     query: createInvitation,
     variables: { input: _invitation }
-  }).then((res) => {
-    alert('招待データを作成しました。')
-    return res.data.createInvitation
-  }).catch((error) => {
-    alert('招待データの作成に失敗しました。')
-    console.log(error)
-    return null
   })
 }
 // 招待データ生成

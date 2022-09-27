@@ -32,11 +32,6 @@ async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done =
   await API.graphql({
     query: updateEmployee,
     variables: { input: item }
-  }).then(() => {
-    alert(`従業員「${_employee.employee_number}」を更新しました。`)
-  }).catch((error) => {
-    console.log(error)
-    alert(`従業員「${_employee.employee_number}」の更新に失敗しました。エラーメッセージ:${error}`)
   })
 }
 
