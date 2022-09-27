@@ -5,8 +5,8 @@ import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
 // 従業員作成
-async function apiEmployeeCreate (employee) {
-  const _employee = generateEmployeeObject(employee)
+async function apiEmployeeCreate (employee, inv = false) {
+  const _employee = generateEmployeeObject(employee, inv)
   return await API.graphql({
     query: createEmployee,
     variables: { input: _employee }
@@ -19,15 +19,15 @@ async function apiEmployeeCreate (employee) {
 }
 
 // 従業員情報更新
-async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done = false) {
+async function apiUpdateEmployee (_employee) {
   const item = generateEmployeeObject(_employee)
   item.id = _employee.id
-  if(_staff_id) {
-    item.staff_id = _staff_id
-  }
-  if(invitation_done) {
-    item.status = 0
-  }
+  // if(_staff_id) {
+  //   item.staff_id = _staff_id
+  // }
+  // if(invitation_status) {
+  //   item.status = 0
+  // }
 
   await API.graphql({
     query: updateEmployee,
@@ -35,10 +35,10 @@ async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done =
   })
 }
 
-function generateEmployeeObject (employee) {
+function generateEmployeeObject (employee, inv = false) {
   return {
     company_employee_id: employee.company_employee_id ?? uuid.v4(),
-    staff_id: store.getters.staff.staff_id,
+    staff_id: inv ? uuid.v4() : store.getters.staff.staff_id,
     company_cd: store.getters.companyCd,
     last_name: employee.last_name,
     first_name: employee.first_name,
@@ -50,7 +50,7 @@ function generateEmployeeObject (employee) {
     permanent: employee.permanent ? employee.permanent : 0,
     official_position: employee.official_position !== "" ? employee.official_position : "",
     delete: 0,
-    status: 0
+    status: inv ? 1 : 0
   }
 }
 

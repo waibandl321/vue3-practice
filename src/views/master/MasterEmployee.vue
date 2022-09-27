@@ -23,7 +23,6 @@
     <EmployeeNew
       v-if="mode === 'new'"
       :changeMode="changeMode"
-      :initData="initData"
       :messageSet="messageSet"
       :params="params"
     />
@@ -87,9 +86,11 @@ export default {
       mode.value = 'view'
     }
     const setEditor = (is_new = false) => {
+      params.success = ""
+      params.error = ""
       if(is_new) {
         params.is_new = true
-        params.editor = {
+        params.editor = _.cloneDeep({
           employee_number: "",
           last_name: "",
           first_name: "",
@@ -98,14 +99,13 @@ export default {
           gender: null,
           permanent: 0,
           official_position: ""
-        }
+        })
+        mode.value = 'new'
       } else {
         params.is_new = false
         params.editor = _.cloneDeep(params.viewer)
+        mode.value = 'edit'
       }
-      params.success = ""
-      params.error = ""
-      mode.value = 'edit'
     }
 
     const changeMode = (_mode) => {

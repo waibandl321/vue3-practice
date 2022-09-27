@@ -6,6 +6,9 @@ export default {
   storeSetAccount (account) {
     store.commit('mSetAccount', account)
   },
+  storeGetAccount () {
+    return store.getters.account
+  },
   storeSetSetupInfo (company, brand) {
     store.commit('mSetCompany', company)
     store.commit('mSetBrandCd', brand)
@@ -46,6 +49,9 @@ export default {
   // 招待
   storeSetInvitationCode (invitation_cd) {
     store.commit('mSetInvitationCode', invitation_cd)
+  },
+  storeGetInvitationCode () {
+    return store.getters.invitationCd
   },
   storeSetInvitationSendTo (send_to) {
     store.commit('mSetInvitationSendTo', send_to)

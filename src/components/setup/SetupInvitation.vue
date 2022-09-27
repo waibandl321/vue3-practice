@@ -1,49 +1,54 @@
 <template>
-  <v-container>
+  <v-container class="im-container">
     <v-card>
+      <AppAlert
+        :success="message.success"
+        :error="message.error"
+      />
       <v-card-title>ようこそポータルへ</v-card-title>
       <v-card-text>参加する企業情報とプロフィールを確認して登録を完了させましょう。</v-card-text>
       <v-card-item>
         <v-card-subtitle>プロフィール情報</v-card-subtitle>
-        <v-table>
+        <v-table v-if="!loading">
           <tbody>
             <tr>
               <td>名前</td>
-              <td>{{ employee.last_name }}{{ employee.first_name }}</td>
+              <td>{{ setup_data.employee.last_name }}{{ setup_data.employee.first_name }}</td>
             </tr>
             <tr>
               <td>名前（フリガナ）</td>
-              <td>{{ employee.last_name_kana }}{{ employee.first_name_kana }}</td>
+              <td>{{ setup_data.employee.last_name_kana }}{{ setup_data.employee.first_name_kana }}</td>
             </tr>
             <tr>
               <td>性別</td>
-              <td>{{ employee.gender }}</td>
+              <td>{{ setup_data.employee.gender }}</td>
             </tr>
             <tr>
               <td>社員番号</td>
-              <td>{{ employee.employee_number }}</td>
+              <td>{{ setup_data.employee.employee_number }}</td>
             </tr>
           </tbody>
         </v-table>
       </v-card-item>
-      <v-card-item>
+      <v-card-item v-if="!loading">
         <v-card-subtitle>企業情報</v-card-subtitle>
+        {{ setup_data.company }}
         <v-table>
           <tbody>
             <tr>
               <td>事業タイプ</td>
-              <td>{{ company.company_type === 0 ? '法人' : '個人事業主' }}</td>
+              <td>{{ setup_data.company.company_type === 0 ? '法人' : '個人事業主' }}</td>
             </tr>
             <tr>
               <td>企業名</td>
               <td>
-                {{ company.company_name }}
+                {{ setup_data.company.company_name }}
               </td>
             </tr>
             <tr>
               <td>企業名（フリガナ）</td>
               <td>
-                {{ company.company_name_kana }}
+                {{ setup_data.company.company_name_kana }}
               </td>
             </tr>
           </tbody>
@@ -54,19 +59,23 @@
   </v-container>
   <OverlayLoading v-if="loading" />
 </template>
+
 <script>
 import SetupFooter from './SetupFooter.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+import OverlayLoading from '../common/OverlayLoading.vue'
+
 import utilsMixin from '@/mixins/utils/utils.js'
 import companyApiFunc from '@/mixins/api/master/company.js'
 import employeeApiFunc from '@/mixins/api/master/employee.js'
 import accountApiFunc from '@/mixins/api/account.js'
 import invitationApiFunc from '@/mixins/api/invitation.js'
 
-import store from '@/store/index.js'
+// import store from '@/store/index.js'
 import storeAuth from '@/mixins/store/auth'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import OverlayLoading from '../common/OverlayLoading.vue'
+
 
 
 export default {
@@ -74,20 +83,44 @@ export default {
   mixins: [utilsMixin],
   components: {
     SetupFooter,
-    OverlayLoading
+    OverlayLoading,
+    AppAlert
+  },
+  props: {
+    params: Object,
+    save: Function
   },
   setup () {
     const router = useRouter()
-    
     const loading = ref(false)
 
-    // 確認用データ
-    let company = reactive({})
-    let employee = reactive({})
+    const message = reactive({
+      success: "",
+      error: ""
+    })
+
+    // データ定義
+    const setup_data = reactive({
+      company: {},
+      employee: {},
+      invitation: {}
+    })
+    const account = storeAuth.storeGetAccount()
+
     const init = async () => {
-      company =  await companyApiFunc.apiGetCompanyFromInvitation(store.getters.invitationCd)
-      const invitation = await invitationApiFunc.apiGetInvitation()
-      employee = await employeeApiFunc.apiGetEmployeeDetail(invitation.employee_id)
+      loading.value = true
+      try {
+        // 企業
+        setup_data.company = await companyApiFunc.apiGetCompanyFromInvitation(storeAuth.storeGetInvitationCode())
+        // 招待情報
+        setup_data.invitation = await invitationApiFunc.apiGetInvitation()
+        // 従業員
+        setup_data.employee = await employeeApiFunc.apiGetEmployeeDetail(setup_data.invitation.employee_id)
+      } catch (error) {
+        console.error(error);
+        message.error = error
+      }
+      loading.value = false
     }
     init()
     
@@ -95,18 +128,35 @@ export default {
     const saveSetup = async () => {
       loading.value = true
       try {
-        const invitation = await invitationApiFunc.apiGetInvitation()
-        const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-        const associate = await accountApiFunc.apiAssociateCreate(account, company)
-        const staff = await accountApiFunc.apiStaffCreate(associate, company)
-        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation.role_cd)
+        // アソシエイト作成
+        const associate = await accountApiFunc.apiAssociateCreate(
+          account,
+          setup_data.company
+        )
+        // スタッフ登録(従業員招待でstaff_idが生成されているので割り当てる)
+        const invitation_staff_id = setup_data.employee.staff_id
+        const staff = await accountApiFunc.apiStaffCreate(
+          associate,
+          setup_data.company,
+          setup_data.invitation,
+          invitation_staff_id
+        )
+        // store保存
+        storeAuth.storeSetAssociateStaff(associate, staff)
+        // スタッフロール登録
+        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(
+          staff,
+          setup_data.invitation.role_cd
+        )
+        // employeeステータス有効化
+        await employeeApiFunc.apiUpdateEmployee(setup_data.employee)
+        // store保存
         storeAuth.storeSetAssociateStaff(associate, staff)
         storeAuth.storeSetStaffRole(staff_role)
-        // employee更新
-        await employeeApiFunc.apiUpdateEmployee(employee, staff.staff_id, true)
         router.push('/')
       } catch (error) {
-        console.log(error);
+        message.error = error
+        console.error(error);
       }
       loading.value = false
     }
@@ -120,12 +170,17 @@ export default {
       }
     ]
     return {
-        company,
-        employee,
+        setup_data,
         saveSetup,
         footer_options,
-        loading
+        loading,
+        message
       }
   },
 }
 </script>
+<style scoped>
+.im-container >>> .v-table > .v-table__wrapper > table {
+  table-layout: fixed;
+}
+</style>

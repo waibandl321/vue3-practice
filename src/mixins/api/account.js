@@ -42,13 +42,13 @@ async function apiAssociateCreate (_account, company, invite_key = null) {
     return null
   })
 }
-async function apiStaffCreate (associate, company, invite_key = null) {
+async function apiStaffCreate (associate, company, invitation = null, invitation_staff_id = null) {
   const _staff = {
-    staff_id: uuid.v4(),
+    staff_id: invitation_staff_id ?? uuid.v4(),
     associate_id: associate.associate_id,
     company_cd: company.company_cd,
     company_group_cd: company.id,
-    invite_key: invite_key,
+    invite_key: invitation.invitation_id,
     status: 0,
     delete: 0
   }

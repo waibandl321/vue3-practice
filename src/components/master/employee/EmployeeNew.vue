@@ -1,9 +1,16 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
   <v-container class="im-container">
-    <v-card-title>従業員情報 編集</v-card-title>
+    <v-card-title>従業員登録</v-card-title>
     {{ params.editor }}
+    <div>
+    招待データ
     {{ invitation }}
+    </div>
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-item>
         <v-card-subtitle>社員番号</v-card-subtitle>
         <v-text-field
@@ -147,7 +154,7 @@
         </div>
         <div class="next">
           <v-btn
-            @click="save()"
+            @click="create()"
             color="primary"
           >新規登録
           </v-btn>
@@ -159,15 +166,18 @@
 
 <script>
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
 
 import utilsMixin from '@/mixins/utils/utils.js'
 import invitationApiFunc from '@/mixins/api/invitation.js'
+import employeeApiFunc from '@/mixins/api/master/employee'
 import { reactive, ref } from 'vue'
 
 export default {
   name: 'employee-new',
   components: {
-    OverlayLoading
+    OverlayLoading,
+    AppAlert
   },
   mixins: [utilsMixin],
   props: {
@@ -185,23 +195,30 @@ export default {
       approval: 1
     })
 
-    const save = async () => {
+    const create = async () => {
       loading.value = true
       try {
-        const employee = await invitationApiFunc.apiCreateInvitationEmployee(this.params.editor)
+        // 従業員作成
+        const is_inv = true
+        const employee = await employeeApiFunc.apiEmployeeCreate(props.params.editor, is_inv)
+        console.log('employee', employee);
+        // 招待データ作成
         await invitationApiFunc.apiCreateInvitation(employee, invitation)
         props.messageSet('従業員を新規作成しました。', 'success')
+        props.changeMode('list')
       } catch (error) {
+        props.messageSet(error, 'error')
         console.error(error);
       }
       invitation = {}
       loading.value = false
-      props.changeMode('list')
+      
     } 
 
     return {
+      loading,
       invitation,
-      save
+      create
     }
   },
 }

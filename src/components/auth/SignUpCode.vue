@@ -52,7 +52,6 @@ export default {
     async verify () {
       this.loading = true
       try {
-        // eslint-disable-next-line no-undef
         await Auth.confirmSignUp(this.params.email, this.params.code)
         this.initData()
       } catch (error) {
