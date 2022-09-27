@@ -31,6 +31,7 @@ import PositionEdit from '@/components/master/position/PositionEdit.vue'
 
 import positionApiFunc from '@/mixins/api/master/position.js'
 import { reactive, ref } from '@vue/reactivity'
+import _ from 'lodash'
 
 export default {
   name: 'master-position',
@@ -78,7 +79,7 @@ export default {
           delete: 0
         }
       } else {
-        params.editor = item
+        params.editor = _.cloneDeep(item)
       }
       mode.value = 'edit'
     }

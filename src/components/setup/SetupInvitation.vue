@@ -64,9 +64,10 @@ import invitationApiFunc from '@/mixins/api/invitation.js'
 
 import store from '@/store/index.js'
 import storeAuth from '@/mixins/store/auth'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import OverlayLoading from '../common/OverlayLoading.vue'
+
 
 export default {
   name: 'setup-invite',
@@ -76,20 +77,19 @@ export default {
     OverlayLoading
   },
   setup () {
-    const loading = ref(false)
     const router = useRouter()
+    
+    const loading = ref(false)
+
     // 確認用データ
-    const company = ref({})
-    const employee = ref({})
-    const getCompany = async () => {
-      company.value =  await companyApiFunc.apiGetCompanyFromInvitation(store.getters.invitationCd)
-    }
-    const getEmployee = async () => {
+    let company = reactive({})
+    let employee = reactive({})
+    const init = async () => {
+      company =  await companyApiFunc.apiGetCompanyFromInvitation(store.getters.invitationCd)
       const invitation = await invitationApiFunc.apiGetInvitation()
-      employee.value = await employeeApiFunc.apiGetEmployeeDetail(invitation.employee_id)
+      employee = await employeeApiFunc.apiGetEmployeeDetail(invitation.employee_id)
     }
-    getCompany()
-    getEmployee()
+    init()
     
     // 保存処理
     const saveSetup = async () => {
@@ -97,13 +97,13 @@ export default {
       try {
         const invitation = await invitationApiFunc.apiGetInvitation()
         const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-        const associate = await accountApiFunc.apiAssociateCreate(account, company.value)
-        const staff = await accountApiFunc.apiStaffCreate(associate, company.value)
+        const associate = await accountApiFunc.apiAssociateCreate(account, company)
+        const staff = await accountApiFunc.apiStaffCreate(associate, company)
         const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation.role_cd)
         storeAuth.storeSetAssociateStaff(associate, staff)
         storeAuth.storeSetStaffRole(staff_role)
         // employee更新
-        await employeeApiFunc.apiUpdateEmployee(employee.value, staff.staff_id, true)
+        await employeeApiFunc.apiUpdateEmployee(employee, staff.staff_id, true)
         router.push('/')
       } catch (error) {
         console.log(error);

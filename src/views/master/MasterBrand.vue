@@ -31,6 +31,7 @@ import BrandEdit from '@/components/master/brand/BrandEdit.vue'
 
 import brandApiFunc from '@/mixins/api/master/brand.js'
 import { reactive, ref } from '@vue/reactivity'
+import _ from 'lodash'
 
 export default {
   name: 'master-brand',
@@ -70,7 +71,7 @@ export default {
     }
 
     const setViewer = (item) => {
-      params.viewer = item
+      params.viewer = _.cloneDeep(item)
       mode.value = 'view'
     }
     

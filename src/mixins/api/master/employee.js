@@ -4,6 +4,7 @@ import { listEmployees, getEmployee } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
+// 従業員作成
 async function apiEmployeeCreate (employee) {
   const _employee = generateEmployeeObject(employee)
   return await API.graphql({
@@ -17,6 +18,7 @@ async function apiEmployeeCreate (employee) {
   })
 }
 
+// 従業員情報更新
 async function apiUpdateEmployee (_employee, _staff_id = null, invitation_done = false) {
   const item = generateEmployeeObject(_employee)
   item.id = _employee.id
@@ -57,6 +59,7 @@ function generateEmployeeObject (employee) {
   }
 }
 
+// 従業員一覧取得
 async function apiGetEmployeeList () {
   const filter = {
     company_cd: {
@@ -70,6 +73,7 @@ async function apiGetEmployeeList () {
   return results.data.listEmployees.items
 }
 
+// 従業員詳細取得
 async function apiGetEmployeeRelateStaffId (staff_id) {
   const filter = {
     staff_id: {

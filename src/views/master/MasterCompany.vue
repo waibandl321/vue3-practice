@@ -31,6 +31,7 @@ import CompanyEdit from '@/components/master/company/CompanyEdit.vue'
 
 import companyApiFunc from '@/mixins/api/master/company.js'
 import { reactive, ref } from '@vue/reactivity'
+import _ from 'lodash'
 
 export default {
   name: 'master-company',
@@ -65,7 +66,7 @@ export default {
       params.viewer = item
     }
     const setEditor = (item) => {
-      params.editor = item
+      params.editor = _.cloneDeep(item)
       mode.value = 'edit'
     }
     return {

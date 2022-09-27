@@ -46,48 +46,48 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-import employeeApiFunc from '@/mixins/api/master/employee.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 export default {
   name: 'employee-list',
   components: { MasterLeftMenu },
   props: {
     params: Object,
-    changeMode: Function
+    setViewer: Function,
+    setEditor: Function,
   },
-  setup () {
+  setup (props) {
+    // データ読み込み
     const items = ref([])
-    const getCompnay = async () => {
-      items.value = await employeeApiFunc.apiGetEmployeeList()
+    const init = async () => {
+      items.value = props.params.items
     }
-    getCompnay()
+    watch(
+      () => props.params.items,
+      () => {
+        init()
+      },
+      { deep: true }
+    )
+    init()
+
+    // 詳細遷移
+    const recordClick = (item) => {
+      props.setViewer(item)
+    }
+
+    // 新規作成
+    const clickNew = () => {
+      const is_new = true
+      props.setEditor(is_new)
+    }
 
     return {
-      items
+      items,
+      recordClick,
+      clickNew
     }
   },
-  methods: {
-    recordClick (item) {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.viewer = item
-      this.changeMode('view')
-    },
-    clickNew () {
-      // eslint-disable-next-line vue/no-mutating-props
-      this.params.editor = {
-        employee_number: "",
-        last_name: "",
-        first_name: "",
-        last_name_kana: "",
-        first_name_kana: "",
-        gender: null,
-        permanent: 0,
-        official_position: ""
-      }
-      this.changeMode('new')
-    }
-  }
 }
 </script>
 <style scoped>

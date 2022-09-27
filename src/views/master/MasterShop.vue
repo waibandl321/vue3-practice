@@ -41,11 +41,6 @@
 </template>
 
 <script>
-import areaApiFunc from '@/mixins/api/master/area.js'
-import brandApiFunc from '@/mixins/api/master/brand.js'
-import roleFunc from '@/mixins/api/master/role.js'
-import storeAuth from '@/mixins/store/auth.js'
-
 import Header from '@/components/common/PcHeader.vue'
 import ShopList from '@/components/master/shop/ShopList.vue'
 import ShopEdit from '@/components/master/shop/ShopEdit.vue'
@@ -54,8 +49,14 @@ import ShopInvite from '@/components/master/shop/invite/ShopInvite.vue'
 import ShopInviteProcedure from '@/components/master/shop/invite/ShopInviteProcedure.vue'
 import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
 import StaffGroupIndex from '@/components/master/shop/staff_group/StaffGroup.vue'
-import { reactive, ref } from '@vue/reactivity'
 
+import areaApiFunc from '@/mixins/api/master/area.js'
+import brandApiFunc from '@/mixins/api/master/brand.js'
+import roleFunc from '@/mixins/api/master/role.js'
+import storeAuth from '@/mixins/store/auth.js'
+
+import { reactive, ref } from '@vue/reactivity'
+import _ from 'lodash'
 
 export default {
   name: 'master-shop',
@@ -120,7 +121,7 @@ export default {
           delete: 0
         }
       } else {
-        params.editor = item
+        params.editor = _.cloneDeep(item)
       }
       mode.value = "edit"
     }

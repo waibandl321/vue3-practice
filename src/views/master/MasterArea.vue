@@ -31,6 +31,7 @@ import AreaEdit from '@/components/master/area/AreaEdit.vue'
 
 import areaApiFunc from '@/mixins/api/master/area.js'
 import { reactive, ref } from '@vue/reactivity'
+import _ from 'lodash'
 
 export default {
   name: 'master-brand',
@@ -81,7 +82,7 @@ export default {
           delete: 0
         }
       } else {
-        params.editor = item
+        params.editor = _.cloneDeep(item)
       }
       mode.value = 'edit'
     }

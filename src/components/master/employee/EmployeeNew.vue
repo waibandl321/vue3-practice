@@ -117,7 +117,7 @@
         </v-card-subtitle>
         <v-select
           v-model="invitation.shop_cd"
-          :items="shops"
+          :items="params.shops"
           item-title="shop_name"
           item-value="shop_cd"
           hide-details="auto"
@@ -131,45 +131,45 @@
         </v-card-subtitle>
         <v-select
           v-model="invitation.role_cd"
-          :items="roles"
+          :items="params.roles"
           item-title="role_name"
           item-value="role_cd"
           hide-details="auto"
           clearable
         ></v-select>
       </v-card-item>
-    <PcFooter :options="footer_options" />
+      <footer class="fixed-footer">
+        <div class="back">
+          <v-btn
+            @click="changeMode('list')"
+          >一覧へ戻る
+          </v-btn>
+        </div>
+        <div class="next">
+          <v-btn
+            @click="save()"
+            color="primary"
+          >新規登録
+          </v-btn>
+        </div>
+      </footer>
   </v-container>
 </template>
 
 <script>
 import utilsMixin from '@/mixins/utils/utils.js'
-import PcFooter from '@/components/common/PcFooter.vue'
 import invitationApiFunc from '@/mixins/api/invitation.js'
-import shopApiFunc from '@/mixins/api/master/shop.js'
-import roleFunc from '@/mixins/api/master/role.js'
-import { ref } from 'vue'
+import { reactive } from 'vue'
 export default {
   name: 'employee-new',
-  components: { PcFooter },
+
   mixins: [utilsMixin],
   props: {
     changeMode: Function,
     params: Object
   },
-  setup () {
-    const shops = ref([])
-    const roles = ref([])
-    const getShops = async () => {
-      shops.value = await shopApiFunc.apiGetShops()
-    }
-    const getRoles = () => {
-      roles.value = roleFunc.getSystemRoleList()
-    }
-    getShops()
-    getRoles()
-
-    const invitation = ref({
+  setup (props) {
+    let invitation = reactive({
       send_to: "",
       shop_cd: null,
       role_cd: null,
@@ -177,37 +177,22 @@ export default {
       approval: 1
     })
 
-    return {
-      shops,
-      roles,
-      invitation,
-    }
-  },
-  data () {
-    return {
-      footer_options: {
-        back: [
-          { text: '一覧へ戻る', callback: this.changeMode }
-        ],
-        next: [
-          { text: '保存', callback: this.save }
-        ]
-      }
-    }
-  },
-  methods: {
-    async save () {
+    const save = async () => {
       try {
         const employee = await invitationApiFunc.apiCreateInvitationEmployee(this.params.editor)
-        await invitationApiFunc.apiCreateInvitation(employee, this.invitation)
+        await invitationApiFunc.apiCreateInvitation(employee, invitation)
       } catch (error) {
         console.log(error);
-        alert(error)
       }
-      this.invitation = {}
-      this.changeMode('list')
+      invitation = {}
+      props.changeMode('list')
+    } 
+
+    return {
+      invitation,
+      save
     }
-  }
+  },
 }
 </script>
 <style scoped>
