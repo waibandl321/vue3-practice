@@ -18,6 +18,7 @@
       v-if="mode === 'edit'"
       :changeMode="changeMode"
       :initList="initList"
+      :messageSet="messageSet"
       :params="params"
     />
   </v-main>
@@ -47,13 +48,17 @@ export default {
       items: [],
       viewer: {},
       editor: {},
-      is_new: false
+      is_new: false,
+
+      success: "",
+      error: "",
     })
     const initList = async () => {
       try {
         params.items = await brandApiFunc.apiGetBrand()
       } catch (error) {
         params.items = []
+        params.error = '読み込みに失敗しました'
         console.error(error);
       }
     }
@@ -90,13 +95,19 @@ export default {
       }
       mode.value = 'edit'
     }
+
+    const messageSet = (message, type) => {
+      params[type] = message
+    }
+
     return {
       mode,
       params,
       changeMode,
       setViewer,
       setEditor,
-      initList
+      initList,
+      messageSet
     }
   },
 }

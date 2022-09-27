@@ -4,7 +4,10 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ params.items }}
+      <AppAlert
+        :success="params.success"
+        :error="params.error"
+      />
       <div>
         <v-table
           fixed-header
@@ -62,11 +65,13 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+
 import positionApiFunc from '@/mixins/api/master/position.js'
 import { ref, watch } from 'vue'
 export default {
   name: 'position-list',
-  components: { MasterLeftMenu },
+  components: { MasterLeftMenu, AppAlert },
   props: {
     params: Object,
     setEditor: Function,

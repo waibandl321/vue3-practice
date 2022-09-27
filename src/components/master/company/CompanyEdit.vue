@@ -3,6 +3,10 @@
   <v-container>
     <v-card-title>企業登録</v-card-title>
     {{ params.editor }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-item>
       <v-card-subtitle>
         企業名
@@ -77,31 +81,42 @@
     </v-card-item>
     <PcFooter :options="footer_options" />
   </v-container>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
-import utilsMixin from '@/mixins/utils/utils.js'
 import PcFooter from '@/components/common/PcFooter.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
+
+import utilsMixin from '@/mixins/utils/utils.js'
 import companyApiFunc from '@/mixins/api/master/company.js'
+import { ref } from '@vue/reactivity'
 
 export default {
   name: 'company-edit',
-  components: { PcFooter },
+  components: { PcFooter, OverlayLoading, AppAlert },
   mixins: [utilsMixin],
   props: {
     changeMode: Function,
+    messageSet: Function,
+    initList: Function,
     params: Object
   },
   setup(props) {
+    const loading = ref(false)
     // 保存
     const save = async () => {
+      loading.value = true
       try {
         await companyApiFunc.apiUpdateCompany(props.params.editor)
-        alert('企業情報を更新しました')
+        props.messageSet('企業情報を更新しました', 'success')
         props.changeMode('list')
       } catch (error) {
+        props.messageSet('更新に失敗しました', 'error')
         console.error(error);
       }
+      loading.value = false
     }
     // フッターオプション
     const footer_options = {
@@ -114,6 +129,7 @@ export default {
     }
 
     return {
+      loading,
       save,
       footer_options
     }

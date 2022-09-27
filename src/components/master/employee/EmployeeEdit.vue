@@ -2,6 +2,10 @@
   <v-container>
     <v-card-title>従業員情報 編集</v-card-title>
     {{ params.editor }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-item>
         <v-card-subtitle>社員番号</v-card-subtitle>
         <v-text-field
@@ -120,11 +124,13 @@
 import utilsMixin from '@/mixins/utils/utils.js'
 import employeeApiFunc from '@/mixins/api/master/employee.js'
 import { reactive, ref } from '@vue/reactivity'
+
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
 
 export default {
   name: "employee-edit",
-  components: { OverlayLoading },
+  components: { OverlayLoading, AppAlert },
   mixins: [utilsMixin],
   props: {
     initData: Function,
@@ -142,6 +148,7 @@ export default {
         props.messageSet("従業員情報を更新しました", "success");
       }
       catch (error) {
+        props.messageSet('更新に失敗しました', 'error')
         console.error(error);
       }
       loading.value = false

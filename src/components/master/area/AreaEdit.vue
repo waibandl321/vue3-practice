@@ -3,6 +3,10 @@
   <v-container>
     <v-card-title>エリア登録</v-card-title>
     {{ params.editor }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-item>
         <v-card-subtitle>
           エリアコード
@@ -25,37 +29,46 @@
       </v-card-item>
     <PcFooter :options="footer_options" />
   </v-container>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import areaApiFunc from '@/mixins/api/master/area.js'
+import { ref } from '@vue/reactivity'
 
 export default {
   name: 'area-edit',
-  components: { PcFooter },
+  components: { PcFooter, OverlayLoading, AppAlert },
   props: {
     changeMode: Function,
     initList: Function,
+    messageSet: Function,
     params: Object
   },
   setup (props) {
+    const loading = ref(false)
     // データ保存
     async function save () {
+      loading.value = true
       try {
         if(props.params.is_new) {
           await areaApiFunc.apiCreateArea(props.params.editor)
-          alert('エリアを登録しました')
+          props.messageSet('エリアを登録しました', 'success')
         } else {
           await areaApiFunc.apiUpdateArea(props.params.editor)
-          alert('エリアを更新しました')
+          props.messageSet('エリアを更新しました', 'success')
         }
         props.initList()
       } catch (error) {
+        props.messageSet('更新に失敗しました', 'error')
         console.error(error);
       }
       // eslint-disable-next-line vue/no-mutating-props
       props.params.is_new = false
+      loading.value = false
       props.changeMode('list')
     }
     // フッターオプション
@@ -68,6 +81,7 @@ export default {
       ]
     }
     return {
+      loading,
       footer_options
     }
   },

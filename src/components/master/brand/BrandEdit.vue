@@ -3,6 +3,10 @@
   <v-container>
     <v-card-title>ブランド登録</v-card-title>
     {{ params.editor }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-item>
         <v-card-subtitle>
           ブランドコード
@@ -34,24 +38,30 @@
       </v-card-item>
     <PcFooter :options="footer_options" />
   </v-container>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
-import utilsMixin from '@/mixins/utils/utils.js'
 import PcFooter from '@/components/common/PcFooter.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
+
+import utilsMixin from '@/mixins/utils/utils.js'
 import brandApiFunc from '@/mixins/api/master/brand.js'
-import { computed } from '@vue/runtime-core'
+import { computed, ref } from '@vue/runtime-core'
 
 export default {
   name: 'brand-edit',
-  components: { PcFooter },
+  components: { PcFooter, OverlayLoading, AppAlert },
   mixins: [utilsMixin],
   props: {
     params: Object,
     changeMode: Function,
     initList: Function,
+    messageSet: Function,
   },
   setup (props) {
+    const loading = ref(false)
     // 時間選択
     const time_select = computed(() => {
       const items = []
@@ -63,20 +73,23 @@ export default {
 
     // データ保存処理
     async function save () {
+      loading.value = true
       try {
         if(props.params.is_new) {
           await brandApiFunc.apiBrandCreate(props.params.editor)
-          alert('ブランドを登録しました')
+          props.messageSet('ブランドを登録しました', 'success')
         } else {
           await brandApiFunc.apiUpdateBrand(props.params.editor)
-          alert('ブランドを更新しました')
+          props.messageSet('ブランドを更新しました', 'success')
         }
         props.initList()
       } catch (error) {
         console.error(error);
+        props.messageSet('更新に失敗しました', 'error')
       }
       // eslint-disable-next-line vue/no-mutating-props
       props.params.is_new = false
+      loading.value = false
       props.changeMode('list')
     }
     // フッターオプション
@@ -89,6 +102,7 @@ export default {
       ]
     }
     return {
+      loading,
       time_select,
       footer_options
     }

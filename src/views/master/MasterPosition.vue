@@ -18,6 +18,7 @@
       v-if="mode === 'edit'"
       :changeMode="changeMode"
       :initList="initList"
+      :messageSet="messageSet"
       :params="params"
     />
   </v-main>
@@ -47,7 +48,10 @@ export default {
       items: [],
       viewer: {},
       editor: {},
-      is_new: false
+      is_new: false,
+
+      success: "",
+      error: "",
     })
     const changeMode = (_mode, is_new = false) => {
       if(is_new) {
@@ -61,6 +65,7 @@ export default {
         params.items = await positionApiFunc.apiGetPosition()
       } catch (error) {
         params.items = []
+        params.error = '読み込みに失敗しました'
         console.error(error);
       }
     }
@@ -70,6 +75,7 @@ export default {
       params.viewer = item
       mode.value = 'view'
     }
+
     const setEditor = (item, is_new = false) => {
       if(is_new) {
         params.is_new = true
@@ -83,13 +89,19 @@ export default {
       }
       mode.value = 'edit'
     }
+
+    const messageSet = (message, type) => {
+      params[type] = message
+    }
+
     return {
       mode,
       params,
       changeMode,
       setViewer,
       setEditor,
-      initList
+      initList,
+      messageSet
     }
   },
 }

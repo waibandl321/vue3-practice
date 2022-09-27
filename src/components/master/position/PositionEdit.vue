@@ -3,6 +3,10 @@
   <v-container>
     <v-card-title>ポジション登録</v-card-title>
     {{ params.editor }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-item>
         <v-card-subtitle>
           ポジション名
@@ -15,37 +19,47 @@
       </v-card-item>
     <PcFooter :options="footer_options" />
   </v-container>
+  <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+import OverlayLoading from '@/components/common/OverlayLoading.vue'
+
 import positionApiFunc from '@/mixins/api/master/position.js'
+import { ref } from '@vue/reactivity'
 
 export default {
   name: 'position-edit',
-  components: { PcFooter },
+  components: { PcFooter, AppAlert, OverlayLoading },
   props: {
     changeMode: Function,
     initList: Function,
+    messageSet: Function,
     params: Object
   },
   setup (props) {
+    const loading = ref(false)
     async function save () {
+      loading.value = true
       try {
         if(props.params.is_new) {
           await positionApiFunc.apiCreatePosition(props.params.editor)
-          alert('ポジションを登録しました')
+          props.messageSet('ポジションを登録しました', 'success')
         } else {
           await positionApiFunc.apiUpdatePosition(props.params.editor)
-          alert('ポジションを更新しました')
+          props.messageSet('ポジションを更新しました', 'success')
         }
+        props.changeMode('list')
       } catch (error) {
+        props.messageSet('更新に失敗しました', 'error')
         console.error(error);
       }
       
       // eslint-disable-next-line vue/no-mutating-props
       props.params.is_new = false
-      props.changeMode('list')
+      loading.value = false
       props.initList()
     }
     // フッターオプション
@@ -57,7 +71,9 @@ export default {
         { text: '保存', callback: save }
       ]
     }
+
     return {
+      loading,
       footer_options
     }
   },

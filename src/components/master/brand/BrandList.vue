@@ -4,7 +4,10 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ items }}
+      <AppAlert
+        :success="params.success"
+        :error="params.error"
+      />
       <div>
         <v-table
           fixed-header
@@ -41,13 +44,14 @@
 </template>
 
 <script>
+import AppAlert from '@/components/common/AppAlert.vue'
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 // import brandApiFunc from '@/mixins/api/master/brand.js'
 import { ref, watch } from 'vue'
 
 export default {
   name: 'brand-list',
-  components: { MasterLeftMenu },
+  components: { MasterLeftMenu, AppAlert },
   props: {
     params: Object,
     setEditor: Function,

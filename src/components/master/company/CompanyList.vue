@@ -4,6 +4,10 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
+      <AppAlert
+        :success="params.success"
+        :error="params.error"
+      />
       <v-progress-linear
       v-if="loading"
       indeterminate
@@ -37,11 +41,13 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+
 import { ref, watch } from 'vue'
 
 export default {
   name: 'company-list',
-  components: { MasterLeftMenu },
+  components: { MasterLeftMenu, AppAlert },
   props: {
     params: Object,
     changeMode: Function,

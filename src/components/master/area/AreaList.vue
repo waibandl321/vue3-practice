@@ -4,7 +4,10 @@
       <MasterLeftMenu />
     </v-col>
     <v-col cols="10">
-      {{ items }}
+      <AppAlert
+        :success="params.success"
+        :error="params.error"
+      />
       <div>
         <v-table
           fixed-header
@@ -64,11 +67,14 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+
 import areaApiFunc from '@/mixins/api/master/area.js'
 import { ref, watch } from 'vue'
+
 export default {
   name: 'area-list',
-  components: { MasterLeftMenu },
+  components: { MasterLeftMenu, AppAlert },
   props: {
     params: Object,
     setViewer: Function,
