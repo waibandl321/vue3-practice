@@ -3304,3 +3304,60 @@ export const deleteChatUrl = /* GraphQL */ `
     }
   }
 `;
+export const createNotification = /* GraphQL */ `
+  mutation CreateNotification(
+    $input: CreateNotificationInput!
+    $condition: ModelNotificationConditionInput
+  ) {
+    createNotification(input: $input, condition: $condition) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateNotification = /* GraphQL */ `
+  mutation UpdateNotification(
+    $input: UpdateNotificationInput!
+    $condition: ModelNotificationConditionInput
+  ) {
+    updateNotification(input: $input, condition: $condition) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteNotification = /* GraphQL */ `
+  mutation DeleteNotification(
+    $input: DeleteNotificationInput!
+    $condition: ModelNotificationConditionInput
+  ) {
+    deleteNotification(input: $input, condition: $condition) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;

@@ -2,6 +2,10 @@
   <v-container class="im-container">
     新規フラグ: {{ params.is_new }}  <br>
     {{ editor }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
       <v-menu>
@@ -165,7 +169,7 @@
           mode="tags"
           v-model="editor.tags.items"
           :addTagOn="[',']"
-          :options="tag_options"
+          :options="params.tag_options"
           :searchable="true"
           createTag
           :object="true"
@@ -205,7 +209,7 @@
   <template v-if="file_select_modal">
     <FIleSelectModal
       :file-select-modal="file_select_modal"
-      :dir-top="dir_top"
+      :dir-top="params.dir_top"
       :isSelectedFile="isSelectedFile"
       :closeFileSelectModal="closeFileSelectModal"
     />
@@ -217,13 +221,13 @@
 
 <script>
 import { toRefs, ref } from '@vue/reactivity';
-import { onMounted } from '@vue/runtime-core';
+import { onBeforeMount } from '@vue/runtime-core';
 
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
 import OverlayLoading from '../OverlayLoading.vue';
+import AppAlert from '@/components/common/AppAlert.vue';
 import FIleSelectModal from '../modal/FIleSelectModal.vue';
 
-import fileApiFunc from '@/mixins/api/func/file'
 import forumMixin from './forum_mixin'
 import forumApiFunc from '@/mixins/api/func/forum'
 
@@ -236,23 +240,31 @@ export default {
     "app-require-label": AppRequireLabel,
     Multiselect,
     OverlayLoading,
+    AppAlert,
     FIleSelectModal
   },
   props: {
-    params: Object,
-    changeMode: Function,
-    initEditor: Function
+    params: {
+      type: Object
+    },
+    changeMode: {
+      type: Function
+    },
+    initForum: {
+      type: Function
+    },
+    messageSet: {
+      type: Function
+    },
   },
   setup(props) {
     const loading = ref(false)
     const _props = toRefs(props);
     const editor = _props.params.value.editor;
-    const tag_options = _props.params.value.forum.tag_options.items
-    const dir_top = ref({})
+
     // エフェクトスコープ
-    onMounted(async () => {
-      dir_top.value = await fileApiFunc.apiGetDirTop()
-      if(!_props.params.value.is_new) {
+    onBeforeMount(async () => {
+      if(!props.params.is_new) {
         editor.eyecatch = editor.eyecatch?.items[0]
       }
     })
@@ -289,7 +301,8 @@ export default {
     // タグ
     const handleTagCreate = (query, select$) => {
       console.log('handleTagCreate', select$.options);
-      tag_options.push({
+      // eslint-disable-next-line vue/no-mutating-props
+      props.params.tag_options.push({
         uid: uuid.v4(),
         forum_tag_name: query
       })
@@ -297,38 +310,35 @@ export default {
     // 保存
     const savePost = async () => {
       loading.value = true
-      const forum = _props.params.value.forum
-      const is_new = _props.params.value.is_new
+      const forum = props.params.forum
+      const is_new = props.params.is_new
       try {
         if(is_new) { 
           const new_post = await forumApiFunc.createPost(forum, editor)
-          Promise.all([
-            await forumMixin.mixinCreateEyecatch(editor, new_post, dir_top.value),
-            await forumMixin.mixinCreateFiles(editor.files.items, new_post, dir_top.value),
-            await forumMixin.mixinCreateUrls(editor, new_post),
-            await forumMixin.mixinCreateTags(editor, new_post),
-            await forumMixin.mixinCreateTagOptions(forum, tag_options),
-          ])
-          alert('投稿を保存しました。')
+          await forumMixin.mixinCreateEyecatch(editor, new_post, props.params.dir_top)
+          await forumMixin.mixinCreateFiles(editor.files.items, new_post, props.params.dir_top)
+          await forumMixin.mixinCreateUrls(editor, new_post)
+          await forumMixin.mixinCreateTags(editor, new_post)
+          await forumMixin.mixinCreateTagOptions(forum, props.params.tag_options)
+          props.messageSet('投稿を作成しました。', 'success')
         } else {
-          Promise.all([
-            await forumApiFunc.updatePost(forum, editor),
-            await forumMixin.mixinUpdateEyecatch(editor, dir_top.value),
-            await forumMixin.mixinUpdateFiles(editor, delete_files.value, dir_top.value),
-            await forumMixin.mixinUpdateLinks(editor, delete_urls.value),
-            await forumMixin.mixinUpdateTags(editor),
-            await forumMixin.mixinCreateTagOptions(forum, tag_options),
-          ])
+          await forumApiFunc.updatePost(forum, editor)
+          await forumMixin.mixinUpdateEyecatch(editor, props.params.dir_top)
+          await forumMixin.mixinUpdateFiles(editor, delete_files.value, props.params.dir_top)
+          await forumMixin.mixinUpdateLinks(editor, delete_urls.value)
+          await forumMixin.mixinUpdateTags(editor)
+          await forumMixin.mixinCreateTagOptions(forum, props.params.tag_options)
           delete_urls.value = []
           delete_files.value = []
-          alert('投稿を保存しました。')
+          props.messageSet('投稿を保存しました。', 'success')
         }
+        props.initForum()
         props.changeMode('list')
       } catch (error) {
+        props.messageSet(error, 'error')
         console.error("forumApiFunc.savePost", error)
       }
       loading.value = false
-      props.initEditor()
     }
     // ファイル管理から選択
     const file_select_modal = ref(false)
@@ -369,14 +379,12 @@ export default {
       changeAttachment,
       removeForumFile,
       // タグ
-      tag_options,
       handleTagCreate,
       // 保存
       savePost,
       // ファイル管理から選択
       file_select_modal,
       file_select_function,
-      dir_top,
       openFileSelectModal,
       closeFileSelectModal,
       isSelectedFile

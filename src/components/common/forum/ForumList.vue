@@ -1,4 +1,10 @@
 <template>
+  <div class="px-6">
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
+  </div>
   <v-row class="pa-6">
     <v-col>
       <div style="position: relative;">
@@ -144,51 +150,66 @@
 
 <script>
 import OverlayLoading from '../OverlayLoading.vue';
+import AppAlert from '@/components/common/AppAlert.vue';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { ref, toRefs } from '@vue/reactivity';
+import { ref } from '@vue/reactivity';
 
 import forumMixin from './forum_mixin'
-import utilMixin from '@/mixins/utils/utils.js'
+import utilsFunc from '@/mixins/utils/utils.js'
 
 export default {
   name: "forum-list",
   components: {
     Datepicker,
+    AppAlert,
     OverlayLoading
 },
   props: {
-    params: Object,
-    changeMode: Function,
-    setViewer: Function,
+    params: {
+      type: Object
+    },
+    setEditor: {
+      type: Function
+    },
+    setViewer: {
+      type: Function
+    },
+    messageSet: {
+      type: Function
+    },
   },
   setup (props) {
     const loading = ref(false)
-    const _props = toRefs(props)
-    const items = ref(_props.params.value.forum.posts.items)
-    console.log('forum list', items.value);
-    // アイキャッチセット
-    const getPreviewerFile = async (post) => {
-      if(post.eyecatch.items.length === 0) return undefined;
-      const requset_url = utilMixin.removeUrlQuery(post.eyecatch.items[0].data_url)
-      return await utilMixin.getImageObjectURL(requset_url)
-    }
-    const init = async () => {
-      for (const post of items.value) {
+    const items = ref([])
+
+    // データセット
+    const initPost = async () => {
+      for (const post of props.params.items) {
         post.eyecatch_url = await getPreviewerFile(post)
+        items.value.push(post)
+      }
+      // アイキャッチセット
+      async function getPreviewerFile (post) {
+        if(post.eyecatch.items.length === 0) return undefined;
+        const requset_url = utilsFunc.removeUrlQuery(post.eyecatch.items[0].data_url)
+        return await utilsFunc.getImageObjectURL(requset_url)
       }
     }
-    init()
+    initPost()
+
     // 詳細遷移
     const viewPost = (post) => {
       props.setViewer(post)
-      props.changeMode('detail')
     }
+
     // 新規作成 遷移
     const newPost = () => {
       const is_new = true
-      props.changeMode('edit', is_new)
+      const post = undefined
+      props.setEditor(post, is_new)
     }
+
     // 削除
     const deletePost = async (post) => {
       if(!confirm('データは復元できません。よろしいですか？')) return;
@@ -197,7 +218,7 @@ export default {
       try {
         await forumMixin.mixinDeleteForumPost(post)
         items.value = items.value.filter(v => v.id !== post.id)
-        alert('投稿を削除しました')
+        props.messageSet('投稿を削除しました', 'success')
       } catch (error) {
         console.error('delete post exception error', error);
       }
@@ -208,6 +229,7 @@ export default {
     const filter_mode = ref(false)
     const post_start = ref()
     const post_end = ref()
+
     return {
       loading,
       // リスト

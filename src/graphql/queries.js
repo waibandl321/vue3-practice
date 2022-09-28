@@ -1334,9 +1334,83 @@ export const listForums = /* GraphQL */ `
         company_group_cd
         owner_id
         posts {
+          items {
+            id
+            post_key
+            forum_id
+            title
+            post_text
+            attached
+            url_links
+            status
+            importance
+            delete
+            createdAt
+            updatedAt
+            files {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                file_id
+                file_name
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            urls {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                url_key
+                url_value
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            eyecatch {
+              items {
+                id
+                post_id
+                post_key
+                file_id
+                data_url
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+            tags {
+              items {
+                id
+                post_id
+                post_key
+                sort_number
+                forum_tag_name
+                company_cd
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         tag_options {
+          items {
+            id
+            forum_id
+            forum_tag_name
+            company_cd
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         createdAt
@@ -2033,6 +2107,45 @@ export const listChatUrls = /* GraphQL */ `
         sort_number
         url_key
         url_value
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getNotification = /* GraphQL */ `
+  query GetNotification($id: ID!) {
+    getNotification(id: $id) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listNotifications = /* GraphQL */ `
+  query ListNotifications(
+    $filter: ModelNotificationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listNotifications(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        notification_id
+        category
+        service_name
+        poster_id
+        post_title
+        post_text
+        delete
         createdAt
         updatedAt
       }

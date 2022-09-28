@@ -431,3 +431,15 @@ type ChatUrl @model {
   createdAt: AWSDateTime!
 	updatedAt: AWSDateTime!
 }
+type Notification @model {
+  id: ID!
+  notification_id: ID!
+  category: Int
+  service_name: String
+  poster_id: String
+  post_title: String
+  post_text: String
+  delete: Int
+  createdAt: AWSDateTime!
+	updatedAt: AWSDateTime!
+}

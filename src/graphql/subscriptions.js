@@ -3073,3 +3073,57 @@ export const onDeleteChatUrl = /* GraphQL */ `
     }
   }
 `;
+export const onCreateNotification = /* GraphQL */ `
+  subscription OnCreateNotification(
+    $filter: ModelSubscriptionNotificationFilterInput
+  ) {
+    onCreateNotification(filter: $filter) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateNotification = /* GraphQL */ `
+  subscription OnUpdateNotification(
+    $filter: ModelSubscriptionNotificationFilterInput
+  ) {
+    onUpdateNotification(filter: $filter) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteNotification = /* GraphQL */ `
+  subscription OnDeleteNotification(
+    $filter: ModelSubscriptionNotificationFilterInput
+  ) {
+    onDeleteNotification(filter: $filter) {
+      id
+      notification_id
+      category
+      service_name
+      poster_id
+      post_title
+      post_text
+      delete
+      createdAt
+      updatedAt
+    }
+  }
+`;
