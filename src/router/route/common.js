@@ -2,7 +2,7 @@ import Home from '@/views/Home.vue'
 import ChatIndex from '@/views/common/ChatIndex.vue'
 import FileIndex from '@/views/common/FileIndex.vue'
 import ForumIndex from '@/views/common/ForumIndex.vue'
-import NotificationView from '@/views/common/NotificationView.vue'
+import NotificationIndex from '@/views/common/NotificationIndex.vue'
 
 export default [
   {
@@ -12,9 +12,9 @@ export default [
     meta: { title: 'ホーム' }
   },
   {
-    name: 'notification-view',
+    name: 'notification-index',
     path: '/notification',
-    component: NotificationView,
+    component: NotificationIndex,
     meta: { title: '通知' }
   },
   {

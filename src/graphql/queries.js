@@ -1716,9 +1716,50 @@ export const listChats = /* GraphQL */ `
         company_group_cd
         owner_id
         rooms {
+          items {
+            id
+            room_id
+            room_name
+            room_type
+            send_notice
+            owner_staff_id
+            delete
+            chat_id
+            createdAt
+            updatedAt
+            members {
+              items {
+                id
+                room_id
+                member_id
+                send_notice
+                room_name
+                ignore
+                last_access
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
           nextToken
         }
         company_employees {
+          items {
+            id
+            company_employee_id
+            staff_id
+            company_cd
+            last_name
+            first_name
+            last_name_kana
+            first_name_kana
+            gender
+            birth
+            employee_number
+            permanent
+            official_position
+          }
           nextToken
         }
         createdAt
@@ -1902,9 +1943,28 @@ export const listChatPosts = /* GraphQL */ `
         createdAt
         updatedAt
         files {
+          items {
+            id
+            chat_key
+            sort_number
+            file_id
+            file_name
+            data_url
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         urls {
+          items {
+            id
+            chat_key
+            sort_number
+            url_key
+            url_value
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }

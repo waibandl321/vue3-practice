@@ -179,7 +179,6 @@
         <div>
           <DiscordPicker
             @emoji="setEmoji"
-            apiKey="undefined"
           />
         </div>
       </div>
@@ -201,26 +200,25 @@
         ></v-btn>
       </div>
       <!-- 添付画像 -->
-      <div class="mt-2">
+      <v-card-item>
         <span>添付画像:</span>
         <v-chip
           v-for="(file, f) in message.files"
           :key="f"
           class="ml-2"
         >{{ file.name ?? file.file_name }}</v-chip>
-      </div>
+      </v-card-item>
       <!-- URL -->
-      <div
+      <v-card-item
         v-for="url in message.urls"
         :key="url.id"
-        class="mt-2"
       >
         <a
           :href="url.url_value"
           target="_blank"
           rel="noopener noreferrer"
         >{{ url.url_key }}</a>
-      </div>
+      </v-card-item>
     </v-card>
   </div>
 
