@@ -2,21 +2,18 @@
   <StaffGroupList
     v-if="mode === 'staff-group-list'"
     :changeMode="changeMode"
-    :params="params"
-    :setViewer="setViewer"
+    :setGroupViewer="setGroupViewer"
   />
   <StaffGroupDetail
     v-if="mode === 'staff-group-detail'"
     :changeModeStaffGroup="changeModeStaffGroup"
-    :params="params"
-    :viewer="staff_group_viewer"
-    :setEditor="setEditor"
+    :groupInfo="group_info"
+    :setGroupEditor="setGroupEditor"
   />
   <StaffGroupEdit
     v-if="mode === 'staff-group-edit'" 
     :changeModeStaffGroup="changeModeStaffGroup"
-    :params="params"
-    :editor="staff_group_editor"
+    :groupInfo="group_info"
     :refreshMember="refreshMember"
   />
 </template>
@@ -27,13 +24,13 @@ import StaffGroupDetail from './StaffGroupDetail.vue';
 import StaffGroupEdit from './StaffGroupEdit.vue';
 
 import shopApiFunc from '@/mixins/api/master/shop.js'
-import { ref } from '@vue/reactivity';
+import employeeApiFunc from '@/mixins/api/master/employee.js'
+import { reactive, ref } from '@vue/reactivity';
 
 export default {
   name: 'staff-group',
   components: { StaffGroupList, StaffGroupDetail, StaffGroupEdit },
   props: {
-    params: Object,
     changeMode: Function
   },
   setup () {
@@ -42,37 +39,46 @@ export default {
     const changeModeStaffGroup = (_mode) => {
       mode.value = _mode
     }
+    
+    const group_info = reactive({
+      company_employees: [],
+      viewer: {},
+      editor: {},
+    })
+
+    async function companyEmployees () {
+      group_info.company_employees = await employeeApiFunc.apiGetEmployeeList()
+    }
+    companyEmployees()
+    
     // 詳細データセット
-    const staff_group_viewer = ref({})
-    const setViewer = (item) => {
-      staff_group_viewer.value = item
+    const setGroupViewer = (item) => {
+      group_info.viewer = item
       mode.value = 'staff-group-detail'
     }
     // 編集データセット
-    const staff_group_editor = ref({})
-    const setEditor = (item) => {
-      staff_group_editor.value = item
+    const setGroupEditor = (item) => {
+      group_info.editor = item
       mode.value = 'staff-group-edit'
     }
     // メンバー再読み込み
     const refreshMember = async () => {
       let results = []
       try {
-        results = await shopApiFunc.apiGetStaffGroupStaff(staff_group_editor.value)
+        results = await shopApiFunc.apiGetStaffGroupStaff(group_info.editor)
       } catch (error) {
         console.log(error);
       }
-      staff_group_viewer.value.members.items = results
-      staff_group_editor.value.members.items = results
+      group_info.viewer.members.items = results
+      group_info.editor.members.items = results
     }
 
     return {
       mode,
-      staff_group_viewer,
-      staff_group_editor,
+      group_info,
       changeModeStaffGroup,
-      setViewer,
-      setEditor,
+      setGroupViewer,
+      setGroupEditor,
       refreshMember
     }
   }

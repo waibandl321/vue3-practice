@@ -19,7 +19,7 @@ export default {
       console.log('signout')
       try {
         await Auth.signOut()
-        await storeAuth.storeResetUser()
+        storeAuth.storeResetUser()
         router.push('/auth/signin')
       } catch (error) {
         console.log('error signing out: ', error)

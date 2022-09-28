@@ -38,7 +38,7 @@ async function apiUpdateEmployee (_employee) {
 function generateEmployeeObject (employee, inv = false) {
   return {
     company_employee_id: employee.company_employee_id ?? uuid.v4(),
-    staff_id: inv ? uuid.v4() : store.getters.staff.staff_id,
+    staff_id: inv ? uuid.v4() : employee.staff_id,
     company_cd: store.getters.companyCd,
     last_name: employee.last_name,
     first_name: employee.first_name,

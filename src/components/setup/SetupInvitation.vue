@@ -65,22 +65,18 @@ import SetupFooter from './SetupFooter.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '../common/OverlayLoading.vue'
 
-import utilsMixin from '@/mixins/utils/utils.js'
 import companyApiFunc from '@/mixins/api/master/company.js'
 import employeeApiFunc from '@/mixins/api/master/employee.js'
 import accountApiFunc from '@/mixins/api/account.js'
 import invitationApiFunc from '@/mixins/api/invitation.js'
 
-// import store from '@/store/index.js'
 import storeAuth from '@/mixins/store/auth'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-
-
 export default {
   name: 'setup-invite',
-  mixins: [utilsMixin],
+  // mixins: [utilsMixin],
   components: {
     SetupFooter,
     OverlayLoading,
@@ -98,7 +94,6 @@ export default {
       success: "",
       error: ""
     })
-
     // データ定義
     const setup_data = reactive({
       company: {},

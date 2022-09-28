@@ -1,31 +1,33 @@
 <template>
   <OverlayLoading />
 </template>
+
 <script>
 import OverlayLoading from '@/components/common/OverlayLoading.vue';
 import shopApiFunc from '@/mixins/api/master/shop.js'
-import { useRouter } from 'vue-router';
 import storeAuth from '@/mixins/store/auth';
+import { inject } from '@vue/runtime-core';
 
 export default {
   name: "invite-procedure",
   components: { OverlayLoading },
-  setup () {
-    const router = useRouter()
+  props: {
+    changeMode: {
+      type: Function
+    },
+  },
+  setup (props) {
+    const injFuncMessageSet = inject('message-set')
     const createShopStaff = async () => {
       try {
         await shopApiFunc.apiCreateShopStaff()
         storeAuth.storeSetInvitationShopCode(null)
-        alert('店舗スタッフを追加しました。')
-        router.push({
-          name: 'home'
-        })
+        injFuncMessageSet('店舗スタッフを追加しました。', 'success')
+        props.changeMode('list')
       } catch (error) {
         console.error(error)
-        alert('店舗招待に失敗しました。')
-        router.push({
-          name: 'master-shop'
-        })
+        injFuncMessageSet('店舗招待に失敗しました。もう一度やり直してください。', 'error')
+        props.changeMode('list')
       }
     }
     createShopStaff()

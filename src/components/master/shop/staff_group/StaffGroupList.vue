@@ -4,25 +4,34 @@
       グループ<br>
       {{ groups }}
     </div>
-    <v-card-title>{{ params.viewer.shop_name }} スタッフグループ</v-card-title>
-    <v-card
-      v-for="(group, idx) in groups"
-      :key="idx"
-      class="mt-4"
-      link
-      @click="viewStaffGroup(group)"
-    >
-      <v-card-actions class="justify-space-between">
-        <span>{{ group.group_name }}</span>
-        <span>
-          <v-btn
-            icon="mdi-delete"
-            color="primary"
-            @click.stop="deleteStaffGroup(group)"
-          ></v-btn>
-        </span>
-      </v-card-actions>
-    </v-card>
+    <AppAlert
+      :success="inj_params.success"
+      :error="inj_params.error"
+    />
+    <v-card-title>{{ inj_params.viewer.shop_name }} スタッフグループ</v-card-title>
+    <div v-if="groups.length === 0">
+      <v-card-text>スタッフグループはありません</v-card-text>
+    </div>
+    <div v-else>
+      <v-card
+        v-for="(group, idx) in groups"
+        :key="idx"
+        class="mt-4"
+        link
+        @click="viewStaffGroup(group)"
+      >
+        <v-card-actions class="justify-space-between">
+          <span>{{ group.group_name }}</span>
+          <span>
+            <v-btn
+              icon="mdi-delete"
+              color="primary"
+              @click.stop="deleteStaffGroup(group)"
+            ></v-btn>
+          </span>
+        </v-card-actions>
+      </v-card>
+    </div>
     <PcFooter :options="footer_options" />
     <div class="fixed-btn">
       <v-btn
@@ -55,33 +64,37 @@
       </v-card>
     </v-dialog>
   </v-container>
-
   <OverlayLoading v-if="loading" />
 </template>
 
 <script>
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
 import PcFooter from '@/components/common/PcFooter.vue'
-import { ref } from 'vue'
+
+import { inject, ref } from 'vue'
 import shopApiFunc from '@/mixins/api/master/shop.js'
 
 export default {
   name: 'staff-group-list',
   components: {
     PcFooter,
-    OverlayLoading
+    OverlayLoading,
+    AppAlert
   },
   props: {
-    params: Object,
     changeMode: Function,
-    setViewer: Function
+    setGroupViewer: Function
   },
   setup (props) {
+    const injFuncMessageSet = inject('message-set')
+    const inj_params = inject('shop-params')
+    
     const loading = ref(false)
     // スタッフグループ一覧
     const groups = ref([])
     const getStaffGroup = () => {
-      groups.value = props.params.viewer.groups.items
+      groups.value = inj_params.viewer.groups.items
     }
     getStaffGroup()
 
@@ -92,9 +105,9 @@ export default {
       staff_group_create_modal.value = false
       loading.value = true
       try {
-        const result = await shopApiFunc.apiCreateShopStaffGroup(props.params.viewer, staff_group_name.value)
+        const result = await shopApiFunc.apiCreateShopStaffGroup(inj_params.viewer, staff_group_name.value)
         groups.value.push(result)
-        alert('スタッフグループを作成しました')
+        injFuncMessageSet('スタッフグループを作成しました', 'success')
       } catch (error) {
         console.log(error);
       }
@@ -110,7 +123,7 @@ export default {
         await shopApiFunc.apiDeleteShopStaffGroup(staff_group)
         await deleteStaffGroupMembers(staff_group)
         await refreshGroups()
-        alert(`スタッフグループを削除しました。`)
+        injFuncMessageSet('スタッフグループを削除しました。', 'success')
       } catch (error) {
         console.log(error);
       }
@@ -128,7 +141,7 @@ export default {
     // 再読み込み
     async function refreshGroups () {
       try {
-        groups.value = await shopApiFunc.apiGetShopStaffGroup(props.params.viewer)
+        groups.value = await shopApiFunc.apiGetShopStaffGroup(inj_params.viewer)
       } catch (error) {
         console.log(error);
       }
@@ -136,7 +149,7 @@ export default {
 
     // スタッフグループ詳細へ
     const viewStaffGroup = (group) => {
-      props.setViewer(group)
+      props.setGroupViewer(group)
     }
 
     // スタッフグループ一覧へ
@@ -150,6 +163,7 @@ export default {
     }
 
     return {
+      inj_params,
       loading,
       staff_group_create_modal,
       staff_group_name,

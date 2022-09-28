@@ -5,8 +5,12 @@
     </v-col>
     <v-col cols="10">
       <div>
+        <AppAlert
+          :success="params.success"
+          :error="params.error"
+        />
         <v-progress-linear
-          v-if="loading"
+          v-if="params.loading"
           indeterminate
           color="green"
           class="mt-4"
@@ -89,11 +93,14 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-import shopApiFunc from '@/mixins/api/master/shop.js'
-import { ref } from 'vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+
+// import shopApiFunc from '@/mixins/api/master/shop.js'
+import { ref, watch } from 'vue'
+
 export default {
   name: 'shop-list',
-  components: { MasterLeftMenu },
+  components: { MasterLeftMenu, AppAlert },
   props: {
     params: Object,
     changeMode: Function,
@@ -101,19 +108,18 @@ export default {
     setEditor: Function,
   },
   setup (props) {
-    const loading = ref(false)
     // 店舗一覧取得
     const items = ref([])
     const getShopList = async () => {
-      loading.value = true
-      try {
-        items.value = await shopApiFunc.apiGetShops()
-        console.log('shop list', items.value);
-      } catch (error) {
-        console.error(error);
-      }
-      loading.value = false
+      items.value = props.params.items
     }
+    watch(
+      () => props.params.items,
+      () => {
+        getShopList()
+      },
+      { deep: true }
+    )
     getShopList()
 
     // 詳細遷移
@@ -144,7 +150,6 @@ export default {
     }
 
     return {
-      loading,
       items,
       is_new,
       clickInviteShop,

@@ -3,15 +3,15 @@
   <v-container class="im-container">
     <div class="mt-4">
       スタッフグループ<br>
-      {{ editor }}
+      {{ groupInfo.editor }}
     </div>
-    <v-card-title>{{ params.viewer.shop_name }} スタッフグループ名</v-card-title>
+    <v-card-title>{{ inj_params.viewer.shop_name }} スタッフグループ名</v-card-title>
     <v-card class="mt-4">
       <v-card-item>
         <v-card-subtitle>スタッフグループ名</v-card-subtitle>
         <v-card-text>
           <v-text-field
-            v-model="editor.group_name"
+            v-model="groupInfo.editor.group_name"
             label="スタッフグループ名"
           ></v-text-field>
         </v-card-text>
@@ -32,7 +32,7 @@
             cols="6"
           >
             <v-card flat border class="pa-4">
-              {{ viewStaff(staff.shop_staff_id) }}
+              {{ createdStaffName(staff.shop_staff_id) }}
               <v-btn
                 icon="mdi-delete"
                 variant="text"
@@ -91,17 +91,22 @@
                   hide-details="auto"
                 ></v-checkbox>
               </td>
-              <td>{{ viewStaff(staff.staff_id) }}</td>
+              <td>{{ createdStaffName(staff.staff_id) }}</td>
             </tr>
           </tbody>
         </v-table>
-        <v-card-text v-else>追加できるスタッフがいません</v-card-text>
+        <v-card-text v-else>
+          追加できるスタッフがいません。<br>
+          既に登録済みか、店舗スタッフとして登録されていない可能性があります。<br>
+          登録がお済みでない場合は、店舗一覧画面からスタッフを招待してください。
+        </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn
             variant="outlined"
             @click="staff_select_modal = false"
-          >キャンセル</v-btn>
+          >閉じる</v-btn>
           <v-btn
+            v-if="selectable_staffs.length > 0"
             color="primary"
             variant="outlined"
             @click="staffAdd()"
@@ -115,9 +120,12 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
-import shopApiFunc from '@/mixins/api/master/shop.js'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
+
+import shopApiFunc from '@/mixins/api/master/shop.js'
+
+import { ref } from '@vue/reactivity'
+import { inject } from '@vue/runtime-core'
 
 export default {
   name: 'staff-group-detail',
@@ -125,17 +133,20 @@ export default {
     OverlayLoading
   },
   props: {
-    editor: Object,
-    params: Object,
+    groupInfo: Object,
     changeModeStaffGroup: Function,
     refreshMember: Function,
   },
   setup (props) {
+    // provide / inject
+    const injFuncMessageSet = inject('message-set')
+    const inj_params = inject('shop-params')
+
     const loading = ref(false)
     // スタッフグループ所属メンバー取得
     const staff_group_staffs = ref([])
     // eslint-disable-next-line vue/no-setup-props-destructure
-    staff_group_staffs.value = props.editor.members.items
+    staff_group_staffs.value = props.groupInfo.editor.members.items
     
     // 選択可能メンバーフィルタ
     const selectable_staffs = ref([])
@@ -143,20 +154,20 @@ export default {
     function getSelectableStaffs () {
       let results = []
       if(staff_group_staffs.value.length > 0) {
-        results = props.params.viewer.staffs.items
+        results = inj_params.viewer.staffs.items
         results = results.filter((v) => {
           return !staff_group_staffs.value.find(r => r.shop_staff_id === v.staff_id)
         })
         return results
       }
-      return props.params.viewer.staffs.items
+      return inj_params.viewer.staffs.items
     }
     // 名前表示
-    const viewStaff = (staff_id) => {
-      const staff = props.params.viewer.staffs.items.find((r) => {
+    const createdStaffName = (staff_id) => {
+      const staff = props.groupInfo.company_employees.find((r) => {
         return r.staff_id === staff_id
       })
-      return staff ? staff.employee.items[0].last_name + staff.employee.items[0].first_name : ""
+      return staff ? staff.last_name + staff.first_name : ""
     }
     
     // スタッフグループメンバー
@@ -183,10 +194,10 @@ export default {
     const updateStaffGroup = async () => {
       loading.value = true
       try {
-        await shopApiFunc.apiUpdateShopStaffGroup(props.params.viewer, props.editor)
+        await shopApiFunc.apiUpdateShopStaffGroup(inj_params.viewer, props.groupInfo.editor)
         await _deleteStaffs()
         await _addStaffs()
-        alert('スタッフグループを更新しました。')
+        injFuncMessageSet('スタッフグループを更新しました。', 'success')
       } catch (error) {
         console.log(error);
       }
@@ -206,7 +217,7 @@ export default {
       async function _addStaffs () {
         if(add_staff_array.value.length > 0) {
           for (const staff_id of add_staff_array.value) {
-            const result = await shopApiFunc.apiCreateStaffGroupStaff(props.editor, staff_id)
+            const result = await shopApiFunc.apiCreateStaffGroupStaff(props.groupInfo.editor, staff_id)
             staff_group_staffs.value.push(result)
             selectable_staffs.value = getSelectableStaffs()
           }
@@ -219,10 +230,11 @@ export default {
     }
     
     return {
+      inj_params,
       loading,
       staff_group_staffs,
       selectable_staffs,
-      viewStaff,
+      createdStaffName,
       staff_select_modal,
       add_staff_array,
       backFunc,

@@ -1,7 +1,10 @@
 <template>
   <v-container class="im-container">
-    {{ params.viewer.groups.items }}
     <v-card>
+      <AppAlert
+        :success="params.success"
+        :error="params.error"
+      />
       <v-card-title>「{{ params.viewer.shop_name }}」 従業員一覧</v-card-title>
       <v-table height="50vh">
         <thead>
@@ -13,8 +16,8 @@
         </thead>
         <tbody>
           <tr
-            v-for="staff in items"
-            :key="staff.employee.id"
+            v-for="(staff, idx) in items"
+            :key="idx"
           >
             <td>{{ staff.employee.last_name }}{{ staff.employee.first_name }}</td>
             <td>{{ staff.staff_role.role_cd }}</td>
@@ -94,19 +97,32 @@
 </template>
 
 <script>
+import AppAlert from '@/components/common/AppAlert.vue'
+
 import { ref } from '@vue/reactivity'
 import shopApiFunc from '@/mixins/api/master/shop'
 import accountApiFunc from '@/mixins/api/account'
 
 export default {
+  components: {
+    AppAlert
+  },
   props: {
-    params: Object,
-    changeMode: Function
+    params: {
+      type: Object
+    },
+    changeMode: {
+      type: Function
+    },
+    messageSet: {
+      type: Function
+    }
   },
   setup (props) {
     // 店舗従業員取得
     const items = ref([])
     const getShopStaffList = async () => {
+      console.log('props.params.viewer.staffs.items', props.params.viewer.staffs.items);
       for (const shop_staff of props.params.viewer.staffs.items) {
         shop_staff.employee = shop_staff.employee.items[0]
         shop_staff.staff_role = shop_staff.role.items[0]
@@ -129,7 +145,7 @@ export default {
       const staff_id = role_change_staff.value.employee.staff_id
       try {
         await accountApiFunc.apiUpdateStaffRole(staff_id, role)
-        alert(`スタッフの権限を更新しました。`)
+        props.messageSet('スタッフの権限を更新しました。', 'success')
       } catch (error) {
         console.error(error);
       }
@@ -140,7 +156,7 @@ export default {
         await shopApiFunc.apiDeleteShopStaff(staff.id)
         // スタッフグループからも削除する
         await deleteFromStaffGroup()
-        alert('店舗従業員を削除しました。')
+        props.messageSet('店舗従業員を削除しました。', 'success')
         items.value = items.value.filter(v => v.staff_id !== staff.staff_id)
       } catch (error) {
         console.error(error)

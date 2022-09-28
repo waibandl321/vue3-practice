@@ -17,6 +17,7 @@
     <ShopEdit
       v-if="mode === 'edit'"
       :changeMode="changeMode"
+      :messageSet="messageSet"
       :params="params"
     />
     <ShopInvite
@@ -26,16 +27,17 @@
     />
     <ShopInviteProcedure
       v-if="mode === 'invite-procedure'"
+      :changeMode="changeMode"
     />
     <ShopStaffList
       v-if="mode === 'staff-list'"
       :changeMode="changeMode"
+      :messageSet="messageSet"
       :params="params"
     />
     <StaffGroupIndex
       v-if="mode === 'staff-group'"
       :changeMode="changeMode"
-      :params="params"
     />
   </v-main>
 </template>
@@ -50,13 +52,15 @@ import ShopInviteProcedure from '@/components/master/shop/invite/ShopInviteProce
 import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
 import StaffGroupIndex from '@/components/master/shop/staff_group/StaffGroup.vue'
 
+import shopApiFunc from '@/mixins/api/master/shop.js'
 import areaApiFunc from '@/mixins/api/master/area.js'
 import brandApiFunc from '@/mixins/api/master/brand.js'
 import roleFunc from '@/mixins/api/master/role.js'
-import storeAuth from '@/mixins/store/auth.js'
+import storeFunc from '@/mixins/store/auth.js'
 
 import { reactive, ref } from '@vue/reactivity'
 import _ from 'lodash'
+import { provide } from '@vue/runtime-core'
 
 export default {
   name: 'master-shop',
@@ -73,25 +77,40 @@ export default {
   setup () {
     const mode = ref('list')
     // 招待遷移
-    if (storeAuth.storeGetInvitationShopCode()) {
-      console.log('店舗招待コード', storeAuth.storeGetInvitationShopCode());
+    if (storeFunc.storeGetInvitationShopCode()) {
+      console.log('店舗招待コード', storeFunc.storeGetInvitationShopCode());
       mode.value = 'invite-procedure'
     }
     
     const params = reactive({
+      items: [],
+      brands: [],
+      areas: [],
+      roles: [],
+      company_employees: [],
+
       viewer: {},
       editor: {},
       is_new: false,
-      brands: [],
-      areas: [],
-      roles: []
+
+      success: "",
+      error: "",
+      loading: false
     })
-   
+
     // 店舗以外のマスタデータ読み込み
     const init = async () => {
-      params.brands = await brandApiFunc.apiGetBrand()
-      params.areas = await areaApiFunc.apiGetArea()
-      params.roles = roleFunc.getSystemRoleList()
+      params.loading = true
+      try {
+        params.brands = await brandApiFunc.apiGetBrand()
+        params.areas = await areaApiFunc.apiGetArea()
+        params.items = await shopApiFunc.apiGetShops()
+        params.roles = roleFunc.getSystemRoleList()
+      } catch (error) {
+        params.error = 'データの読み込みに失敗しました。'
+        console.error(error);
+      }
+      params.loading = false
     }
     init()
     // 表示モード切り替え
@@ -103,10 +122,14 @@ export default {
     }
     // 詳細データセット
     const setViewer = (item) => {
+      params.success = ""
+      params.error = ""
       params.viewer = item
     }
     // 編集・新規データセット
     const setEditor = (item, is_new = false) => {
+      params.success = ""
+      params.error = ""
       if(is_new) {
         params.is_new = true
         params.editor = {
@@ -125,12 +148,21 @@ export default {
       }
       mode.value = "edit"
     }
+
+    const messageSet = (message, type) => {
+      params[type] = message
+    }
+    // MEMO: 孫コンポーネントは、provide / inject形式でバインド
+    provide('message-set', messageSet)
+    provide('shop-params', params)
+
     return {
       mode,
       params,
       changeMode,
       setViewer,
-      setEditor
+      setEditor,
+      messageSet
     }
   }
 }

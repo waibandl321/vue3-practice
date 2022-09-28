@@ -4,6 +4,10 @@
     <div>
       {{ params.editor }}
     </div>
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <v-card-title>店舗登録</v-card-title>
     <v-card-item>
         <v-card-subtitle>
@@ -85,14 +89,23 @@
 
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
+import AppAlert from '@/components/common/AppAlert.vue'
+
 import shopApiFunc from '@/mixins/api/master/shop.js'
 
 export default {
   name: 'shop-edit',
-  components: { PcFooter },
+  components: { PcFooter, AppAlert },
   props: {
-    changeMode: Function,
-    params: Object
+    changeMode: {
+      type: Function
+    },
+    messageSet: {
+      type: Function
+    },
+    params: {
+      type: Object
+    }
   },
   setup (props) {
     // 店舗情報保存
@@ -100,12 +113,13 @@ export default {
       try {
         if(props.params.is_new) {
           await shopApiFunc.apiCreateShop(props.params.editor)
-          alert('店舗を登録しました')
+          props.messageSet('店舗を登録しました', 'success')
         } else {
           await shopApiFunc.apiUpdateShop(props.params.editor)
-          alert('店舗情報を更新しました')
+          props.messageSet('店舗情報を更新しました', 'success')
         }
       } catch (error) {
+        props.messageSet('更新に失敗しました。', 'error')
         console.error(error);
       }
       // eslint-disable-next-line vue/no-mutating-props
