@@ -9,6 +9,12 @@
         :error="params.error"
       />
       <div>
+        <v-progress-linear
+          v-if="params.loading"
+          indeterminate
+          color="primary"
+          class="mt-4"
+        ></v-progress-linear>
         <v-table
           fixed-header
           height="300px"

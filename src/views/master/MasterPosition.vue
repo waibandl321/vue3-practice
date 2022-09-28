@@ -50,6 +50,7 @@ export default {
       editor: {},
       is_new: false,
 
+      loading: false,
       success: "",
       error: "",
     })
@@ -61,6 +62,7 @@ export default {
       mode.value = _mode
     }
     const initList = async () => {
+      params.loading = true
       try {
         params.items = await positionApiFunc.apiGetPosition()
       } catch (error) {
@@ -68,6 +70,7 @@ export default {
         params.error = '読み込みに失敗しました'
         console.error(error);
       }
+      params.loading = false
     }
     initList()
 

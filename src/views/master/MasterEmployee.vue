@@ -62,12 +62,14 @@ export default {
       shops: [],
       roles: [],
 
+      loading: false,
       success: "",
       error: "",
 
       is_new: false
     })
     const initData = async () => {
+      params.loading = true
       try {
         params.items = await employeeApiFunc.apiGetEmployeeList()
         params.shops = await shopApiFunc.apiGetShops()
@@ -76,6 +78,7 @@ export default {
         params.error = "読み込みに失敗しました。"
         console.error(error);
       }
+      params.loading = false
     }
     initData()
 

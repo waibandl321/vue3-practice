@@ -12,7 +12,7 @@
         <v-progress-linear
           v-if="params.loading"
           indeterminate
-          color="green"
+          color="primary"
           class="mt-4"
         ></v-progress-linear>
         <v-table
