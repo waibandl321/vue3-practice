@@ -92,18 +92,17 @@ export default {
     const edit = () => {
       props.setEditor(props.params.viewer)
     }
-    const init = async () => {
+    const attachmentPreviewSet = async () => {
       if(props.params.viewer.files.items.length === 0) return;
       for (const file of props.params.viewer.files.items) {
         file.preview_src = await getPreviewerFile(file.data_url)
       }
-
       async function getPreviewerFile (data_url) {
         const requset_url = utilMixin.removeUrlQuery(data_url)
         return await utilMixin.getImageObjectURL(requset_url)
       }
     }
-    init()
+    attachmentPreviewSet()
 
     return {
       edit,

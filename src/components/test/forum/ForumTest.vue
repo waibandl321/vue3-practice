@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>掲示板テスト</v-card-title>
+    <v-card-title>掲示板データ一括作成テスト</v-card-title>
     <v-card-text>
       <v-text-field
         label="タイトル"
@@ -64,8 +64,7 @@ export default {
       urls: [],
     })
     const save = async () => {
-      const forum = {}
-      await apiCreateForumPost(forum, post_obj)
+      await apiCreateForumPost(post_obj)
     }
     async function apiCreateForumPost (post_obj) {
       const post = generateForumPostObject(post_obj)
@@ -83,7 +82,6 @@ export default {
           post_key: uuid.v4(),
           title: post_obj.title,
           post_text: post_obj.post_text,
-          urls: post_obj.urls
         }
       }
     }

@@ -297,7 +297,7 @@ type Forum @model {
 }
 type ForumPost @model {
   id: ID!
-  post_key: String
+  post_key: ID!
   forum_id: ID! @index(name: "byForum", sortKeyFields: ["createdAt"])
   title: String
   post_text: String
@@ -309,7 +309,7 @@ type ForumPost @model {
   createdAt: AWSDateTime!
 	updatedAt: AWSDateTime!
   files: [ForumFile] @hasMany(indexName: "byForumPost", fields: ["id"])
-  urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["id"])
+  urls: [ForumUrl] @hasMany(indexName: "byForumPost", fields: ["post_key"])
   eyecatch: [ForumEyecatch] @hasMany(indexName: "byForumPost", fields: ["id"])
   tags: [ForumTag] @hasMany(indexName: "byForumPost", fields: ["id"])
   forum: Forum @belongsTo(fields: ["forum_id"])
@@ -327,8 +327,8 @@ type ForumFile @model {
 }
 type ForumUrl @model {
   id: ID!
-  post_id: ID! @index(name: "byForumPost", sortKeyFields: ["createdAt"])
-  post_key: String
+  post_id: ID!
+  post_key: ID! @index(name: "byForumPost", sortKeyFields: ["createdAt"])
   sort_number: String
   url_key: String
   url_value: String

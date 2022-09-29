@@ -4,6 +4,10 @@ import fileApiFunc from '@/mixins/api/func/file'
 
 export default {
   // 作成
+  async mixinCreatePost (forum, editor) {
+    return await forumApiFunc.createPost(forum, editor)
+  },
+  // アイキャッチ新規作成
   async mixinCreateEyecatch (editor, save_post, dir_top) {
     if(editor.eyecatch){
       // ローカルアップロード
@@ -15,6 +19,7 @@ export default {
     }
     return;
   },
+  // 添付ファイル新規作成
   async mixinCreateFiles (files, save_post, dir_top) {
     if(files.length > 0) {
       for (const file of files) {
@@ -27,6 +32,7 @@ export default {
     }
     return;
   },
+  // URL新規作成
   async mixinCreateUrls (editor, save_post) {
     if(editor.urls.items.length > 0) {
       for (const url of editor.urls.items) {
@@ -35,6 +41,7 @@ export default {
     }
     return;
   },
+  // タグ新規作成
   async mixinCreateTags (editor, save_post) {
     if(editor.tags.items.length > 0) {
       for (const tag of editor.tags.items) {
@@ -43,25 +50,22 @@ export default {
     }
     return;
   },
+  // タグオプション作成
   async mixinCreateTagOptions (forum, tag_options) {
     const new_tag_options = tag_options.filter(t => !t.id && !t.forum_id)
-    console.log('new_tag_options', new_tag_options);
     if(new_tag_options.length > 0) {
+      console.log('new_tag_options', new_tag_options);
       for (const new_option of new_tag_options) {
         await forumApiFunc.createTagOption(forum, new_option)
       }
     }
   },
   // 更新
-  async mixinUpdateForumPost () {
-    
+  async mixinUpdatePost (forum, editor) {
+    return await forumApiFunc.updatePost(forum, editor)
   },
   // アイキャッチ更新
   async mixinUpdateEyecatch (editor, dir_top) {
-    const uploadNew = async () => {
-      editor.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.eyecatch, "forum_eyecatch")
-      await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
-    }
     // 削除
     if(!editor.eyecatch && editor.old_eyecatch.length > 0) {
       await forumApiFunc.deleteEyecatch(...editor.old_eyecatch)
@@ -83,28 +87,32 @@ export default {
         await forumApiFunc.createEyecatch(editor.eyecatch, editor)
       }
     }
+
+    async function uploadNew () {
+      editor.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.eyecatch, "forum_eyecatch")
+      await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
+    }
   },
   // URL更新
   async mixinUpdateLinks (editor, delete_urls) {
-    const urls = editor.urls.items
-    const old_urls = editor.old_urls.filter(v => !v.uid)
-    // 初期値なし ＋ 新規追加
-    if(old_urls.length === 0) {
-      for (const url of urls) {
-        console.log('add new url', url);
+    // 初期値なし
+    if(editor.old_urls.length === 0) {
+      if(editor.urls.items.length === 0) return;
+      // 新規追加
+      for (const url of editor.urls.items) {
         await forumApiFunc.createLink(url, editor)
       }
     }
     // 初期値あり
-    if(old_urls.length > 0) {
-      if(urls.length > 0) {
-        for (const url of urls) {
+    if(editor.old_urls.length > 0) {
+      if(editor.urls.items.length > 0) {
+        for (const url of editor.urls.items) {
           // 追加
           if(!url.id && url.uid) {
             await forumApiFunc.createLink(url, editor)
           }
           // 上書き更新
-          if(old_urls.find(v => v.id === url.id)) {
+          if(editor.old_urls.find(v => v.id === url.id)) {
             await forumApiFunc.updateLink(url, editor)
           }
         }
@@ -112,7 +120,6 @@ export default {
       // 削除
       if(delete_urls.length > 0) {
         for (const url of delete_urls) {
-          console.log('delete url', url);
           await forumApiFunc.deleteLink(url, editor)
         }
       }
@@ -120,27 +127,27 @@ export default {
   },
   // 添付ファイル更新
   async mixinUpdateFiles (editor, delete_files, dir_top) {
-    const files = editor.files.items
-    const old_files = editor.old_files.filter(v => v.post_key)
-
-    // 初期値なし ＋ 新規追加
-    if(old_files.length === 0 && files.length > 0) {
-      for (const file of files) {
-        if(!file.id) {
-          file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
-          await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+    // 初期値なし
+    if(editor.old_files.length === 0) {
+      // 新規追加
+      if(editor.files.items.length > 0) {
+        for (const file of editor.files.items) {
+          // ローカルアップロード
+          if(!file.id) {
+            file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
+            await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+          }
+          await forumApiFunc.createFile(file, editor)
         }
-        await forumApiFunc.createFile(file, editor)
-      }
+      } else return;
     }
-    if(old_files.length > 0) {
-      // 差分
-      if(files.length > 0) {
-        for (const file of files) {
-          // 追加
+    if(editor.old_files.length > 0) {
+      // 追加
+      if(editor.files.items.length > 0) {
+        for (const file of editor.files.items) {
           if(!file.post_key) {
+            // ローカルアップロード
             if(!file.id) {
-              console.log('forum local file add', file);
               file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
               await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
             }
@@ -159,34 +166,35 @@ export default {
   },
   // タグ更新
   async mixinUpdateTags (editor) {
-    const tags = editor.tags.items
-    const old_tags = editor.old_tags
-    // 1つ目追加
-    if(old_tags.length === 0 && tags.length > 0) {
-      for (const tag of tags) {
-        await forumApiFunc.createTag(tag, editor)
-      }
+    // 初期値なし
+    if(editor.old_tags.length === 0) {
+      // 追加
+      if(editor.tags.items.length > 0) {
+        for (const tag of editor.tags.items) {
+          await forumApiFunc.createTag(tag, editor)
+        }
+      } else return;
     }
-    // 値なし → 全削除
-    if(old_tags.length > 0 && tags.length === 0) {
-      for (const old_tag of old_tags) {
+    // 初期値あり ＋ 値なし = 全削除
+    if(editor.old_tags.length > 0 && editor.tags.items.length === 0) {
+      for (const old_tag of editor.old_tags) {
         await forumApiFunc.deleteTag(old_tag)
       }
     }
     // 差分処理
-    if(old_tags.length > 0 && tags.length > 0) {
+    if(editor.old_tags.length > 0 && editor.tags.items.length > 0) {
       // 追加 （初期値 < 登録値）
-      if(tags.length > old_tags.length) {
-        const add_tags = tags.filter(v => !v.post_key)
+      if(editor.tags.items.length > editor.old_tags.length) {
+        const add_tags = editor.tags.items.filter(v => !v.post_key)
         for (const add_tag of add_tags) {
           console.log('add new tag', add_tag);
           await forumApiFunc.createTag(add_tag, editor)
         }
       }
       // 削除 (初期値 > 登録値) 
-      if(tags.length < old_tags.length) {
-        for (const old_tag of old_tags) {
-          if(tags.find(v => v.forum_tag_name === old_tag.forum_tag_name) === undefined) {
+      if(editor.tags.items.length < editor.old_tags.length) {
+        for (const old_tag of editor.old_tags) {
+          if(editor.tags.items.find(v => v.forum_tag_name === old_tag.forum_tag_name) === undefined) {
             console.log("delete_tag", old_tag);
             await forumApiFunc.deleteTag(old_tag)
           }
@@ -194,10 +202,6 @@ export default {
       }
     }
   },
-  // S3アップロード
-  // async mixinUploadForumFile (file, function_cd) {
-  //   return await storageFunc.storageUploadFunctionFile(file, function_cd)
-  // },
   // ファイル管理に保存
   async mixinSaveForumFileDatabase (dir_top, file, data_url, function_cd) {
     await fileApiFunc.apiCreateUploadFile(
@@ -207,7 +211,8 @@ export default {
       function_cd
     )
   },
-  // 削除
+  // 投稿削除
+  // TODO: お知らせからも削除する
   async mixinDeleteForumPost (post) {
     await forumApiFunc.delete(post)
     // アイキャッチ

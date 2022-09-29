@@ -1,13 +1,17 @@
 <template>
   <v-container class="im-container">
-    新規フラグ: {{ params.is_new }}  <br>
-    {{ editor }}
     <AppAlert
       :success="params.success"
       :error="params.error"
     />
     <div class="mt-10">
       <div class="font-weight-bold mb-2">アイキャッチ画像</div>
+      <div>
+        {{ editor.old_eyecatch }}
+      </div>
+      <div>
+        {{ editor.eyecatch }}
+      </div>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -220,19 +224,17 @@
 </template>
 
 <script>
-import { toRefs, ref } from '@vue/reactivity';
-import { onBeforeMount } from '@vue/runtime-core';
-
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
 import OverlayLoading from '../OverlayLoading.vue';
 import AppAlert from '@/components/common/AppAlert.vue';
 import FIleSelectModal from '../modal/FIleSelectModal.vue';
+import Multiselect from '@vueform/multiselect'
+
+import { toRefs, ref } from '@vue/reactivity';
+import { onBeforeMount } from '@vue/runtime-core';
+import { uuid } from 'vue-uuid'
 
 import forumMixin from './forum_mixin'
-import forumApiFunc from '@/mixins/api/func/forum'
-
-import Multiselect from '@vueform/multiselect'
-import { uuid } from 'vue-uuid'
 
 export default {
   name: "forum-edit",
@@ -308,12 +310,13 @@ export default {
       })
     }
     // 保存
+    // TODO: お知らせに連携する
     const savePost = async () => {
       loading.value = true
       try {
         if(props.params.is_new) {
           // 新規作成
-          const new_post = await forumApiFunc.createPost(props.params.forum, editor)
+          const new_post = await forumMixin.mixinCreatePost(props.params.forum, editor)
           await forumMixin.mixinCreateEyecatch(editor, new_post, props.params.dir_top)
           await forumMixin.mixinCreateFiles(editor.files.items, new_post, props.params.dir_top)
           await forumMixin.mixinCreateUrls(editor, new_post)
@@ -322,7 +325,7 @@ export default {
           props.messageSet('投稿を作成しました。', 'success')
         } else {
           // 更新
-          await forumApiFunc.updatePost(props.params.forum, editor)
+          await forumMixin.mixinUpdatePost(props.params.forum, editor)
           await forumMixin.mixinUpdateEyecatch(editor, props.params.dir_top)
           await forumMixin.mixinUpdateFiles(editor, delete_files.value, props.params.dir_top)
           await forumMixin.mixinUpdateLinks(editor, delete_urls.value)
