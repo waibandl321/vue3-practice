@@ -71,7 +71,7 @@
   <v-row class="pa-6">
     <v-col 
       cols="3"
-      v-for="(post, index) in items"
+      v-for="(post, index) in params.items"
       :key="index"
     >
       <v-card
@@ -156,7 +156,6 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { ref } from '@vue/reactivity';
 
 import forumMixin from './forum_mixin'
-import utilsFunc from '@/mixins/utils/utils.js'
 
 export default {
   name: "forum-list",
@@ -181,22 +180,6 @@ export default {
   },
   setup (props) {
     const loading = ref(false)
-    const items = ref([])
-
-    // データセット
-    const initPost = async () => {
-      for (const post of props.params.items) {
-        post.eyecatch_url = await getPreviewerFile(post)
-        items.value.push(post)
-      }
-      // アイキャッチセット
-      async function getPreviewerFile (post) {
-        if(post.eyecatch.items.length === 0) return undefined;
-        const requset_url = utilsFunc.removeUrlQuery(post.eyecatch.items[0].data_url)
-        return await utilsFunc.getImageObjectURL(requset_url)
-      }
-    }
-    initPost()
 
     // 詳細遷移
     const viewPost = (post) => {
@@ -213,16 +196,20 @@ export default {
     // 削除
     const deletePost = async (post) => {
       if(!confirm('データは復元できません。よろしいですか？')) return;
-      console.log('delete post', post);
       loading.value = true
       try {
         await forumMixin.mixinDeleteForumPost(post)
-        items.value = items.value.filter(v => v.id !== post.id)
+        // eslint-disable-next-line vue/no-mutating-props
+        props.params.items = afterDelete(post)
         props.messageSet('投稿を削除しました', 'success')
       } catch (error) {
         console.error('delete post exception error', error);
       }
       loading.value = false
+
+      function afterDelete (post) {
+        return props.params.items.filter(v => v.id !== post.id)
+      }
     }
     
     // 検索
@@ -232,9 +219,6 @@ export default {
 
     return {
       loading,
-      // リスト
-      items,
-      // methods
       viewPost,
       newPost,
       // 削除

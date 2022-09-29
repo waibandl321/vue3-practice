@@ -32,10 +32,11 @@ import ForumDetail from '@/components/common/forum/ForumDetail.vue';
 import ForumEdit from '@/components/common/forum/ForumEdit.vue';
 import OverlayLoading from '@/components/common/OverlayLoading.vue';
 
-import { reactive, ref } from '@vue/reactivity';
 import forumApiFunc from '@/mixins/api/func/forum'
 import fileApiFunc from '@/mixins/api/func/file'
+import utilsFunc from '@/mixins/utils/utils.js'
 
+import { reactive, ref } from '@vue/reactivity';
 import _ from 'lodash'
 
 export default {
@@ -52,11 +53,11 @@ export default {
 
     const params = reactive({
       items: [],
-
+      tag_options: [],
       forum: {},
-      tag_options: {
-        items: []
-      },
+      // tag_options: {
+      //   items: []
+      // },
       viewer: {},
       editor: {},
 
@@ -71,9 +72,10 @@ export default {
     // データ取得
     const initForum = async () => {
       params.loading = true
+      params.items = []
       try {
         params.forum = await forumApiFunc.getForum()
-        filter()
+        await dataShaping()
       } catch (error) {
         params.error = "読み込みに失敗しました。"
         console.error('func:forumApiFunc.getForum', error)
@@ -82,10 +84,20 @@ export default {
     }
     initForum()
 
-    function filter () {
-      params.items = params.forum.posts.items
+    async function dataShaping () {
+      for (const post of params.forum.posts.items) {
+        post.eyecatch_url = await getPreviewerFile(post)
+        params.items.push(post)
+      }
       params.tag_options = params.forum.tag_options.items
+      
+      async function getPreviewerFile (post) {
+        if(post.eyecatch.items.length === 0) return undefined;
+        const requset_url = utilsFunc.removeUrlQuery(post.eyecatch.items[0].data_url)
+        return await utilsFunc.getImageObjectURL(requset_url)
+      }
     }
+    
     
     // 詳細遷移
     const setViewer = (post) => {
@@ -117,10 +129,10 @@ export default {
       } else {
         params.is_new = false
         params.editor = _.cloneDeep(post)
-        params.editor.old_tags = post.tags.items
-        params.editor.old_urls = post.urls.items
-        params.editor.old_eyecatch = post.eyecatch.items
-        params.editor.old_files = post.files.items
+        params.editor.old_tags = _.cloneDeep(post.tags.items)
+        params.editor.old_urls = _.cloneDeep(post.urls.items)
+        params.editor.old_eyecatch = _.cloneDeep(post.eyecatch.items)
+        params.editor.old_files = _.cloneDeep(post.files.items)
       }
       
       mode.value = 'edit'

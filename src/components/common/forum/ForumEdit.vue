@@ -262,10 +262,10 @@ export default {
     const _props = toRefs(props);
     const editor = _props.params.value.editor;
 
-    // エフェクトスコープ
+    // アイキャッチセット
     onBeforeMount(async () => {
-      if(!props.params.is_new) {
-        editor.eyecatch = editor.eyecatch?.items[0]
+      if(!props.params.is_new && editor.eyecatch) {
+        editor.eyecatch = editor.eyecatch.items[0]
       }
     })
     // URL
@@ -310,36 +310,37 @@ export default {
     // 保存
     const savePost = async () => {
       loading.value = true
-      const forum = props.params.forum
-      const is_new = props.params.is_new
       try {
-        if(is_new) { 
-          const new_post = await forumApiFunc.createPost(forum, editor)
+        if(props.params.is_new) {
+          // 新規作成
+          const new_post = await forumApiFunc.createPost(props.params.forum, editor)
           await forumMixin.mixinCreateEyecatch(editor, new_post, props.params.dir_top)
           await forumMixin.mixinCreateFiles(editor.files.items, new_post, props.params.dir_top)
           await forumMixin.mixinCreateUrls(editor, new_post)
           await forumMixin.mixinCreateTags(editor, new_post)
-          await forumMixin.mixinCreateTagOptions(forum, props.params.tag_options)
+          await forumMixin.mixinCreateTagOptions(props.params.forum, props.params.tag_options)
           props.messageSet('投稿を作成しました。', 'success')
         } else {
-          await forumApiFunc.updatePost(forum, editor)
+          // 更新
+          await forumApiFunc.updatePost(props.params.forum, editor)
           await forumMixin.mixinUpdateEyecatch(editor, props.params.dir_top)
           await forumMixin.mixinUpdateFiles(editor, delete_files.value, props.params.dir_top)
           await forumMixin.mixinUpdateLinks(editor, delete_urls.value)
           await forumMixin.mixinUpdateTags(editor)
-          await forumMixin.mixinCreateTagOptions(forum, props.params.tag_options)
+          await forumMixin.mixinCreateTagOptions(props.params.forum, props.params.tag_options)
           delete_urls.value = []
           delete_files.value = []
           props.messageSet('投稿を保存しました。', 'success')
         }
-        props.initForum()
-        props.changeMode('list')
       } catch (error) {
         props.messageSet(error, 'error')
-        console.error("forumApiFunc.savePost", error)
+        console.error(error)
       }
       loading.value = false
+      props.changeMode('list')
+      props.initForum()
     }
+
     // ファイル管理から選択
     const file_select_modal = ref(false)
     const file_select_function = ref(undefined)

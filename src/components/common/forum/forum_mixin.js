@@ -6,12 +6,12 @@ export default {
   // 作成
   async mixinCreateEyecatch (editor, save_post, dir_top) {
     if(editor.eyecatch){
+      // ローカルアップロード
       if(!editor.eyecatch.id) {
-        editor.eyecatch.data_url = await this.mixinUploadForumFile(editor.eyecatch, "forum_eyecatch")
+        editor.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.eyecatch, "forum_eyecatch")
         await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
       }
       await forumApiFunc.createEyecatch(editor.eyecatch, save_post)
-      .catch((error) => console.error('forumApiFunc.createEyecatch', error))
     }
     return;
   },
@@ -19,11 +19,10 @@ export default {
     if(files.length > 0) {
       for (const file of files) {
         if(!file.id) {
-          file.data_url = await this.mixinUploadForumFile(file, "forum")
+          file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
           await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
         }
         await forumApiFunc.createFile(file, save_post)
-        .catch((error) => console.error('forumApiFunc.createFile', error))
       }
     }
     return;
@@ -32,7 +31,6 @@ export default {
     if(editor.urls.items.length > 0) {
       for (const url of editor.urls.items) {
         await forumApiFunc.createLink(url, save_post)
-        .catch((error) => console.error('forumApiFunc.createLink', error))
       }
     }
     return;
@@ -41,7 +39,6 @@ export default {
     if(editor.tags.items.length > 0) {
       for (const tag of editor.tags.items) {
         await forumApiFunc.createTag(tag, save_post)
-        .catch((error) => console.error('forumApiFunc.createTag', error))
       }
     }
     return;
@@ -62,7 +59,7 @@ export default {
   // アイキャッチ更新
   async mixinUpdateEyecatch (editor, dir_top) {
     const uploadNew = async () => {
-      editor.eyecatch.data_url = await this.mixinUploadForumFile(editor.eyecatch, "forum_eyecatch")
+      editor.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.eyecatch, "forum_eyecatch")
       await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
     }
     // 削除
@@ -77,7 +74,6 @@ export default {
           await uploadNew()
         }
         await forumApiFunc.updateEyecatch(editor.eyecatch, ...editor.old_eyecatch, editor)
-        .catch((error) => console.log('forumApiFunc.updateEyecatch', error))
       }
       // 新規登録
       if(editor.old_eyecatch.length === 0) {
@@ -131,7 +127,7 @@ export default {
     if(old_files.length === 0 && files.length > 0) {
       for (const file of files) {
         if(!file.id) {
-          file.data_url = await this.mixinUploadForumFile(file, "forum")
+          file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
           await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
         }
         await forumApiFunc.createFile(file, editor)
@@ -145,7 +141,7 @@ export default {
           if(!file.post_key) {
             if(!file.id) {
               console.log('forum local file add', file);
-              file.data_url = await this.mixinUploadForumFile(file, "forum")
+              file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
               await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
             }
             await forumApiFunc.createFile(file, editor)
@@ -169,7 +165,6 @@ export default {
     if(old_tags.length === 0 && tags.length > 0) {
       for (const tag of tags) {
         await forumApiFunc.createTag(tag, editor)
-        .catch((error) => console.error('update:forumApiFunc.createTag', error))
       }
     }
     // 値なし → 全削除
@@ -200,10 +195,9 @@ export default {
     }
   },
   // S3アップロード
-  async mixinUploadForumFile (file, function_cd) {
-    return await storageFunc.storageUploadFunctionFile(file, function_cd)
-    .catch((error) => console.error('storageFunc.storageUploadFunctionFile', error))
-  },
+  // async mixinUploadForumFile (file, function_cd) {
+  //   return await storageFunc.storageUploadFunctionFile(file, function_cd)
+  // },
   // ファイル管理に保存
   async mixinSaveForumFileDatabase (dir_top, file, data_url, function_cd) {
     await fileApiFunc.apiCreateUploadFile(
@@ -211,33 +205,32 @@ export default {
       file,
       data_url,
       function_cd
-    ).catch((error) => console.error('fileApiFunc.apiCreateUploadFile', error))
+    )
   },
   // 削除
   async mixinDeleteForumPost (post) {
-    await forumApiFunc.delete(post).catch((error) => console.error('deleteForumPost', error))
+    await forumApiFunc.delete(post)
     // アイキャッチ
     if(post.eyecatch.items.length > 0) {
       await forumApiFunc.deleteEyecatch(...post.eyecatch.items)
-      .catch((error) => console.error('deleteForumEyecatch', error))
     }
     // 添付ファイル
     if(post.files.items.length > 0) {
       // TODO: ファイル管理、ストレージにあるデータを残すか要検討
       for (const file of post.files.items ) {
-        await forumApiFunc.deleteFile(file).catch((error) => console.error('deleteForumFile', error))
+        await forumApiFunc.deleteFile(file)
       }
     }
     // URL
     if(post.urls.items.length > 0) {
       for (const url of post.urls.items ) {
-        await forumApiFunc.deleteLink(url).catch((error) => console.error('deleteForumUrl', error))
+        await forumApiFunc.deleteLink(url)
       }
     }
     // タグ
     if(post.tags.items.length > 0) {
       for (const tag of post.tags.items ) {
-        await forumApiFunc.deleteTag(tag).catch((error) => console.error('deleteForumTag', error))
+        await forumApiFunc.deleteTag(tag)
       }
     }
   }

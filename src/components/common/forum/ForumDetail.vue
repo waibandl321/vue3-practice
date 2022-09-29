@@ -64,7 +64,7 @@
     </div>
     <footer class="fixed-footer">
     <div class="back">
-      <v-btn @click="backFunc()">一覧へ戻る</v-btn>
+      <v-btn @click="changeMode('list')">一覧へ戻る</v-btn>
     </div>
     <div class="next">
       <v-btn
@@ -92,9 +92,6 @@ export default {
     const edit = () => {
       props.setEditor(props.params.viewer)
     }
-    const backFunc = () => {
-      props.changeMode('list')
-    }
     const init = async () => {
       if(props.params.viewer.files.items.length === 0) return;
       for (const file of props.params.viewer.files.items) {
@@ -110,7 +107,6 @@ export default {
 
     return {
       edit,
-      backFunc,
     }
   }
 }

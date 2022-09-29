@@ -4,6 +4,8 @@ import InvitationTest from '@/components/test/invitation/InvitationList.vue'
 import LoginUserInfo from '@/components/test/login/UserInfo'
 import InitChatForumFile from '@/components/test/functions/InitChatForumFile.vue'
 import FileUpload from '@/components/test/file/FileUpload.vue'
+import ForumTest from '@/components/test/forum/ForumTest.vue'
+
 export default [
   {
     path: '/test/',
@@ -38,6 +40,12 @@ export default [
         component: FileUpload,
         name: 'file-upload',
         meta: { title: '【テスト】ファイルアップロード' }
+      },
+      {
+        path: 'forum',
+        component: ForumTest,
+        name: 'forum-test',
+        meta: { title: '【テスト】掲示板' }
       }
     ]
   }
