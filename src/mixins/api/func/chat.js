@@ -46,10 +46,11 @@ export default {
     })
   },
   // 現状トークルーム名変更のみ
-  async updateRoom(room, new_room_name) {
+  async updateRoom(room) {
     const filter = {
       id: room.id,
-      room_name: new_room_name
+      room_name: room.room_name,
+      send_notice: room.send_notice ? 0 : 1
     }
     return await API.graphql({
       query: updateChatRoom,

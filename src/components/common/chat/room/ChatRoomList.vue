@@ -60,21 +60,22 @@
         size="large"
         @click="room_add_mode = !room_add_mode"
       >
-        トークルームを追加
+        トークルームを作成
       </v-btn>
     </div>
   </v-card>
   <ChatRoomCreate
     v-if="room_add_mode"
+    :closeRoomCreate="closeRoomCreate"
   />
 </template>
 
 <script>
 import ChatRoomCreate from './ChatRoomCreate.vue'
-import chatApiFunc from '@/mixins/api/func/chat'
-
 import storeAuth from '@/mixins/store/auth.js'
+
 import { ref } from '@vue/reactivity'
+import { inject, watch } from '@vue/runtime-core'
 
 export default {
   components: { ChatRoomCreate },
@@ -86,22 +87,30 @@ export default {
       type: Function
     }
   },
-  
 
   setup(props) {
+    const params = inject('params')
+    const initChatRoom = inject('init-chat-room')
+    const messageSet = inject('message-set')
+
     const rooms = ref([])
     const group_rooms = ref([])
     const personal_rooms = ref([])
+    const room_add_mode = ref(false);
     
-    const init = async () => {
-      try {
-        rooms.value = await chatApiFunc.getCompanyChat().then(res => res.rooms.items)
-        filterRoom()
-      } catch (error) {
-        console.error(error);
-      }
-      // 自分が所属しているルームのみフィルタする
-      function filterRoom() {
+    watch(
+      () => params.rooms,
+      () => {
+        initRoomList()
+      },
+      { deep: true }
+    )
+
+    async function initRoomList() {
+      rooms.value = params.rooms
+      dataShaping()
+
+      function dataShaping() {
         group_rooms.value = rooms.value.filter(v =>
           v.room_type === 0 &&
           v.members.items.find(m => {
@@ -116,7 +125,14 @@ export default {
         )
       }
     }
-    init()
+    initRoomList()
+
+    const closeRoomCreate = async () => {
+      room_add_mode.value = false
+      messageSet('トークルームを作成しました', 'success')
+      initChatRoom()
+      props.changeMode("home");
+    }
 
     const backFunc = () => {
       props.changeMode("home");
@@ -124,16 +140,15 @@ export default {
     const moveRoom = (room) => {
       props.changeRoom(room);
     };
-    // ルーム作成関連
-    const room_add_mode = ref(false);
+    
     
     return {
       backFunc,
       moveRoom,
       room_add_mode,
+      closeRoomCreate,
       group_rooms,
       personal_rooms,
-      init,
     };
   },
 }

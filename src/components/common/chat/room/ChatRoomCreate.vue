@@ -52,23 +52,28 @@
   </v-dialog>
 </template>
 <script>
-import { ref } from '@vue/reactivity'
+import { reactive, ref } from '@vue/reactivity'
 import chatApiFunc from '@/mixins/api/func/chat'
 import utilMixin from '@/mixins/utils/utils.js'
 import { inject } from '@vue/runtime-core'
 
 export default {
-  setup() {
-    const $params = inject('params')
-    const initChatRoom = inject('init-chat-room')
+  props: {
+    closeRoomCreate: {
+      type: Function
+    }
+  },
+  setup(props) {
+    const params = inject('params')
+
+    const modal = ref(true)
     const chat_type = [
       { value: 1, text: '個人' },
       { value: 0, text: 'グループ' },
     ]
     
-    const modal = ref(true)
     // ルーム追加
-    const room_obj = ref({
+    const room_obj = reactive({
       room_name: "",
       room_type: 1,
       send_notice: false
@@ -76,15 +81,15 @@ export default {
     const createChatRoom = async () => {
       modal.value = false
       try {
-        const result = await chatApiFunc.createRooom(room_obj.value, $params.company_chat)
+        const result = await chatApiFunc.createRooom(room_obj, params.company_chat)
         await chatApiFunc.createInitRoomMember(result, utilMixin.currentDateTime())
-        alert('トークルームを作成しました')
+        props.closeRoomCreate()
       } catch (error) {
         console.error(error);
       }
-      initChatRoom()
-      room_obj.value = {}
+      // room_obj = {}
     }
+
     return {
       chat_type,
       modal,

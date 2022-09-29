@@ -1,6 +1,10 @@
 <template>
   <div class="chat-main">
     {{ params.view_room }}
+    <AppAlert
+      :success="params.success"
+      :error="params.error"
+    />
     <!-- ルーム設定 -->
     <v-card-actions>
       <v-card-title>{{ params.view_room.room_name }}</v-card-title>
@@ -24,9 +28,9 @@
           <v-list-item
             density="compact"
             link
-            @click="chat_room_edit = !chat_room_edit"
+            @click="chat_room_edit = true"
           >
-            トークルーム名を修正
+            トークルーム編集
           </v-list-item>
           <v-list-item
             density="compact"
@@ -268,6 +272,7 @@ import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
 
 import OverlayLoading from '../OverlayLoading.vue'
+import AppAlert from '@/components/common/AppAlert.vue';
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
 import ChatMemberSelect from './member/ChatMemberSelect.vue'
@@ -276,6 +281,7 @@ import ChatMemberSelect from './member/ChatMemberSelect.vue'
 export default {
   components: {
     FIleSelectModal,
+    AppAlert,
     OverlayLoading,
     ChatRoomEdit,
     ChatMemberSelect,
@@ -287,8 +293,11 @@ export default {
     }
   },
   setup(props) {
-    const initChatRoom = inject('init-chat-room')
+    // provide / inject
     const params = inject('params')
+    const initChatRoom = inject('init-chat-room')
+    const messageSet = inject('message-set')
+    
     const room_members = params.view_room.members.items
     const company_employees = params.company_chat.company_employees.items
     // トークルーム変更時のメッセージ読み込み
@@ -326,22 +335,24 @@ export default {
       const employee = company_employees.find(v => v.staff_id === staff_id)
       return employee.last_name + employee.first_name;
     }
-    
 
     // トークルーム削除
+    // TODO: メッセージも削除する
     const deleteChatRoom = async () => {
+      loading.value = true
       try {
         await chatApiFunc.deleteRoom(params.view_room)
         for (const member of room_members) {
           await chatApiFunc.deleteRoomMember(member) 
         }
-        alert('チャットルームを削除しました')
+        messageSet('チャットルームを削除しました', 'success')
         initChatRoom()
+        props.changeMode('home')
       } catch (error) {
+        messageSet(error, 'error')
         console.error(error);
       }
       loading.value = false
-      props.changeMode('home')
     }
     // メンバー
     const member_modal = ref(false)
@@ -351,15 +362,16 @@ export default {
 
     // ルーム更新
     const chat_room_edit = ref(false)
-    const closeEditRoom = async () => {
-      // トークルーム情報再取得
-      try {
-        const result = await chatApiFunc.getRoomDetail(params.view_room)
-        params.view_room = result.data.getChatRoom
-      } catch (error) {
-        console.error(error);
+    const closeEditRoom = async (result = undefined, update = false) => {
+      chat_room_edit.value = false
+      if(result) {
+        params.view_room = result
+      }
+      if(update) {
+        initChatRoom()
       }
     }
+
     // メッセージ取得
     const chat_messages = ref([])
     const message_loading = ref(false)
@@ -414,6 +426,7 @@ export default {
       }
     }
     getChatMessages()
+
     // 画像遅延読み込み
     watch(
       () => chat_messages.value,
@@ -422,6 +435,7 @@ export default {
         return;
       }
     )
+
     // ファイルプレビュー
     async function getChatFilePreview (groups) {
       for (const group of groups) {
@@ -441,10 +455,12 @@ export default {
         return await utilMixin.getImageObjectURL(requset_url)
       }
     }
+
     // 削除スタッフ判定
     const judgePoster = (poster_id) => {
       return storeAuth.storeGetStaffId() === poster_id
     }
+
     // メッセージ削除
     const deleteMessage = async (message) => {
       if(!confirm('削除後は復元できません。よろしいですか？')) return
@@ -483,7 +499,8 @@ export default {
         return groups
       }
     }
-    // メッセージ送信
+
+    // メッセージ
     let message = reactive({
       text: "",
       urls: [],
@@ -507,11 +524,12 @@ export default {
     // 初期化
     function resetMessage() {
       message.text = ""
-        message.urls = []
-        message.files = []
-        url_obj.url_key = ""
-        url_obj.url_value = ""
+      message.urls = []
+      message.files = []
+      url_obj.url_key = ""
+      url_obj.url_value = ""
     }
+    
     // メッセージ送信
     const sendMessage = async () => {
       try {
@@ -542,6 +560,7 @@ export default {
         }
       }
     };
+
     // ファイル関連
     const changeAttachment = (event) => {
       message.files.push(...event.target.files)

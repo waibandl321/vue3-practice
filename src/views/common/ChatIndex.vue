@@ -4,7 +4,6 @@
     <ChatList
       :changeMode="changeMode"
       :changeRoom="changeRoom"
-      ref="roomlistRef"
     />
     <ChatHome
       v-if="mode === 'home'"
@@ -12,7 +11,6 @@
     <ChatRoom
       v-if="mode === 'room'"
       :changeMode="changeMode"
-      ref="roomViewRef"
     />
   </v-main>
 </template>
@@ -42,46 +40,52 @@ export default {
       company_employees: [],
       company_chat: {},
       view_room: null,
-      rooms: []
+      rooms: [],
+
+      success: "",
+      error: ""
     })
     // 初回読み込み
-    const init = async () => {
+    const initChatRoom = async () => {
       loading.value = true
       try {
         params.company_chat = await chatApiFunc.getCompanyChat()
+        params.rooms = params.company_chat.rooms.items
       } catch (error) {
         console.error(error);
       }
       loading.value = false
     }
-    init()
-    // 一覧更新
-    const roomlistRef = ref()
-    const initChatRoom = async () => {
-      await roomlistRef.value.init()
-    }
+    initChatRoom()
+
     // 表示モード切り替え
     const mode = ref('home')
     const changeMode = (_mode) => {
       mode.value = _mode
     }
-    const roomViewRef = ref()
+
     const changeRoom = (room) => {
+      params.view_room = {}
+      params.success = ""
+      params.error = ""
       params.view_room = room
       mode.value = 'room'
     }
+
+    const messageSet = (message, type) => {
+      params[type] = message
+    }
+
     // データ共有
     provide('params', params)
     provide('init-chat-room', initChatRoom)
+    provide('message-set', messageSet)
 
     return {
       loading,
       mode,
       changeMode,
       changeRoom,
-      params,
-      roomlistRef,
-      roomViewRef
     }
   }
 }
