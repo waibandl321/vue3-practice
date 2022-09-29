@@ -176,11 +176,11 @@
             </v-card-actions>
           </v-card>
         </v-menu>
-        <div>
+        <!-- <div>
           <DiscordPicker
             @emoji="setEmoji"
           />
-        </div>
+        </div> -->
       </div>
       <div class="d-flex align-end">
         <v-textarea
@@ -271,7 +271,7 @@ import OverlayLoading from '../OverlayLoading.vue'
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
 import ChatMemberSelect from './member/ChatMemberSelect.vue'
-import DiscordPicker from 'vue3-discordpicker'
+// import DiscordPicker from 'vue3-discordpicker'
 
 export default {
   components: {
@@ -279,7 +279,7 @@ export default {
     OverlayLoading,
     ChatRoomEdit,
     ChatMemberSelect,
-    DiscordPicker
+    // DiscordPicker
   },
   props: {
     changeMode: {
@@ -501,9 +501,9 @@ export default {
     }
     const file_select_modal = ref(false);
     // 絵文字
-    const setEmoji = (emoji) => {
-      message.text += emoji
-    }
+    // const setEmoji = (emoji) => {
+    //   message.text += emoji
+    // }
     // 初期化
     function resetMessage() {
       message.text = ""
@@ -574,7 +574,7 @@ export default {
       // メッセージ送信
       message,
       file_select_modal,
-      setEmoji,
+      // setEmoji,
       sendMessage,
       // メッセージ削除
       deleteMessage,
