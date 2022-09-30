@@ -1,13 +1,13 @@
 <template>
   <div class="chat-main">
-    {{ params.view_room }}
+    <!-- {{ params }} -->
     <AppAlert
       :success="params.success"
       :error="params.error"
     />
     <!-- ルーム設定 -->
-    <v-card-actions>
-      <v-card-title>{{ params.view_room.room_name }}</v-card-title>
+    <v-card-actions class="chat-room-head">
+      <v-card-title>{{ params.room_viewer.room_name }}</v-card-title>
       <v-menu>
         <template v-slot:activator="{ props }">
           <v-btn
@@ -26,13 +26,15 @@
             メンバー
           </v-list-item>
           <v-list-item
+            v-if="judgeRoomOwner(params.room_viewer.owner_staff_id)"
             density="compact"
             link
-            @click="chat_room_edit = true"
+            @click="roomEdit()"
           >
             トークルーム編集
           </v-list-item>
           <v-list-item
+            v-if="judgeRoomOwner(params.room_viewer.owner_staff_id)"
             density="compact"
             link
             @click="deleteChatRoom()"
@@ -42,7 +44,6 @@
         </v-list>
       </v-menu>
     </v-card-actions>
-    <v-divider></v-divider>
     <!-- メッセージリスト -->
     <div class="chat-messages">
       <v-progress-linear
@@ -50,67 +51,65 @@
         indeterminate
         color="green"
       ></v-progress-linear>
-      <template v-else>
-        <v-list
-          v-for="(group, g) in chat_messages"
-          :key="g"
+      <v-list
+        v-for="(group, g) in chat_messages"
+        :key="g"
+      >
+        <v-list-subheader>【{{ group.date }}】</v-list-subheader>
+        <v-list-item
+          v-for="(message, m) in group.messages"
+          :key="m"            
+          prepend-icon="mdi-account"
+          :subtitle="posterStaffName(message.poster_ids)"
+          class="chat-message"
         >
-          <v-list-subheader>【{{ group.date }}】</v-list-subheader>
-          <v-list-item
-            v-for="(message, m) in group.messages"
-            :key="m"            
-            prepend-icon="mdi-account"
-            :subtitle="posterStaffName(message.poster_ids)"
-            class="chat-message"
+          <!-- 削除同線 -->
+          <v-menu
+            v-if="judgePoster(message.poster_ids)"
           >
-            <!-- 削除同線 -->
-            <v-menu
-              v-if="judgePoster(message.poster_ids)"
-            >
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  variant="text"
-                  v-bind="props"
-                  icon="mdi-dots-horizontal"
-                  size="small"
-                  class="chat-message-setting"
-                ></v-btn>
-              </template>
-              <v-list>
-                <v-list-item
-                  density="compact"
-                  link
-                  @click="deleteMessage(message)"
-                >
-                  メッセージを削除
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <v-list-item-title class="white-space-wrap">{{ message.post_text }}</v-list-item-title>
-            <div v-if="message.files.items.length > 0">
-              <v-img
-                v-for="(file, i) in message.files.items"
-                :key="i"
-                :src="file.preview_src"
-                width="150"
-              ></v-img>
-            </div>
-            <div v-if="message.urls.items.length > 0">
-              <div
-                v-for="url in message.urls.items"
-                :key="url.id"
-                class="mt-2"
+            <template v-slot:activator="{ props }">
+              <v-btn
+                variant="text"
+                v-bind="props"
+                icon="mdi-dots-horizontal"
+                size="small"
+                class="chat-message-setting"
+              ></v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                density="compact"
+                link
+                @click="deleteChatMessage(message)"
               >
-                <a
-                  :href="url.url_value"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >{{ url.url_key }}</a>
-              </div>
+                メッセージを削除
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <v-list-item-title class="white-space-wrap">{{ message.post_text }}</v-list-item-title>
+          <div v-if="message.files.items.length > 0">
+            <v-img
+              v-for="(file, i) in message.files.items"
+              :key="i"
+              :src="file.preview_src"
+              width="150"
+            ></v-img>
+          </div>
+          <div v-if="message.urls.items.length > 0">
+            <div
+              v-for="url in message.urls.items"
+              :key="url.id"
+              class="mt-2"
+            >
+              <a
+                :href="url.url_value"
+                target="_blank"
+                rel="noopener noreferrer"
+              >{{ url.url_key }}</a>
             </div>
-          </v-list-item>
-        </v-list>
-      </template>
+          </div>
+        </v-list-item>
+      </v-list>
     </div>
 
     <!-- メッセージ送信 -->
@@ -136,7 +135,7 @@
               link
               title="ファイル管理から選択"
               density="compact"
-              @click="file_select_modal = !file_select_modal"
+              @click="file_select_modal = true"
             ></v-list-item>
           </v-list>
         </v-menu>
@@ -225,58 +224,54 @@
       </v-card-item>
     </v-card>
   </div>
-
   <!-- input file 擬似要素 -->
   <v-file-input
     ref="triggerFile"
     class="d-none"
     @change="changeAttachment"
   ></v-file-input>
-
   <!-- ファイル管理から選択 -->
   <template v-if="file_select_modal">
     <FIleSelectModal
       :file-select-modal="file_select_modal"
-      :dir-top="dir_top"
+      :dir-top="params.dir_top"
       :isSelectedFile="isSelectedFile"
       :closeFileSelectModal="closeFileSelectModal"
     />
   </template>
-  
   <!-- メンバー -->
   <ChatMemberSelect
     v-if="member_modal"
-    :viewRoom="params.view_room"
+    :viewRoom="params.room_viewer"
     :closeMemberModal="closeMemberModal"
   />
-  
   <!-- ルーム編集 -->
-  <ChatRoomEdit 
-    v-if="chat_room_edit"
-    :closeEditRoom="closeEditRoom"
-  />
-
-  <!-- ローディング -->
-  <OverlayLoading v-if="loading" />
+  <v-dialog v-model="chat_room_edit">
+    <ChatRoomEdit 
+      :closeRoomEdit="closeRoomEdit"
+    />
+  </v-dialog>
+  <OverlayLoading v-if="loading || params.loading" />
 </template>
 
 <script>
-import { ref, reactive } from '@vue/reactivity'
-import { inject, onBeforeMount, watch } from '@vue/runtime-core'
-import { uuid } from 'vue-uuid'
-
-import chatMixin from './chat_mixin'
-import fileApiFunc from '@/mixins/api/func/file'
-import chatApiFunc from '@/mixins/api/func/chat'
-import utilMixin from '@/mixins/utils/utils.js'
-import storeAuth from '@/mixins/store/auth.js'
-
 import OverlayLoading from '../OverlayLoading.vue'
 import AppAlert from '@/components/common/AppAlert.vue';
 import FIleSelectModal from '../modal/FIleSelectModal.vue'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
 import ChatMemberSelect from './member/ChatMemberSelect.vue'
 // import DiscordPicker from 'vue3-discordpicker'
+
+import { ref, reactive } from '@vue/reactivity'
+import { inject, watch } from '@vue/runtime-core'
+import _ from 'lodash'
+
+import chatMixin from './chat_mixin'
+import chatApiFunc from '@/mixins/api/func/chat'
+import utilMixin from '@/mixins/utils/utils.js'
+import storeAuth from '@/mixins/store/auth.js'
+
+
 
 export default {
   components: {
@@ -290,6 +285,9 @@ export default {
   props: {
     changeMode: {
       type: Function
+    },
+    refreshRoomList: {
+      type: Function
     }
   },
   setup(props) {
@@ -298,24 +296,19 @@ export default {
     const initChatRoom = inject('init-chat-room')
     const messageSet = inject('message-set')
     
-    const room_members = params.view_room.members.items
-    const company_employees = params.company_chat.company_employees.items
+    const room_members = params.room_viewer.members.items
+    
     // トークルーム変更時のメッセージ読み込み
     watch(
-      () => params.view_room,
+      () => params.room_viewer,
       () => {
         resetMessage()
         getChatMessages()
         updateLastAccess()
-      }
+      },
+      { deep: true }
     )
     const loading = ref(false);
-    
-    // ファイル選択用でディレクトリ情報事前読み込み
-    const dir_top = ref({})
-    onBeforeMount(async () => {
-      dir_top.value = await fileApiFunc.apiGetDirTop()
-    })
 
     // ルーム訪問履歴記録
     const updateLastAccess = async () => {
@@ -332,55 +325,18 @@ export default {
 
     // 送信者名取得
     const posterStaffName = (staff_id) => {
-      const employee = company_employees.find(v => v.staff_id === staff_id)
+      const employee = params.company_employees.find(v => v.staff_id === staff_id)
       return employee.last_name + employee.first_name;
     }
 
-    // トークルーム削除
-    // TODO: メッセージも削除する
-    const deleteChatRoom = async () => {
-      loading.value = true
-      try {
-        await chatApiFunc.deleteRoom(params.view_room)
-        for (const member of room_members) {
-          await chatApiFunc.deleteRoomMember(member) 
-        }
-        messageSet('チャットルームを削除しました', 'success')
-        initChatRoom()
-        props.changeMode('home')
-      } catch (error) {
-        messageSet(error, 'error')
-        console.error(error);
-      }
-      loading.value = false
-    }
-    // メンバー
-    const member_modal = ref(false)
-    const closeMemberModal = () => {
-      member_modal.value = false
-    }
-
-    // ルーム更新
-    const chat_room_edit = ref(false)
-    const closeEditRoom = async (result = undefined, update = false) => {
-      chat_room_edit.value = false
-      if(result) {
-        params.view_room = result
-      }
-      if(update) {
-        initChatRoom()
-      }
-    }
-
-    // メッセージ取得
+    // メッセージ一覧
     const chat_messages = ref([])
     const message_loading = ref(false)
-    // メッセージ一覧取得
-    // TODO: 日付順にソート
+    // 取得
     const getChatMessages = async () => {
       message_loading.value = true
       try {
-        let results = await chatApiFunc.getMessages(params.view_room)
+        let results = await chatApiFunc.getMessages(params.room_viewer)
         // 日付グルーピング
         if(results.length > 0) {
           results = reduceArrayGroupDate(results)
@@ -432,9 +388,14 @@ export default {
       () => chat_messages.value,
       async () => {
         chat_messages.value = await getChatFilePreview(chat_messages.value)
+        scrollEnd()
         return;
       }
     )
+    // スクロール
+    function scrollEnd() {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
 
     // ファイルプレビュー
     async function getChatFilePreview (groups) {
@@ -457,35 +418,89 @@ export default {
     }
 
     // 削除スタッフ判定
+    const judgeRoomOwner = (owner_staff_id) => {
+      return storeAuth.storeGetStaffId() === owner_staff_id
+    }
     const judgePoster = (poster_id) => {
       return storeAuth.storeGetStaffId() === poster_id
     }
 
-    // メッセージ削除
-    const deleteMessage = async (message) => {
-      if(!confirm('削除後は復元できません。よろしいですか？')) return
+    // トークルーム更新
+    const chat_room_edit = ref(false)
+    const roomEdit = () => {
+      chat_room_edit.value = true
+      params.room_editor = _.cloneDeep(params.room_viewer)
+    }
+    const closeRoomEdit = async (result = undefined, update = false) => {
+      chat_room_edit.value = false
+      if(result) {
+        params.room_viewer = result
+      }
+      if(update) {
+        props.refreshRoomList()
+      }
+    }
+
+    // トークルーム削除
+    const deleteChatRoom = async () => {
+      if(!confirm('トークルームを削除するとメッセージも同時に削除されます。削除後は復元できません。よろしいですか？')) return;
       loading.value = true
       try {
-        await deleteMessage(message)
-        await deleteFiles(message)
-        await deleteUrls(message)
-        chat_messages.value = afterDeleteMessageInit(message, chat_messages.value)
+        await chatApiFunc.deleteRoom(params.room_viewer)
+        await _deleteMembers()
+        await _deleteMessages()
+        messageSet('チャットルームを削除しました', 'success')
+        initChatRoom()
+        props.changeMode('home')
       } catch (error) {
-        console.log(error);
+        messageSet(error, 'error')
+        console.error(error);
       }
       loading.value = false
 
-      async function deleteMessage (message) {
-        await chatApiFunc.deleteChatMessage(message)
+      async function _deleteMembers () {
+        for (const member of room_members) {
+          await chatApiFunc.deleteRoomMember(member) 
+        }
       }
-      async function deleteFiles (message) {
+      async function _deleteMessages() {
+        if(chat_messages.value.length === 0) return;
+        for (const group of chat_messages.value) {
+          for( const message of group.messages ) {
+            deleteChatMessage(message)
+          }
+        }
+      }
+    }
+
+    // メンバー
+    const member_modal = ref(false)
+    const closeMemberModal = () => {
+      member_modal.value = false
+    }
+
+    // メッセージ削除
+    const deleteChatMessage = async (message) => {
+      console.log('delete message', message);
+      loading.value = true
+      try {
+        await chatApiFunc.deleteChatMessage(message)
+        await _deleteFiles(message)
+        await _deleteUrls(message)
+        chat_messages.value = afterDeleteMessageInit(message, chat_messages.value)
+      } catch (error) {
+        console.error(error);
+      }
+      loading.value = false
+
+      async function _deleteFiles (message) {
         const files = message.files.items
         if(files.length === 0) return;
         for (const file of files) {
           await chatApiFunc.deleteChatFile(file)
         }
       }
-      async function deleteUrls (message) {
+      async function _deleteUrls (message) {
         const urls = message.urls.items
         if(urls.length === 0) return;
         for (const url of urls) {
@@ -500,7 +515,7 @@ export default {
       }
     }
 
-    // メッセージ
+    // メッセージ送信
     let message = reactive({
       text: "",
       urls: [],
@@ -512,28 +527,22 @@ export default {
     })
     const url_setting = ref(false);
     const setUrl = () => {
-      url_obj.id = uuid.v4()
+      url_obj.id = utilMixin.UUID_V4()
       message.urls.push(url_obj)
       url_setting.value = false
     }
-    const file_select_modal = ref(false);
+    
     // 絵文字
     // const setEmoji = (emoji) => {
     //   message.text += emoji
     // }
-    // 初期化
-    function resetMessage() {
-      message.text = ""
-      message.urls = []
-      message.files = []
-      url_obj.url_key = ""
-      url_obj.url_value = ""
-    }
     
-    // メッセージ送信
+    // 送信！
     const sendMessage = async () => {
       try {
-        const post = await chatApiFunc.createChatMessage(params.view_room, message.text)
+        const post = await chatApiFunc.createChatMessage(params.room_viewer, message.text)
+        // MEMO: 画像とURL保存を待っていると時間がかかるので先にメッセージだけ表示させる
+        chat_messages.value.slice(-1)[0].messages.push(post)
         await createChatFiles(post)
         await createChatUrls(post)
       } catch (error) {
@@ -548,7 +557,7 @@ export default {
           let file_store = undefined
           if(!file.id) {
             file.data_url = await chatMixin.mixinUploadChatFile(file, "chat")
-            file_store = await chatMixin.mixinSaveChatFileDatabase(dir_top.value, file, file.data_url, "chat")
+            file_store = await chatMixin.mixinSaveChatFileDatabase(params.dir_top, file, file.data_url, "chat")
           }
           await chatApiFunc.createChatFile(post, file, file_store)
         }
@@ -560,8 +569,17 @@ export default {
         }
       }
     };
+    // メッセージ初期化
+    function resetMessage() {
+      message.text = ""
+      message.urls = []
+      message.files = []
+      url_obj.url_key = ""
+      url_obj.url_value = ""
+    }
 
     // ファイル関連
+    const file_select_modal = ref(false);
     const changeAttachment = (event) => {
       message.files.push(...event.target.files)
     };
@@ -575,15 +593,16 @@ export default {
 
     return {
       params,
-      // view_room,
       loading,
       // ルーム編集
       chat_room_edit,
-      closeEditRoom,
+      roomEdit,
+      closeRoomEdit,
       // ルームメンバー確認・追加
       member_modal,
       closeMemberModal,
       // ルーム削除
+      judgeRoomOwner,
       deleteChatRoom,
       // メッセージ取得
       message_loading,
@@ -596,13 +615,12 @@ export default {
       // setEmoji,
       sendMessage,
       // メッセージ削除
-      deleteMessage,
+      deleteChatMessage,
       // URL
       url_obj,
       url_setting,
       setUrl,
       // ファイル管理から選択
-      dir_top,
       changeAttachment,
       closeFileSelectModal,
       isSelectedFile,
@@ -614,22 +632,19 @@ export default {
 .chat-main {
   width: calc(100% - 300px);
 }
-.chat-messages {
-  padding-bottom: 250px;
+.chat-room-head {
+  position: sticky;
+  z-index: 2;
+  top: 48px;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
 }
 .chat-message {
   padding-top: 8px;
   padding-bottom: 8px;
 }
 .chat-post {
-  background: #fff;
-  bottom: 0;
-  position: fixed;
   padding: 8px 16px;
-  left: 300px;
-  overflow: visible;
-  right: 0;
-  z-index: 2;
 }
 .chat-post >>> .v-input__append {
   align-items: flex-end;

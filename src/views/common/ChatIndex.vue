@@ -4,6 +4,7 @@
     <ChatList
       :changeMode="changeMode"
       :changeRoom="changeRoom"
+      ref="chatRoomList"
     />
     <ChatHome
       v-if="mode === 'home'"
@@ -11,6 +12,7 @@
     <ChatRoom
       v-if="mode === 'room'"
       :changeMode="changeMode"
+      :refreshRoomList="refreshRoomList"
     />
   </v-main>
 </template>
@@ -22,9 +24,10 @@ import ChatHome from '@/components/common/chat/ChatHome.vue';
 import ChatRoom from '@/components/common/chat/ChatRoom.vue';
 
 import chatApiFunc from '@/mixins/api/func/chat'
+import fileApiFunc from '@/mixins/api/func/file'
 
 import { ref, reactive } from 'vue';
-import { provide } from '@vue/runtime-core';
+import { onBeforeMount, provide } from '@vue/runtime-core';
 
 export default {
   name: 'chat-view',
@@ -35,22 +38,40 @@ export default {
     ChatRoom
   },
   setup () {
+    const chatRoomList = ref()
     const loading = ref(false)
     const params = reactive({
       company_employees: [],
-      company_chat: {},
-      view_room: null,
-      rooms: [],
+      dir_top: "",
 
+      company_chat: {},
+      rooms: [],
+      
+      room_viewer: {},
+      room_editor: {},
+
+      loading: "",
       success: "",
       error: ""
     })
-    // 初回読み込み
+
+    // ファイル管理ディレクトリ
+    onBeforeMount( async () => {
+      try {
+        params.dir_top = await fileApiFunc.apiGetDirTop()
+      } catch (error) {
+        console.error(error);
+      }
+    })
+
+    // チャットデータ読み込み
     const initChatRoom = async () => {
       loading.value = true
       try {
-        params.company_chat = await chatApiFunc.getCompanyChat()
-        params.rooms = params.company_chat.rooms.items
+        const result = await chatApiFunc.getCompanyChat()
+        params.company_chat = result
+        params.rooms = result.rooms.items
+        params.company_employees = result.company_employees.items
       } catch (error) {
         console.error(error);
       }
@@ -58,17 +79,22 @@ export default {
     }
     initChatRoom()
 
+    const refreshRoomList = async () => {
+      params.rooms = await chatApiFunc.getChatRooms(params.company_chat.id)
+    }
+
     // 表示モード切り替え
     const mode = ref('home')
     const changeMode = (_mode) => {
       mode.value = _mode
     }
 
+    // トークルーム切り替え
     const changeRoom = (room) => {
-      params.view_room = {}
+      params.room_viewer = {}
       params.success = ""
       params.error = ""
-      params.view_room = room
+      params.room_viewer = room
       mode.value = 'room'
     }
 
@@ -82,10 +108,12 @@ export default {
     provide('message-set', messageSet)
 
     return {
+      chatRoomList,
       loading,
       mode,
       changeMode,
       changeRoom,
+      refreshRoomList,
     }
   }
 }

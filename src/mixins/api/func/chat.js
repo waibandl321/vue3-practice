@@ -2,7 +2,7 @@ import { API } from 'aws-amplify'
 import { createChat, createChatRoom, createChatRoomMember, createChatPost, createChatFile, createChatUrl,
   updateChatRoom, updateChatRoomMember,
   deleteChatRoom, deleteChatRoomMember, deleteChatPost, deleteChatFile, deleteChatUrl } from '@/graphql/mutations'
-import { listChats, getChatRoom, listChatPosts, listChatRoomMembers } from '@/graphql/queries'
+import { listChats, listChatRooms, getChatRoom, listChatPosts, listChatRoomMembers } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
 
@@ -35,6 +35,18 @@ export default {
       variables: { filter: filter }
     })
     return results.data.listChats.items[0]
+  },
+  async getChatRooms (_chat_id) {
+    const filter = {
+      chat_id: {
+        eq: _chat_id
+      }
+    }
+    const results = await API.graphql({
+      query: listChatRooms,
+      variables: { filter: filter }
+    })
+    return results.data.listChatRooms.items
   },
   async createRooom (_room, company_chat) {
     const room = this.generateChatRoomObject(_room, company_chat)
@@ -144,7 +156,7 @@ export default {
     }
   },
   async updateChatMember (current_member, last_access_datetime) {
-    console.log("last access log member", current_member);
+    // console.log("last access log member", current_member);
     const filter = {
       id: current_member.id,
       last_access: last_access_datetime

@@ -1,4 +1,5 @@
 import crypto from 'crypto-js';
+import { uuid } from 'vue-uuid';
 export default {
   methods: {
     getCompanyTypes () {
@@ -28,6 +29,10 @@ export default {
     getPermanentText (value) {
       return Permanents.find(v => v.value === value).text
     },
+  },
+  // uuid
+  UUID_V4 () {
+    return uuid.v4()
   },
   // 暗号化
   cryptoData (value) {

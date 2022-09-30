@@ -75,6 +75,59 @@ export const listAccounts = /* GraphQL */ `
         createdAt
         updatedAt
         associate {
+          items {
+            id
+            associate_id
+            account_id
+            invite_key
+            company_group_cd
+            status
+            delete
+            createdAt
+            updatedAt
+            staffs {
+              items {
+                id
+                staff_id
+                associate_id
+                company_cd
+                company_group_cd
+                invite_key
+                status
+                delete
+                createdAt
+                updatedAt
+                roles {
+                  items {
+                    id
+                    role_cd
+                    staff_id
+                    company_cd
+                    status
+                    delete
+                    createdAt
+                    updatedAt
+                  }
+                  nextToken
+                }
+                positions {
+                  items {
+                    id
+                    staff_position_id
+                    position_cd
+                    staff_id
+                    company_cd
+                    status
+                    delete
+                    createdAt
+                    updatedAt
+                  }
+                  nextToken
+                }
+              }
+              nextToken
+            }
+          }
           nextToken
         }
       }
@@ -1801,9 +1854,33 @@ export const listChatRooms = /* GraphQL */ `
         createdAt
         updatedAt
         members {
+          items {
+            id
+            room_id
+            member_id
+            send_notice
+            room_name
+            ignore
+            last_access
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         posts {
+          items {
+            id
+            chat_key
+            room_id
+            attached
+            post_text
+            url_links
+            poster_ids
+            mentions
+            delete
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }

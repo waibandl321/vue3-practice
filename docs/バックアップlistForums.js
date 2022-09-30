@@ -1867,9 +1867,33 @@ export const listChatRooms = /* GraphQL */ `
         createdAt
         updatedAt
         members {
+          items {
+            id
+            room_id
+            member_id
+            send_notice
+            room_name
+            ignore
+            last_access
+            createdAt
+            updatedAt
+          }
           nextToken
         }
         posts {
+          items {
+            id
+            chat_key
+            room_id
+            attached
+            post_text
+            url_links
+            poster_ids
+            mentions
+            delete
+            createdAt
+            updatedAt
+          }
           nextToken
         }
       }
