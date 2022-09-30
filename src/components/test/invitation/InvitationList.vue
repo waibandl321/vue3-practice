@@ -30,7 +30,7 @@
   </v-main>
 </template>
 <script>
-import PcHeader from '@/components/common/PcHeader.vue';
+import PcHeader from '@/components/common/AppHeader.vue';
 import { API } from 'aws-amplify'
 import { listInvitations } from '@/graphql/queries'
 import { ref } from 'vue'

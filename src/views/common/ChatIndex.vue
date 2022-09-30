@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import ChatList from '@/components/common/chat/room/ChatRoomList.vue';
 import ChatHome from '@/components/common/chat/ChatHome.vue';
 import ChatRoom from '@/components/common/chat/ChatRoom.vue';

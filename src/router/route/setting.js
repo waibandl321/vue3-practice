@@ -14,7 +14,7 @@ export default [
     path: '/setting/services',
     name: 'setting-services',
     component: SettingServices,
-    meta: { title: 'ポータル サービス' }
+    meta: { title: 'サービス一覧' }
   },
   {
     path: '/setting/account',

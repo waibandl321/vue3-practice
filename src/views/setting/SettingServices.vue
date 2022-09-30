@@ -5,7 +5,7 @@
   </v-main>
 </template>
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import ServiceList from '@/components/setting/service/ServiceList.vue'
 export default {
   name: 'setting-services',

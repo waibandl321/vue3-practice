@@ -36,7 +36,7 @@ import { ref } from '@vue/reactivity'
 import Storage from '@aws-amplify/storage'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import storeAuth from '@/mixins/store/auth'
-import PcHeader from '@/components/common/PcHeader.vue'
+import PcHeader from '@/components/common/AppHeader.vue'
 
 export default {
   name: "file-upload",

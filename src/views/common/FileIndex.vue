@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import { ref } from '@vue/reactivity';
 import FileList from '@/components/common/file/FileList.vue';
 import FileListTrash from '@/components/common/file/FileListTrash.vue';

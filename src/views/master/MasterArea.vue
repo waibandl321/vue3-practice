@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import AreaList from '@/components/master/area/AreaList.vue'
 import AreaDetail from '@/components/master/area/AreaDetail.vue'
 import AreaEdit from '@/components/master/area/AreaEdit.vue'

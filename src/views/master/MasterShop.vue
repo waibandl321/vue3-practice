@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import ShopList from '@/components/master/shop/ShopList.vue'
 import ShopEdit from '@/components/master/shop/ShopEdit.vue'
 import ShopDetail from '../../components/master/shop/ShopDetail.vue'

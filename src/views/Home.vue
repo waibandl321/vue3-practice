@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import { useRouter } from 'vue-router'
 
 export default {

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import RoleList from '@/components/master/role/RoleList.vue'
 import { ref } from '@vue/reactivity'
 

@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import EmployeeList from '@/components/master/employee/EmployeeList.vue'
 import EmployeeDetail from '@/components/master/employee/EmployeeDetail.vue'
 import EmployeeEdit from '@/components/master/employee/EmployeeEdit.vue'

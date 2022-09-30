@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import CompanyList from '@/components/master/company/CompanyList.vue'
 import CompanyDetail from '@/components/master/company/CompanyDetail.vue'
 import CompanyEdit from '@/components/master/company/CompanyEdit.vue'

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import PcHeader from '@/components/common/PcHeader.vue';
+import PcHeader from '@/components/common/AppHeader.vue';
 import companyApiFunc from '@/mixins/api/master/company.js'
 import chatApiFunc from '@/mixins/api/func/chat.js'
 import forumApiFunc from '@/mixins/api/func/forum.js'

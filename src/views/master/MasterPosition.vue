@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import PositionList from '@/components/master/position/PositionList.vue'
 import PositionDetail from '@/components/master/position/PositionDetail.vue'
 import PositionEdit from '@/components/master/position/PositionEdit.vue'

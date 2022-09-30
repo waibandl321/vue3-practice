@@ -12,48 +12,48 @@ export default [
     path: '/master/company',
     name: 'master-company',
     component: MasterCompany,
-    meta: { title: 'マスタ 企業' }
-  },
-  {
-    path: '/master/employee',
-    name: 'master-employee',
-    component: MasterEmployee,
-    meta: { title: 'マスタ 従業員' }
+    meta: { title: '企業' }
   },
   {
     path: '/master/brand',
     name: 'master-brand',
     component: MasterBrand,
-    meta: { title: 'マスタ ブランド' }
+    meta: { title: 'ブランド' }
   },
   {
     path: '/master/area',
     name: 'master-area',
     component: MasterArea,
-    meta: { title: 'マスタ エリア' }
+    meta: { title: 'エリア' }
   },
   {
     path: '/master/position',
     name: 'master-position',
     component: MasterPosition,
-    meta: { title: 'マスタ ポジション' }
+    meta: { title: 'ポジション' }
   },
   {
     path: '/master/shop',
     name: 'master-shop',
     component: MasterShop,
-    meta: { title: 'マスタ 店舗' }
+    meta: { title: '店舗' }
+  },
+  {
+    path: '/master/employee',
+    name: 'master-employee',
+    component: MasterEmployee,
+    meta: { title: '従業員' }
   },
   {
     path: '/master/role',
     name: 'master-role',
     component: MasterRole,
-    meta: { title: 'マスタ ロール' }
+    meta: { title: 'ロール' }
   },
   {
     path: '/master/facility',
     name: 'master-facility',
     component: MasterFacility,
-    meta: { title: 'マスタ 店舗設備' }
+    meta: { title: '店舗設備' }
   }
 ]

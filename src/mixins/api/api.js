@@ -1,12 +1,18 @@
 // 各種API処理コール用
 // MEMO: 各コンポーネント内に複数のAPI処理ファイルが乱立すると保守性が下がるので、
 // 基本的にAPI関連処理は当該ファイルに一纏めにする。
+import api_auth from '@/mixins/api/auth.js'
 import api_forum from '@/mixins/api/func/forum'
 import api_chat from '@/mixins/api/func/chat'
 import api_file from '@/mixins/api/func/file'
 import api_storage from '@/mixins/storage/storage.js'
 
+
 export default {
+  // 認証
+  async apiSignOut () {
+    return await api_auth.signout()
+  },
   // ストレージ
   apiStorageUploadFunctionFile (file, function_cd) {
     return api_storage.storageUploadFunctionFile(file, function_cd)

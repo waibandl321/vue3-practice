@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import ForumList from '@/components/common/forum/ForumList.vue';
 import ForumDetail from '@/components/common/forum/ForumDetail.vue';
 import ForumEdit from '@/components/common/forum/ForumEdit.vue';

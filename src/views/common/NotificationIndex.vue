@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 import { ref } from '@vue/reactivity'
 export default {
   name: 'notification-index',

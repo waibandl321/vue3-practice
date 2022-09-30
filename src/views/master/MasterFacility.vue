@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Header from '@/components/common/PcHeader.vue'
+import Header from '@/components/common/AppHeader.vue'
 export default {
   name: 'master-facility',
   components: {
