@@ -32,9 +32,8 @@ import ForumDetail from '@/components/common/forum/ForumDetail.vue';
 import ForumEdit from '@/components/common/forum/ForumEdit.vue';
 import OverlayLoading from '@/components/common/OverlayLoading.vue';
 
-import forumApiFunc from '@/mixins/api/func/forum'
-import fileApiFunc from '@/mixins/api/func/file'
 import utilsFunc from '@/mixins/utils/utils.js'
+import apiFunc from '@/mixins/api/api.js'
 
 import { reactive, ref } from '@vue/reactivity';
 import _ from 'lodash'
@@ -75,7 +74,7 @@ export default {
       params.loading = true
       params.items = []
       try {
-        params.forum = await forumApiFunc.getForum()
+        params.forum = await apiFunc.apiGetForum()
         await dataShaping()
       } catch (error) {
         params.error = "読み込みに失敗しました。"
@@ -148,7 +147,7 @@ export default {
     }
 
     const readFileDir = async () => {
-      params.dir_top = await fileApiFunc.apiGetDirTop()
+      params.dir_top = await apiFunc.apiGetTopDir()
     }
     readFileDir()
 

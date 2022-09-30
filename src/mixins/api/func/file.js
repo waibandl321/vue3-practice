@@ -115,7 +115,7 @@ export default {
     })
   },
   // ファイルアップロード
-  async apiCreateUploadFile (current_dir, _file, data_url, func_cd = null) {
+  async createFile (current_dir, _file, data_url, func_cd = null) {
     const fileObj = this.generateUploadFileObject(current_dir, _file, data_url, func_cd)
     return await API.graphql({
       query: createFileStore,

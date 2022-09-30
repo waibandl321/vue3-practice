@@ -9,11 +9,11 @@ export default {
   },
   // ファイル管理に保存
   async mixinSaveChatFileDatabase (dir_top, file, data_url, function_cd = "chat") {
-    return await fileApiFunc.apiCreateUploadFile(
+    return await fileApiFunc.createFile(
       dir_top,
       file,
       data_url,
       function_cd
-    ).catch((error) => console.error('fileApiFunc.apiCreateUploadFile', error))
+    ).catch((error) => console.error('fileApiFunc.createFile', error))
   },
 }

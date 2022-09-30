@@ -385,7 +385,7 @@ export default {
       try {
         const file = upload_file.value[0]
         const data_url = await storageFunc.storageUploadFile(file)
-        await fileApiFunc.apiCreateUploadFile(current_dir.value, file, data_url)
+        await fileApiFunc.createFile(current_dir.value, file, data_url)
         items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
         // MEMO: 容量計算コンポーネントにてアップロード検知用
         props.uploadedChange(true)
