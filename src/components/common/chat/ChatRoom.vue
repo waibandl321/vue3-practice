@@ -240,18 +240,18 @@
     />
   </template>
   <!-- メンバー -->
-  <ChatMemberSelect
-    v-if="member_modal"
-    :viewRoom="params.room_viewer"
-    :closeMemberModal="closeMemberModal"
-  />
+  <v-dialog v-model="member_modal">
+    <ChatMemberSelect
+      :closeMemberModal="closeMemberModal"
+    />
+  </v-dialog>
   <!-- ルーム編集 -->
   <v-dialog v-model="chat_room_edit">
     <ChatRoomEdit 
       :closeRoomEdit="closeRoomEdit"
     />
   </v-dialog>
-  <OverlayLoading v-if="loading || params.loading" />
+  <OverlayLoading v-if="params.loading" />
 </template>
 
 <script>
@@ -308,7 +308,6 @@ export default {
       },
       { deep: true }
     )
-    const loading = ref(false);
 
     // ルーム訪問履歴記録
     const updateLastAccess = async () => {
@@ -444,7 +443,7 @@ export default {
     // トークルーム削除
     const deleteChatRoom = async () => {
       if(!confirm('トークルームを削除するとメッセージも同時に削除されます。削除後は復元できません。よろしいですか？')) return;
-      loading.value = true
+      params.loading = true
       try {
         await chatApiFunc.deleteRoom(params.room_viewer)
         await _deleteMembers()
@@ -456,7 +455,7 @@ export default {
         messageSet(error, 'error')
         console.error(error);
       }
-      loading.value = false
+      params.loading = false
 
       async function _deleteMembers () {
         for (const member of room_members) {
@@ -482,7 +481,7 @@ export default {
     // メッセージ削除
     const deleteChatMessage = async (message) => {
       console.log('delete message', message);
-      loading.value = true
+      params.loading = true
       try {
         await chatApiFunc.deleteChatMessage(message)
         await _deleteFiles(message)
@@ -491,7 +490,7 @@ export default {
       } catch (error) {
         console.error(error);
       }
-      loading.value = false
+      params.loading = false
 
       async function _deleteFiles (message) {
         const files = message.files.items
@@ -593,7 +592,6 @@ export default {
 
     return {
       params,
-      loading,
       // ルーム編集
       chat_room_edit,
       roomEdit,
