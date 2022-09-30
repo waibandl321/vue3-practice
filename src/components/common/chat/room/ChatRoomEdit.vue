@@ -36,7 +36,7 @@
 
 <script>
 import { inject } from '@vue/runtime-core'
-import chatApiFunc from '@/mixins/api/func/chat'
+import apiFunc from '@/mixins/api/api.js'
 
 export default {
   props: {
@@ -55,7 +55,7 @@ export default {
       const update_flag = true
       params.loading = true;
       try {
-        const result = await chatApiFunc.updateRoom(params.room_editor);
+        const result = await apiFunc.apiUpdateChatRoom(params.room_editor);
         messageSet("トークルームを更新しました", 'success');
         props.closeRoomEdit(result.data.updateChatRoom, update_flag)
       }

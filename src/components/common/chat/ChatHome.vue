@@ -16,6 +16,7 @@
 <script>
 import AppAlert from '@/components/common/AppAlert.vue';
 import { inject } from '@vue/runtime-core';
+
 export default {
   setup() {
     const params = inject('params')
@@ -28,6 +29,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .chat-main {
   width: calc(100% - 300px);

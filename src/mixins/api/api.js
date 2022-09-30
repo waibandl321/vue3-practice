@@ -2,9 +2,15 @@
 // MEMO: 各コンポーネント内に複数のAPI処理ファイルが乱立すると保守性が下がるので、
 // 基本的にAPI関連処理は当該ファイルに一纏めにする。
 import api_forum from '@/mixins/api/func/forum'
+import api_chat from '@/mixins/api/func/chat'
 import api_file from '@/mixins/api/func/file'
+import api_storage from '@/mixins/storage/storage.js'
 
 export default {
+  // ストレージ
+  apiStorageUploadFunctionFile (file, function_cd) {
+    return api_storage.storageUploadFunctionFile(file, function_cd)
+  },
   // ファイル管理
   apiGetTopDir () {
     return api_file.apiGetDirTop()
@@ -60,6 +66,57 @@ export default {
   },
   apiDeleteForumTag (tag) {
     return api_forum.deleteTag(tag)
-  }
+  },
   // チャット
+  apiGetChat () {
+    return api_chat.getCompanyChat()
+  },
+  apiGetChatRooms (chat_id) {
+    return api_chat.getChatRooms(chat_id)
+  },
+  apiChatRoomCreate (room, company_chat) {
+    return api_chat.createRooom(room, company_chat)
+  },
+  apiUpdateChatRoom (room) {
+    return api_chat.updateRoom(room)
+  },
+  apiDeleteChatRoom (room) {
+    return api_chat.deleteRoom(room)
+  },
+  apiCreateFirstChatRoomMember (room, datetime) {
+    return api_chat.createInitRoomMember(room, datetime)
+  },
+  apiAddChatMember (room, member, datetime) {
+    return api_chat.addChatMember(room, member, datetime)
+  },
+  apiUpdateChatMember (current_member, datetime) {
+    return api_chat.updateChatMember(current_member, datetime)
+  },
+  apiDeleteChatMember (member) {
+    return api_chat.deleteRoomMember(member)
+  },
+  apiDeleteRoomMember (member) {
+    return api_chat.deleteRoomMember(member)
+  },
+  apiGetChatMessages (room) {
+    return api_chat.getMessages(room)
+  },
+  apiCreateChatMessage (room, message_text) {
+    return api_chat.createChatMessage(room, message_text)
+  },
+  apiCreateChatMessageFile (post, file, file_store) {
+    return api_chat.createChatFile(post, file, file_store)
+  },
+  apiCreateChatMessageUrl (post, url) {
+    return api_chat.createChatUrl(post, url)
+  },
+  apiDeleteChatMessage (message) {
+    return api_chat.deleteChatMessage(message)
+  },
+  apiDeleteChatMessageFile (file) {
+    return api_chat.deleteChatFile(file)
+  },
+  apiDeleteChatMessageUrl (url) {
+    return api_chat.deleteChatUrl(url)
+  }
 }

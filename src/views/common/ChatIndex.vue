@@ -23,8 +23,7 @@ import ChatList from '@/components/common/chat/room/ChatRoomList.vue';
 import ChatHome from '@/components/common/chat/ChatHome.vue';
 import ChatRoom from '@/components/common/chat/ChatRoom.vue';
 
-import chatApiFunc from '@/mixins/api/func/chat'
-import fileApiFunc from '@/mixins/api/func/file'
+import apiFunc from '@/mixins/api/api.js'
 
 import { ref, reactive } from 'vue';
 import { onBeforeMount, provide } from '@vue/runtime-core';
@@ -58,7 +57,7 @@ export default {
     // ファイル管理ディレクトリ
     onBeforeMount( async () => {
       try {
-        params.dir_top = await fileApiFunc.apiGetDirTop()
+        params.dir_top = await apiFunc.apiGetTopDir()
       } catch (error) {
         console.error(error);
       }
@@ -68,7 +67,7 @@ export default {
     const initChatRoom = async () => {
       loading.value = true
       try {
-        const result = await chatApiFunc.getCompanyChat()
+        const result = await apiFunc.apiGetChat()
         params.company_chat = result
         params.rooms = result.rooms.items
         params.company_employees = result.company_employees.items
@@ -80,7 +79,7 @@ export default {
     initChatRoom()
 
     const refreshRoomList = async () => {
-      params.rooms = await chatApiFunc.getChatRooms(params.company_chat.id)
+      params.rooms = await apiFunc.apiGetChatRooms(params.company_chat.id)
     }
 
     // 表示モード切り替え

@@ -53,9 +53,10 @@
 </template>
 <script>
 import { reactive, ref } from '@vue/reactivity'
-import chatApiFunc from '@/mixins/api/func/chat'
-import utilMixin from '@/mixins/utils/utils.js'
 import { inject } from '@vue/runtime-core'
+
+import apiFunc from '@/mixins/api/api.js'
+import utilMixin from '@/mixins/utils/utils.js'
 
 export default {
   props: {
@@ -80,14 +81,15 @@ export default {
     })
     const createChatRoom = async () => {
       modal.value = false
+      params.loading = true
       try {
-        const result = await chatApiFunc.createRooom(room_obj, params.company_chat)
-        await chatApiFunc.createInitRoomMember(result, utilMixin.currentDateTime())
-        props.closeRoomCreate()
+        const result = await apiFunc.apiChatRoomCreate(room_obj, params.company_chat)
+        await apiFunc.apiCreateFirstChatRoomMember(result, utilMixin.currentDateTime())
       } catch (error) {
         console.error(error);
       }
-      // room_obj = {}
+      params.loading = false
+      props.closeRoomCreate()
     }
 
     return {

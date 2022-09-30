@@ -68,17 +68,20 @@
     v-if="room_add_mode"
     :closeRoomCreate="closeRoomCreate"
   />
+  <OverlayLoading v-if="params.loading" />
 </template>
 
 <script>
 import ChatRoomCreate from './ChatRoomCreate.vue'
+import OverlayLoading from '../../OverlayLoading.vue'
+
 import storeAuth from '@/mixins/store/auth.js'
 
 import { ref } from '@vue/reactivity'
 import { inject, watch } from '@vue/runtime-core'
 
 export default {
-  components: { ChatRoomCreate },
+  components: { ChatRoomCreate, OverlayLoading },
   props: {
     changeMode: {
       type: Function
@@ -93,7 +96,7 @@ export default {
     const initChatRoom = inject('init-chat-room')
     const messageSet = inject('message-set')
 
-    const rooms = ref([])
+    // const rooms = ref([])
     const group_rooms = ref([])
     const personal_rooms = ref([])
     const room_add_mode = ref(false);
@@ -107,23 +110,18 @@ export default {
     )
 
     async function initRoomList() {
-      rooms.value = params.rooms
-      dataShaping()
-
-      function dataShaping() {
-        group_rooms.value = rooms.value.filter(v =>
-          v.room_type === 0 &&
-          v.members.items.find(m => {
-            return m.member_id === storeAuth.storeGetStaffId()
-          })
-        )
-        personal_rooms.value = rooms.value.filter(v =>
-          v.room_type === 1 &&
-          v.members.items.find(m => {
-            return m.member_id === storeAuth.storeGetStaffId()
-          })
-        )
-      }
+      group_rooms.value = params.rooms.filter(v =>
+        v.room_type === 0 &&
+        v.members.items.find(m => {
+          return m.member_id === storeAuth.storeGetStaffId()
+        })
+      )
+      personal_rooms.value = params.rooms.filter(v =>
+        v.room_type === 1 &&
+        v.members.items.find(m => {
+          return m.member_id === storeAuth.storeGetStaffId()
+        })
+      )
     }
     initRoomList()
 
@@ -141,8 +139,8 @@ export default {
       props.changeRoom(room);
     };
     
-    
     return {
+      params,
       backFunc,
       moveRoom,
       room_add_mode,

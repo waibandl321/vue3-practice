@@ -264,10 +264,9 @@ import { ref, reactive } from '@vue/reactivity'
 import { inject, watch } from '@vue/runtime-core'
 import _ from 'lodash'
 
-import chatMixin from './chat_mixin'
-import chatApiFunc from '@/mixins/api/func/chat'
 import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
+import apiFunc from '@/mixins/api/api.js'
 
 export default {
   components: {
@@ -310,7 +309,7 @@ export default {
         const current_member = room_members.find(
           v => v.member_id === storeAuth.storeGetStaffId()
         )
-        await chatApiFunc.updateChatMember(current_member, utilMixin.currentDateTime())
+        await apiFunc.apiUpdateChatMember(current_member, utilMixin.currentDateTime())
       } catch (error) {
         console.log(error);
       }
@@ -330,7 +329,7 @@ export default {
     const getChatMessages = async () => {
       message_loading.value = true
       try {
-        let results = await chatApiFunc.getMessages(params.room_viewer)
+        let results = await apiFunc.apiGetChatMessages(params.room_viewer)
         // 日付グルーピング
         if(results.length > 0) {
           results = reduceArrayGroupDate(results)
@@ -440,7 +439,7 @@ export default {
       if(!confirm('トークルームを削除するとメッセージも同時に削除されます。削除後は復元できません。よろしいですか？')) return;
       params.loading = true
       try {
-        await chatApiFunc.deleteRoom(params.room_viewer)
+        await apiFunc.apiDeleteChatRoom(params.room_viewer)
         await _deleteMembers()
         await _deleteMessages()
         messageSet('チャットルームを削除しました', 'success')
@@ -454,7 +453,7 @@ export default {
 
       async function _deleteMembers () {
         for (const member of room_members) {
-          await chatApiFunc.deleteRoomMember(member) 
+          await apiFunc.apiDeleteChatMember(member) 
         }
       }
       async function _deleteMessages() {
@@ -478,7 +477,7 @@ export default {
       console.log('delete message', message);
       params.loading = true
       try {
-        await chatApiFunc.deleteChatMessage(message)
+        await apiFunc.apiDeleteChatMessage(message)
         await _deleteFiles(message)
         await _deleteUrls(message)
         chat_messages.value = afterDeleteMessageInit(message, chat_messages.value)
@@ -491,14 +490,14 @@ export default {
         const files = message.files.items
         if(files.length === 0) return;
         for (const file of files) {
-          await chatApiFunc.deleteChatFile(file)
+          await apiFunc.apiDeleteChatMessageFile(file)
         }
       }
       async function _deleteUrls (message) {
         const urls = message.urls.items
         if(urls.length === 0) return;
         for (const url of urls) {
-          await chatApiFunc.deleteChatUrl(url)
+          await apiFunc.apiDeleteChatMessageUrl(url)
         }
       }
       function afterDeleteMessageInit (message, groups) {
@@ -534,7 +533,10 @@ export default {
     // 送信！
     const sendMessage = async () => {
       try {
-        const post = await chatApiFunc.createChatMessage(params.room_viewer, message.text)
+        const post = await apiFunc.apiCreateChatMessage(
+          params.room_viewer,
+          message.text
+        )
         // MEMO: 画像とURL保存を待っていると時間がかかるので先にメッセージだけ表示させる
         chat_messages.value.slice(-1)[0].messages.push(post)
         await createChatFiles(post)
@@ -550,16 +552,21 @@ export default {
         for (const file of message.files) {
           let file_store = undefined
           if(!file.id) {
-            file.data_url = await chatMixin.mixinUploadChatFile(file, "chat")
-            file_store = await chatMixin.mixinSaveChatFileDatabase(params.dir_top, file, file.data_url, "chat")
+            file.data_url = await apiFunc.apiStorageUploadFunctionFile(file, "chat")
+            file_store = await apiFunc.createFile(
+              params.dir_top,
+              file,
+              file.data_url,
+              "chat"
+            )
           }
-          await chatApiFunc.createChatFile(post, file, file_store)
+          await apiFunc.apiCreateChatMessageFile(post, file, file_store)
         }
       }
       async function createChatUrls (post) {
         if(message.urls.length === 0) return
         for (const url of message.urls) {
-          await chatApiFunc.createChatUrl(post, url)
+          await apiFunc.apiCreateChatMessageUrl(post, url)
         }
       }
     };

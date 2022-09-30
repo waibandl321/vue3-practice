@@ -69,7 +69,8 @@
 
 <script>
 import { inject, onBeforeMount, ref } from '@vue/runtime-core'
-import chatApiFunc from '@/mixins/api/func/chat'
+
+import apiFunc from '@/mixins/api/api.js'
 import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
 
@@ -114,7 +115,7 @@ export default {
       params.loading = true;
       try {
         for (const is_selected_member of is_selected_members.value) {
-          const res = await chatApiFunc.addChatMember(
+          const res = await apiFunc.apiAddChatMember(
             params.room_viewer,
             is_selected_member,
             utilMixin.currentDateTime()
@@ -137,7 +138,7 @@ export default {
       if (!confirm("メンバーを削除します。よろしいですか？")) return;
       params.loading = true;
       try {
-        await chatApiFunc.deleteRoomMember(member);
+        await apiFunc.apiDeleteRoomMember(member);
         params.room_viewer.members.items = 
           params.room_viewer.members.items.filter(v => v.id !== member.id)
         dataShaping();
