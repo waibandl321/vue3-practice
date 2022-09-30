@@ -231,14 +231,12 @@
     @change="changeAttachment"
   ></v-file-input>
   <!-- ファイル管理から選択 -->
-  <template v-if="file_select_modal">
-    <FIleSelectModal
-      :file-select-modal="file_select_modal"
-      :dir-top="params.dir_top"
+  <v-dialog v-model="file_select_modal">
+    <FileSelectModal
       :isSelectedFile="isSelectedFile"
       :closeFileSelectModal="closeFileSelectModal"
     />
-  </template>
+  </v-dialog>
   <!-- メンバー -->
   <v-dialog v-model="member_modal">
     <ChatMemberSelect
@@ -257,7 +255,7 @@
 <script>
 import OverlayLoading from '../OverlayLoading.vue'
 import AppAlert from '@/components/common/AppAlert.vue';
-import FIleSelectModal from '../modal/FIleSelectModal.vue'
+import FileSelectModal from '../modal/FileSelectModal'
 import ChatRoomEdit from './room/ChatRoomEdit.vue'
 import ChatMemberSelect from './member/ChatMemberSelect.vue'
 // import DiscordPicker from 'vue3-discordpicker'
@@ -271,11 +269,9 @@ import chatApiFunc from '@/mixins/api/func/chat'
 import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
 
-
-
 export default {
   components: {
-    FIleSelectModal,
+    FileSelectModal,
     AppAlert,
     OverlayLoading,
     ChatRoomEdit,
@@ -291,7 +287,6 @@ export default {
     }
   },
   setup(props) {
-    // provide / inject
     const params = inject('params')
     const initChatRoom = inject('init-chat-room')
     const messageSet = inject('message-set')

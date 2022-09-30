@@ -210,14 +210,12 @@
     @change="changeAttachment"
   ></v-file-input>
   <!-- ファイル管理から選択 -->
-  <template v-if="file_select_modal">
-    <FIleSelectModal
-      :file-select-modal="file_select_modal"
-      :dir-top="params.dir_top"
+  <v-dialog v-model="file_select_modal">
+    <FileSelectModal
       :isSelectedFile="isSelectedFile"
       :closeFileSelectModal="closeFileSelectModal"
     />
-  </template>
+  </v-dialog>
   <!-- ローディング -->
   <OverlayLoading v-if="loading" />
   </v-container>
@@ -227,7 +225,7 @@
 import AppRequireLabel from '@/components/common/modules/AppRequireLabel.vue';
 import OverlayLoading from '../OverlayLoading.vue';
 import AppAlert from '@/components/common/AppAlert.vue';
-import FIleSelectModal from '../modal/FIleSelectModal.vue';
+import FileSelectModal from '../modal/FileSelectModal';
 import Multiselect from '@vueform/multiselect'
 
 import { toRefs, ref } from '@vue/reactivity';
@@ -243,7 +241,7 @@ export default {
     Multiselect,
     OverlayLoading,
     AppAlert,
-    FIleSelectModal
+    FileSelectModal
   },
   props: {
     params: {

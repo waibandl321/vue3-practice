@@ -38,6 +38,7 @@ import utilsFunc from '@/mixins/utils/utils.js'
 
 import { reactive, ref } from '@vue/reactivity';
 import _ from 'lodash'
+import { provide } from '@vue/runtime-core';
 
 export default {
   name: 'forum-index',
@@ -98,7 +99,6 @@ export default {
       }
     }
     
-    
     // 詳細遷移
     const setViewer = (post) => {
       params.success = ""
@@ -151,6 +151,9 @@ export default {
       params.dir_top = await fileApiFunc.apiGetDirTop()
     }
     readFileDir()
+
+    // ファイル管理から選択モーダル用
+    provide('params', params)
     
     return {
       mode,
