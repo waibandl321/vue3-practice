@@ -1,5 +1,6 @@
 import Storage from '@aws-amplify/storage'
 import storeAuth from '@/mixins/store/auth'
+
 export default {
   async storageUploadFile (file) {
     return await Storage.put(

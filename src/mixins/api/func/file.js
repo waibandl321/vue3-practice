@@ -1,6 +1,9 @@
 import { API } from 'aws-amplify'
-import { createFileDirTop, createFileDir, updateFileDir, deleteFileDir,
-  createFileStore, updateFileStore, deleteFileStore } from '@/graphql/mutations'
+import {
+  createFileDirTop, createFileDir, createFileStore,
+  updateFileDir, updateFileStore,
+  deleteFileDir, deleteFileStore
+} from '@/graphql/mutations'
 import { listFileDirTops, listFileDirs, listFileStores } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store'
@@ -12,14 +15,16 @@ export default {
   getTrashboxFlag () {
     return true
   },
-  async apiCreateFile (company) {
-    const fileDirTop = this.generateFileDirTopObject(company)
+  // トップディレクトリ
+  // TODO: 企業登録時に自動生成する
+  async apiCreateTopDir (company) {
+    const fileDirTop = this.generateFileTopDirObject(company)
     return await API.graphql({
       query: createFileDirTop,
       variables: { input: fileDirTop }
     })
   },
-  generateFileDirTopObject (company) {
+  generateFileTopDirObject (company) {
     return {
       organization_id: company.company_cd,
       function_cd: "file",
@@ -40,8 +45,24 @@ export default {
     })
     return results.data.listFileDirTops.items[0]
   },
+  // 全てのディレクトリを取得
+  async apiGetDirs () {
+    const filter = {
+      company_cd: {
+        eq: store.getters.companyCd
+      },
+      status: {
+        eq: 0
+      }
+    }
+    const results = await API.graphql({
+      query: listFileDirs,
+      variables: { filter: filter }
+    })
+    return results.data.listFileDirs.items
+  },
   // フォルダ作成
-  async apiCreateFileDir (current_dir, dir_name) {
+  async apiCreateDir (current_dir, dir_name) {
     const dirObj = this.generateDirObject(current_dir, dir_name)
     return await API.graphql({
       query: createFileDir,
@@ -58,24 +79,34 @@ export default {
       company_cd: store.getters.companyCd
     }
   },
-  // 全てのディレクトリを取得
-  async apiGetAllDir () {
-    const filter = {
-      company_cd: {
-        eq: store.getters.companyCd
-      },
-      status: {
-        eq: 0
-      }
+  // フォルダ更新
+  async apiUpdateDir (_dir, delete_flag = false) {
+    const dir = {
+      id: _dir.id,
+      dir_name: _dir.dir_name
     }
-    const results = await API.graphql({
-      query: listFileDirs,
-      variables: { filter: filter }
+    if(delete_flag) {
+      dir.status = 1
+    }
+    return await API.graphql({
+      query: updateFileDir,
+      variables: { input: dir }
     })
-    return results.data.listFileDirs.items
   },
+  // フォルダ削除
+  // TODO: チャットや掲示板に紐づくファイルも削除する
+  async apiDeleteDir(item) {
+    const filter = {
+      id: item.id,
+    }
+    return await API.graphql({
+      query: deleteFileDir,
+      variables: {input: filter}
+    });
+  },
+
   // 現在のディレクトリに紐づくフォルダを取得
-  async apiGetFileDirList (current_dir, trashbox_flag = false) {
+  async apiGetDirsUnderParentDir (current_dir, trashbox_flag = false) {
     const filter = {
       parent_dir_id: {
         eq: current_dir.dir_id
@@ -90,30 +121,7 @@ export default {
     })
     return results.data.listFileDirs.items
   },
-  // フォルダ削除
-  // TODO: チャットや掲示板に紐づくファイルも削除する
-  async apiDeleteDir(item) {
-    const filter = {
-      id: item.id,
-    }
-    return await API.graphql({
-      query: deleteFileDir,
-      variables: {input: filter}
-    });
-  },
-  async apiUpdateDir (_dir, delete_flag = false) {
-    const dir = {
-      id: _dir.id,
-      dir_name: _dir.dir_name
-    }
-    if(delete_flag) {
-      dir.status = 1
-    }
-    return await API.graphql({
-      query: updateFileDir,
-      variables: { input: dir }
-    })
-  },
+  
   // ファイルアップロード
   async createFile (current_dir, _file, data_url, func_cd = null) {
     const fileObj = this.generateUploadFileObject(current_dir, _file, data_url, func_cd)
@@ -137,7 +145,7 @@ export default {
     }
   },
   // 現在のディレクトリに紐付くファイル一覧を取得
-  async apiGetFileList (current_dir, trashbox_flag = false) {
+  async apiGetFilesUnderParentDir (current_dir, trashbox_flag = false) {
     const filter = {
       dir_id: {
         eq: current_dir.dir_id
@@ -153,7 +161,7 @@ export default {
     return results.data.listFileStores.items
   },
   // 全てのファイルを取得
-  async apiGetAllFiles () {
+  async apiGetAllFile () {
     const filter = {
       company_cd: {
         eq: store.getters.companyCd

@@ -164,9 +164,10 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
 import fileApiFunc from '@/mixins/api/func/file'
 import storageFunc from '@/mixins/storage/storage.js'
+
+import { ref } from '@vue/reactivity'
 
 export default {
   name: "file-trashbox",
@@ -178,6 +179,7 @@ export default {
   setup(props) {
     // MEMO: 容量計算コンポーネントにて物理削除検知用
     props.uploadedChange(false)
+
     const loading = ref(false);
     // 初回読み込み時 最上位ディレクトリをセット
     const current_dir = ref({})
@@ -196,11 +198,11 @@ export default {
       items.value.dirs = []
       items.value.files = []
       try {
-        items.value.dirs = await fileApiFunc.apiGetFileDirList(
+        items.value.dirs = await fileApiFunc.apiGetDirsUnderParentDir(
           current_dir.value,
           fileApiFunc.getTrashboxFlag()
         );
-        items.value.files = await fileApiFunc.apiGetFileList(
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(
           current_dir.value,
           fileApiFunc.getTrashboxFlag()
         );
@@ -252,7 +254,7 @@ export default {
       props.uploadedChange(true)
       // ディレクトリ直下ファイル物理削除
       async function deleteFiles (target_dir) {
-        const dir_files = await fileApiFunc.apiGetFileList(target_dir, fileApiFunc.getTrashboxFlag())
+        const dir_files = await fileApiFunc.apiGetFilesUnderParentDir(target_dir, fileApiFunc.getTrashboxFlag())
         if(dir_files.length > 0) {
           for (const file of dir_files) {
             await storageFunc.storageDeleteFile(file).then(async () => {
@@ -272,7 +274,7 @@ export default {
         await storageFunc.storageDeleteFile(file).then(async () => {
           await fileApiFunc.apiExecuteDeleteFile(file)
         })
-        items.value.files = await fileApiFunc.apiGetFileList(
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(
           current_dir.value,
           fileApiFunc.getTrashboxFlag()
         );
@@ -300,7 +302,7 @@ export default {
         for (const item of is_selected_items.value) {
           await execRestore(item)
         }
-        items.value.files = await fileApiFunc.apiGetFileList(
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(
           current_dir.value,
           fileApiFunc.getTrashboxFlag()
         );
@@ -360,7 +362,7 @@ export default {
             await fileApiFunc.apiExecuteDeleteFile(item)
           })
         }
-        items.value.files = await fileApiFunc.apiGetFileList(
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(
           current_dir.value,
           fileApiFunc.getTrashboxFlag()
         );

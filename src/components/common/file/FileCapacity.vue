@@ -16,8 +16,9 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
 import fileApiFunc from '@/mixins/api/func/file'
+
+import { ref } from '@vue/reactivity'
 import { watchEffect } from '@vue/runtime-core'
 
 export default {
@@ -35,7 +36,7 @@ export default {
 
     const getFiles = async () => {
       current_capacity.value = 0
-      files.value = await fileApiFunc.apiGetAllFiles()
+      files.value = await fileApiFunc.apiGetAllFile()
       for (const file of files.value) {
         current_capacity.value += Number(file.file_size)
       }

@@ -51,7 +51,7 @@ export default {
     }
     const initFile = async () => {
       try {
-        await fileApiFunc.apiCreateFile(...company.value)
+        await fileApiFunc.apiCreateTopDir(...company.value)
         alert('ファイル管理 TOPディレクトリを登録しました')
       } catch (error) {
         console.log(error);

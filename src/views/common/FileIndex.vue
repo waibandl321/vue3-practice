@@ -24,13 +24,15 @@
 
 <script>
 import Header from '@/components/common/AppHeader.vue'
-import { ref } from '@vue/reactivity';
+import OverlayLoading from '@/components/common/OverlayLoading.vue';
 import FileList from '@/components/common/file/FileList.vue';
 import FileListTrash from '@/components/common/file/FileListTrash.vue';
 import FileCapacity from '@/components/common/file/FileCapacity.vue';
 import FileSearch from '@/components/common/file/FileSearch.vue';
+
 import fileApiFunc from '@/mixins/api/func/file'
-import OverlayLoading from '@/components/common/OverlayLoading.vue';
+
+import { ref } from '@vue/reactivity';
 
 export default {
   name: 'file-index',
@@ -55,7 +57,7 @@ export default {
     const init = async () => {
       loading.value = true
       params.value.dir_top = await fileApiFunc.apiGetDirTop()
-      params.value.dirs = await fileApiFunc.apiGetAllDir()
+      params.value.dirs = await fileApiFunc.apiGetDirs()
       loading.value = false
     }
     init()

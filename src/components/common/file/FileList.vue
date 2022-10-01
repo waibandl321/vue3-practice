@@ -254,9 +254,10 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
 import fileApiFunc from '@/mixins/api/func/file'
 import storageFunc from '@/mixins/storage/storage.js'
+
+import { ref } from '@vue/reactivity'
 
 export default {
   name: "file-list",
@@ -286,8 +287,8 @@ export default {
       items.value.dirs = []
       items.value.files = []
       try {
-        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
-        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        items.value.dirs = await fileApiFunc.apiGetDirsUnderParentDir(current_dir.value);
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(current_dir.value);
       } catch (error) {
         console.log("get files & dirs exception error", error);
       }
@@ -301,11 +302,11 @@ export default {
       loading.value = true;
       // TODO: 同じフォルダ名チェックする
       try {
-        await fileApiFunc.apiCreateFileDir(
+        await fileApiFunc.apiCreateDir(
           current_dir.value,
           new_dir.value,
         );
-        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
+        items.value.dirs = await fileApiFunc.apiGetDirsUnderParentDir(current_dir.value);
         alert("フォルダを作成しました。");
       }
       catch (error) {
@@ -360,7 +361,7 @@ export default {
             }
           }
         }
-        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
+        items.value.dirs = await fileApiFunc.apiGetDirsUnderParentDir(current_dir.value);
         alert("フォルダとフォルダに紐付くファイルをゴミ箱に移動しました。");
       }
       catch (error) {
@@ -369,7 +370,7 @@ export default {
       loading.value = false;
       // ディレクトリ直下ファイルをゴミ箱へ
       async function deleteFiles (target_dir) {
-        const dir_files = await fileApiFunc.apiGetFileList(target_dir)
+        const dir_files = await fileApiFunc.apiGetFilesUnderParentDir(target_dir)
         if(dir_files.length > 0) {
           for (const file of dir_files) {
             await fileApiFunc.apiMoveTrashbox(file)
@@ -386,7 +387,7 @@ export default {
         const file = upload_file.value[0]
         const data_url = await storageFunc.storageUploadFile(file)
         await fileApiFunc.createFile(current_dir.value, file, data_url)
-        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(current_dir.value);
         // MEMO: 容量計算コンポーネントにてアップロード検知用
         props.uploadedChange(true)
         alert('ファイルをアップロードしました。')
@@ -408,7 +409,7 @@ export default {
       loading.value = true;
       try {
         await fileApiFunc.apiMoveTrashbox(item)
-        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(current_dir.value);
         alert('ファイルをゴミ箱に移動しました。')
       } catch (error) {
         console.log('file move trashbox error', error);
@@ -470,7 +471,7 @@ export default {
         for (const item of is_selected_items.value) {
           await fileApiFunc.apiMoveTrashbox(item)
         }
-        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(current_dir.value);
         alert('選択されたファイルをゴミ箱に移動しました')
       } catch (error) {
         console.log("bulk delete file exeptopn error", error);

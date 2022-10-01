@@ -58,7 +58,6 @@ export default {
           attributes: {
             email: this.params.email
           },
-          // optional - enables auto sign in after user is confirmed
           autoSignIn: {
             enabled: true
           }

@@ -23,6 +23,7 @@ export default {
     return results.data.listForums.items[0]
   },
   // 企業掲示板 作成(初回のみ)
+  // TODO: 企業登録と同時にインデックスする
   async apiCreateForum (company) {
     const forumObj = this.generateForumObject(company)
     return await API.graphql({

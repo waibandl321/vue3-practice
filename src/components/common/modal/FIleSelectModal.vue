@@ -134,8 +134,8 @@ export default {
       items.value.dirs = []
       items.value.files = []
       try {
-        items.value.dirs = await fileApiFunc.apiGetFileDirList(current_dir.value);
-        items.value.files = await fileApiFunc.apiGetFileList(current_dir.value);
+        items.value.dirs = await fileApiFunc.apiGetDirsUnderParentDir(current_dir.value);
+        items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(current_dir.value);
       } catch (error) {
         console.error("get files & dirs exception error", error);
       }

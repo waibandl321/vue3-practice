@@ -8,6 +8,7 @@ import store from '@/store'
 
 export default {
   // 企業チャット作成（初回のみ）
+  // TODO: 企業登録と同時にインデックスする
   async apiCreateChat (company) {
     const chatObj = this.generateChatObject(company)
     return await API.graphql({
