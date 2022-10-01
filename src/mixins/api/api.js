@@ -14,9 +14,6 @@ import api_forum from '@/mixins/api/func/forum'
 import api_chat from '@/mixins/api/func/chat'
 import api_file from '@/mixins/api/func/file'
 
-import api_storage from '@/mixins/storage/storage.js'
-
-
 export default {
   // 認証
   async apiSignOut () {
@@ -43,10 +40,6 @@ export default {
   },
   apiUpdateStaffRole (staff_id, role) {
     return api_account._updateStaffRole(staff_id, role)
-  },
-  // ストレージ
-  apiStorageUploadFunctionFile (file, function_cd) {
-    return api_storage.storageUploadFunctionFile(file, function_cd)
   },
   // ファイル管理
   apiGetTopDir () {

@@ -257,7 +257,7 @@ export default {
         const dir_files = await fileApiFunc.apiGetFilesUnderParentDir(target_dir, fileApiFunc.getTrashboxFlag())
         if(dir_files.length > 0) {
           for (const file of dir_files) {
-            await storageFunc.storageDeleteFile(file).then(async () => {
+            await storageFunc.delete(file).then(async () => {
               await fileApiFunc.apiExecuteDeleteFile(file)
             })
           }
@@ -271,7 +271,7 @@ export default {
       loading.value = true;
       try {
         // TODO: API&storage削除共通化
-        await storageFunc.storageDeleteFile(file).then(async () => {
+        await storageFunc.delete(file).then(async () => {
           await fileApiFunc.apiExecuteDeleteFile(file)
         })
         items.value.files = await fileApiFunc.apiGetFilesUnderParentDir(
@@ -358,7 +358,7 @@ export default {
       try {
         for (const item of is_selected_items.value) {
           // TODO: API&storage削除共通化
-          await storageFunc.storageDeleteFile(item).then(async () => {
+          await storageFunc.delete(item).then(async () => {
             await fileApiFunc.apiExecuteDeleteFile(item)
           })
         }

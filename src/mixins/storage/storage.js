@@ -2,9 +2,17 @@ import Storage from '@aws-amplify/storage'
 import storeAuth from '@/mixins/store/auth'
 
 export default {
-  async storageUploadFile (file) {
+  // S3にアップしてダウンロードパスまで取得
+  async upload (file, function_cd = undefined) {
+    let s3_path = ""
+    if(function_cd) {
+      s3_path = storeAuth.storeGetCompanyCd() + '/' + function_cd + '/' + file.name
+    } else {
+      s3_path = storeAuth.storeGetCompanyCd() + '/' + file.name
+    }
+    
     return await Storage.put(
-      storeAuth.storeGetCompanyCd() + '/' + file.name,
+      s3_path,
       file,
     ).then(async (response) => {
       return await getS3Object(response)
@@ -13,19 +21,7 @@ export default {
       return await Storage.get(response.key)
     }
   },
-  // 機能別アップロード
-  async storageUploadFunctionFile (file, function_cd) {
-    return await Storage.put(
-      storeAuth.storeGetCompanyCd() + '/' + function_cd + '/' + file.name,
-      file,
-    ).then(async (response) => {
-      return await getS3Object(response)
-    })
-    async function getS3Object (response) {
-      return await Storage.get(response.key)
-    }
-  },
-  async storageDeleteFile (file) {
+  async delete (file) {
     return await Storage.remove(
       storeAuth.storeGetCompanyCd() + '/' + file.file_name,
     )

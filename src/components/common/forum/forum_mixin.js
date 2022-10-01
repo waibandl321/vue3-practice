@@ -11,7 +11,7 @@ export default {
     if(editor.eyecatch){
       // ローカルアップロード
       if(!editor.eyecatch.id) {
-        editor.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.eyecatch, "forum_eyecatch")
+        editor.eyecatch.data_url = await storageFunc.upload(editor.eyecatch, "forum_eyecatch")
         await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
       }
       await apiFunc.apiCreateForumEyecatch(editor.eyecatch, save_post)
@@ -23,7 +23,7 @@ export default {
     if(files.length > 0) {
       for (const file of files) {
         if(!file.id) {
-          file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
+          file.data_url = await storageFunc.upload(file, "forum")
           await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
         }
         await apiFunc.apiCreateForumFile(file, save_post)
@@ -88,7 +88,7 @@ export default {
     }
 
     async function uploadNew () {
-      editor.eyecatch.data_url = await storageFunc.storageUploadFunctionFile(editor.eyecatch, "forum_eyecatch")
+      editor.eyecatch.data_url = await storageFunc.upload(editor.eyecatch, "forum_eyecatch")
       await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
     }
   },
@@ -133,7 +133,7 @@ export default {
         for (const file of editor.files.items) {
           // ローカルアップロード
           if(!file.id) {
-            file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
+            file.data_url = await storageFunc.upload(file, "forum")
             await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
           }
           await apiFunc.apiCreateForumFile(file, editor)
@@ -147,7 +147,7 @@ export default {
           if(!file.post_key) {
             // ローカルアップロード
             if(!file.id) {
-              file.data_url = await storageFunc.storageUploadFunctionFile(file, "forum")
+              file.data_url = await storageFunc.upload(file, "forum")
               await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
             }
             await apiFunc.apiCreateForumFile(file, editor)

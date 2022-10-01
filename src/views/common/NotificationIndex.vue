@@ -30,7 +30,9 @@
 
 <script>
 import Header from '@/components/common/AppHeader.vue'
+// import apiFunc from '@/mixins/api/api.js'
 import { ref } from '@vue/reactivity'
+
 export default {
   name: 'notification-index',
   components: {

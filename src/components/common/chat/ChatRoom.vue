@@ -267,6 +267,7 @@ import _ from 'lodash'
 import utilMixin from '@/mixins/utils/utils.js'
 import storeAuth from '@/mixins/store/auth.js'
 import apiFunc from '@/mixins/api/api.js'
+import storageFunc from '@/mixins/storage/storage.js'
 
 export default {
   components: {
@@ -532,13 +533,14 @@ export default {
     
     // 送信！
     const sendMessage = async () => {
+      message_loading.value = true
       try {
         const post = await apiFunc.apiCreateChatMessage(
           params.room_viewer,
           message.text
         )
         // MEMO: 画像とURL保存を待っていると時間がかかるので先にメッセージだけ表示させる
-        chat_messages.value.slice(-1)[0].messages.push(post)
+        // chat_messages.value.slice(-1)[0].messages.push(post)
         await createChatFiles(post)
         await createChatUrls(post)
       } catch (error) {
@@ -552,8 +554,8 @@ export default {
         for (const file of message.files) {
           let file_store = undefined
           if(!file.id) {
-            file.data_url = await apiFunc.apiStorageUploadFunctionFile(file, "chat")
-            file_store = await apiFunc.createFile(
+            file.data_url = await storageFunc.upload(file, "chat")
+            file_store = await apiFunc.apiCreateFile(
               params.dir_top,
               file,
               file.data_url,
