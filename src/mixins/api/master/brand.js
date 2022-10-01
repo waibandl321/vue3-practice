@@ -46,7 +46,7 @@ export default {
     return results.data.listBrands.items
   },
   // サインイン用ブランド取得
-  async _apiGetBrand (company_cd) {
+  async getBrandsBySignin (company_cd) {
     const filter = {
       company_cd: {
         eq: company_cd

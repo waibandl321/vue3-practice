@@ -1,5 +1,6 @@
 // 各種API処理コール用
 import api_auth from '@/mixins/api/auth.js'
+import api_account from '@/mixins/api/account.js'
 import api_invitation from '@/mixins/api/invitation.js'
 import api_company from '@/mixins/api/master/company.js'
 import api_brand from '@/mixins/api/master/brand.js'
@@ -20,6 +21,28 @@ export default {
   // 認証
   async apiSignOut () {
     return await api_auth.signout()
+  },
+  async apiEmailSignIn (email, password) {
+    return await api_auth.emailSignIn(email, password)
+  },
+  // アカウント
+  apiGetAccount (cognito_user) {
+    return api_account.getAccount(cognito_user)
+  },
+  apiCreateAccount (cognito_user) {
+    return api_account.create(cognito_user)
+  },
+  apiCreateAssociate (account, company, invite_key) {
+    return api_account._createAssociate(account, company, invite_key)
+  },
+  apiCreateStaff (associate, company, invitation, invitation_staff_id) {
+    return api_account._createStaff(associate, company, invitation, invitation_staff_id)
+  },
+  apiCreateStaffRole (staff, invitation_role) {
+    return api_account._createStaffRole(staff, invitation_role)
+  },
+  apiUpdateStaffRole (staff_id, role) {
+    return api_account._updateStaffRole(staff_id, role)
   },
   // ストレージ
   apiStorageUploadFunctionFile (file, function_cd) {
@@ -49,6 +72,9 @@ export default {
   // ブランドマスタ
   apiGetBrands () {
     return api_brand.getBrands()
+  },
+  apiGetBrandsBySignin (company_cd) {
+    return api_brand.getBrandsBySignin(company_cd)
   },
   apiCreateBrand (brand, company) {
     return api_brand.create(brand, company)

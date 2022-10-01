@@ -86,9 +86,11 @@
     </v-card>
   </v-container>
 </template>
+
 <script>
 import SetupFooter from './SetupFooter.vue'
 import utilsMixin from '@/mixins/utils/utils.js'
+
 export default {
   name: 'setup-company',
   mixins: [utilsMixin],

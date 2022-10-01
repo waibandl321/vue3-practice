@@ -89,6 +89,7 @@
 
 <script>
 import SetupFooter from './SetupFooter.vue'
+
 export default {
   name: 'setup-profile',
   components: {

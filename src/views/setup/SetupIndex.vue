@@ -9,16 +9,11 @@
 </template>
 
 <script>
-import utilMixin from '@/mixins/utils/utils'
-// import companyApiFunc from '@/mixins/api/master/company.js'
-// import brandApiFunc from '@/mixins/api/master/brand.js'
-// import employeeApiFunc from '@/mixins/api/master/employee.js'
-import accountApiFunc from '@/mixins/api/account.js'
-import apiFunc from '@/mixins/api/api.js'
-
-import store from '@/store/index.js'
-import storeAuth from '@/mixins/store/auth'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
+
+import utilMixin from '@/mixins/utils/utils'
+import apiFunc from '@/mixins/api/api.js'
+import storeFunc from '@/mixins/store/auth'
 
 export default {
   components: {
@@ -58,8 +53,9 @@ export default {
   },
   created () {
     // 招待ユーザーの場合は、招待用確認画面に飛ばす
-    if (store.getters.invitationCd) {
-      storeAuth.storeSetCompanyCd(store.getters.invitationCd)
+    const invitation_code = storeFunc.storeGetInvitationCode()
+    if (invitation_code) {
+      storeFunc.storeSetCompanyCd(invitation_code)
       this.$router.push({
         name: 'setup-invite',
       })
@@ -71,7 +67,7 @@ export default {
       try {
         this.company = await apiFunc.apiCreateCompany(this.params.company)
         this.brand = await apiFunc.apiCreateBrand(this.params.brand, this.company)
-        storeAuth.storeSetSetupInfo(this.company, this.brand)
+        storeFunc.storeSetSetupInfo(this.company, this.brand)
         this.afterSave()
       } catch (error) {
         console.log(error)
@@ -80,16 +76,16 @@ export default {
     },
     async afterSave (invitation_role = null) {
       try {
-        const account = await accountApiFunc.getAccount(store.getters.cognitoUser)
-        const associate = await accountApiFunc.apiAssociateCreate(account, this.company)
+        const account = await apiFunc.apiGetAccount(storeFunc.storeGetCognitoUser())
+        const associate = await apiFunc.apiCreateAssociate(account, this.company)
         console.log('created associate', associate)
-        const staff = await accountApiFunc.apiStaffCreate(associate, this.company)
+        const staff = await apiFunc.apiCreateStaff(associate, this.company)
         console.log('created staff', staff)
         // MEMO: setupから登録されるスタッフについては強制的に「admin」権限
-        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(staff, invitation_role)
+        const staff_role = await apiFunc.apiCreateStaffRole(staff, invitation_role)
         console.log('created staff role', staff)
-        storeAuth.storeSetAssociateStaff(associate, staff)
-        storeAuth.storeSetStaffRole(staff_role)
+        storeFunc.storeSetAssociateStaff(associate, staff)
+        storeFunc.storeSetStaffRole(staff_role)
         await apiFunc.apiCreateEmployee(this.params.profile)
         // TODO: ファイル、掲示板、チャットの最上位カラムを追加しなければならない
         this.$router.push('/')

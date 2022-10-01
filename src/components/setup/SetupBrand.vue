@@ -27,8 +27,10 @@
     </v-card>
   </v-container>
 </template>
+
 <script>
 import SetupFooter from './SetupFooter.vue'
+
 export default {
   name: 'setup-brand',
   components: {

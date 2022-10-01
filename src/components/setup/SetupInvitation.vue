@@ -65,10 +65,9 @@ import SetupFooter from './SetupFooter.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '../common/OverlayLoading.vue'
 
-import accountApiFunc from '@/mixins/api/account.js'
 import apiFunc from '@/mixins/api/api.js'
+import storeFunc from '@/mixins/store/auth'
 
-import storeAuth from '@/mixins/store/auth'
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -97,13 +96,13 @@ export default {
       employee: {},
       invitation: {}
     })
-    const account = storeAuth.storeGetAccount()
+    const account = storeFunc.storeGetAccount()
 
     const init = async () => {
       loading.value = true
       try {
         // 企業
-        setup_data.company = await apiFunc.apiGetCompanyFromInvitation(storeAuth.storeGetInvitationCode())
+        setup_data.company = await apiFunc.apiGetCompanyFromInvitation(storeFunc.storeGetInvitationCode())
         // 招待情報
         setup_data.invitation = await apiFunc.apiGetInvitation()
         // 従業員
@@ -121,30 +120,30 @@ export default {
       loading.value = true
       try {
         // アソシエイト作成
-        const associate = await accountApiFunc.apiAssociateCreate(
+        const associate = await apiFunc.apiCreateAssociate(
           account,
           setup_data.company
         )
         // スタッフ登録(従業員招待でstaff_idが生成されているので割り当てる)
         const invitation_staff_id = setup_data.employee.staff_id
-        const staff = await accountApiFunc.apiStaffCreate(
+        const staff = await apiFunc.apiCreateStaff(
           associate,
           setup_data.company,
           setup_data.invitation,
           invitation_staff_id
         )
         // store保存
-        storeAuth.storeSetAssociateStaff(associate, staff)
+        storeFunc.storeSetAssociateStaff(associate, staff)
         // スタッフロール登録
-        const staff_role = await accountApiFunc.apiSetupStaffRoleCreate(
+        const staff_role = await apiFunc.apiCreateStaffRole(
           staff,
           setup_data.invitation.role_cd
         )
         // employeeステータス有効化
         await apiFunc.apiUpdateEmployee(setup_data.employee)
         // store保存
-        storeAuth.storeSetAssociateStaff(associate, staff)
-        storeAuth.storeSetStaffRole(staff_role)
+        storeFunc.storeSetAssociateStaff(associate, staff)
+        storeFunc.storeSetStaffRole(staff_role)
         router.push('/')
       } catch (error) {
         message.error = error

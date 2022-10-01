@@ -38,10 +38,8 @@
 </template>
 
 <script>
-import { Auth } from 'aws-amplify'
 import storeAuth from '@/mixins/store/auth.js'
-import accountApiFunc from '@/mixins/api/account.js'
-import brandFunc from '@/mixins/api/master/brand.js'
+import apiFunc from '@/mixins/api/api.js'
 
 export default {
   data () {
@@ -59,9 +57,9 @@ export default {
       this.loading = true
       this.error = ''
       try {
-        const user = await Auth.signIn(this.auth.email, this.auth.password)
-        if (user) {
-          this.afterSigninMove(user)
+        const cognito_user = await apiFunc.apiEmailSignIn(this.auth.email, this.auth.password)
+        if (cognito_user) {
+          this.afterSigninMove(cognito_user)
         }
       } catch (error) {
         console.log('error signing in', error)
@@ -69,30 +67,30 @@ export default {
         this.error = error
       }
     },
-    async afterSigninMove (user) {
+    async afterSigninMove (cognito_user) {
       try {
-        const account = await accountApiFunc.getAccount(user)
-        // TODO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
+        const account = await apiFunc.apiGetAccount(cognito_user)
+        // MEMO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
         const associate = account.associate.items[0]
         const staff = associate.staffs.items[0]
-        const role = staff.roles.items[0]
-        const brand = await brandFunc._apiGetBrand(staff.company_cd)
+        const brands = await apiFunc.apiGetBrandsBySignin(staff.company_cd)
+
         console.log('signin account', account);
         console.log('signin associate', associate);
         console.log('signin staff', staff);
-        console.log('signin staff role', role);
-        console.log('signin brand', brand);
+        console.log('signin staff role', staff.roles.items[0]);
+        console.log('signin brand', brands);
 
-        storeAuth.storeSetAuthUser(user)
+        storeAuth.storeSetAuthUser(cognito_user)
         storeAuth.storeSetAccount(account)
         storeAuth.storeSetAssociateStaff(associate, staff)
-        storeAuth.storeSetStaffRole(role)
+        storeAuth.storeSetStaffRole(staff.roles.items[0])
         storeAuth.storeSetCompanyCd(staff.company_cd)
         storeAuth.storeSetCompanyGroupCd(staff.company_group_cd)
         // TODO: 複数のブランドある場合どうするか?
         // MEMO :複数ブランドに所属している場合はどのブランドの従業員としてログインするか選択させる?
         // すき家に勤めているのに、なか卯の情報見れたらまずい
-        storeAuth.storeSetBrandCd(...brand)
+        storeAuth.storeSetBrandCd(...brands)
 
         this.$router.push('/')
       } catch (error) {

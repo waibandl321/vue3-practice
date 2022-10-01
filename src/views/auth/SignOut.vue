@@ -3,10 +3,12 @@
 </template>
 
 <script>
-import { Auth } from 'aws-amplify'
-import { useRouter } from 'vue-router'
 import Loading from '@/components/common/OverlayLoading'
+
 import storeAuth from '@/mixins/store/auth.js'
+import apiFunc from '@/mixins/api/api.js'
+
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'auth-signout',
@@ -18,7 +20,7 @@ export default {
     const signOut = async () => {
       console.log('signout')
       try {
-        await Auth.signOut()
+        await apiFunc.apiSignOut()
         storeAuth.storeResetUser()
         router.push('/auth/signin')
       } catch (error) {

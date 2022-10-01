@@ -62,7 +62,6 @@
 </template>
 
 <script>
-import apiFunc from '@/mixins/api/api.js'
 import routerFunc from '@/mixins/utils/route.js'
 import { reactive } from '@vue/reactivity'
 
@@ -95,20 +94,9 @@ export default {
     }
     initMenus()
 
-    // サインアウト
-    const signout = async () => {
-      try {
-        await apiFunc.apiSignOut()
-        this.$router.push('/auth/signin')
-      } catch (error) {
-        console.error('error signing out: ', error)
-      }
-    }
-
     return {
       menus,
       header_icons,
-      signout
     }
   },
 }

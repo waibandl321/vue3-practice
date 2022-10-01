@@ -3,6 +3,9 @@ export default {
   storeSetAuthUser (user) {
     store.commit('mSetCognitoUser', user)
   },
+  storeGetCognitoUser () {
+    return store.getters.cognitoUser
+  },
   storeSetAccount (account) {
     store.commit('mSetAccount', account)
   },

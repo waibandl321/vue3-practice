@@ -99,10 +99,9 @@
 <script>
 import AppAlert from '@/components/common/AppAlert.vue'
 
-import { ref } from '@vue/reactivity'
-// import shopApiFunc from '@/mixins/api/master/shop'
 import apiFunc from '@/mixins/api/api.js'
-import accountApiFunc from '@/mixins/api/account'
+
+import { ref } from '@vue/reactivity'
 
 export default {
   components: {
@@ -144,7 +143,7 @@ export default {
       const role = role_change_staff.value.staff_role
       const staff_id = role_change_staff.value.employee.staff_id
       try {
-        await accountApiFunc.apiUpdateStaffRole(staff_id, role)
+        await apiFunc.apiUpdateStaffRole(staff_id, role)
         props.messageSet('スタッフの権限を更新しました。', 'success')
       } catch (error) {
         console.error(error);

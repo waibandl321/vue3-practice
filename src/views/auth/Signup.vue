@@ -20,9 +20,11 @@
 <script>
 import SignUpInput from '@/components/auth/SignUpInput.vue'
 import SignUpCode from '@/components/auth/SignUpCode.vue'
+
 import { Hub } from 'aws-amplify'
 import { useRouter } from 'vue-router'
-import accountFunc from '@/mixins/api/account'
+
+import apiFunc from '@/mixins/api/api.js'
 import storeAuth from '@/mixins/store/auth.js'
 
 // TODO: 登録中の認証情報をstoreに保存する
@@ -49,11 +51,11 @@ export default {
       Hub.listen('auth', async ({ payload }) => {
         const { event } = payload
         if (event === 'autoSignIn') {
-          const user = payload.data
+          const cognito_user = payload.data
           // アカウントDB作成
-          await accountFunc.apiAccountCreate(user).then((account) => {
+          await apiFunc.apiCreateAccount(cognito_user).then((account) => {
             storeAuth.storeSetAccount(account)
-            storeAuth.storeSetAuthUser(user)
+            storeAuth.storeSetAuthUser(cognito_user)
             router.push('/')
           })
         } else if (event === 'autoSignIn_failure') {
