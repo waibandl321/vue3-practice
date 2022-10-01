@@ -26,7 +26,6 @@ export default createStore({
     staff_role_cd: null,
     //招待
     invitation_cd: null,
-    invitation_send_to: null,
     invitation_employee_id: null,
     // 店舗招待
     invitation_shop_cd: null,
@@ -72,9 +71,6 @@ export default createStore({
     // 招待
     invitationCd (state) {
       return state.invitation_cd
-    },
-    invitationSendTo (state) {
-      return state.invitation_send_to
     },
     invitationEmployeeId (state) {
       return state.invitation_employee_id
@@ -139,9 +135,6 @@ export default createStore({
     //招待
     mSetInvitationCode (state, invitation_cd) {
       state.invitation_cd = invitation_cd
-    },
-    mSetInvitationSendTo (state, invitation_send_to) {
-      state.invitation_send_to = invitation_send_to
     },
     mSetInvitationEmployeeId (state, invitation_employee_id) {
       state.invitation_employee_id = invitation_employee_id

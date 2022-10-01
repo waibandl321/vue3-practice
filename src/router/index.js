@@ -44,7 +44,6 @@ router.beforeEach(async (to, from, next) => {
     if (to.query.ivc) {
       Utils.setInvitationCode(to.query.ivc)
       Utils.setInvitationEmployeeId(to.query.emp)
-      // Utils.setInvitationSendTo(to.query.to)
       return next({
         name: 'auth-signup'
       })

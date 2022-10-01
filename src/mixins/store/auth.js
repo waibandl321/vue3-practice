@@ -56,9 +56,6 @@ export default {
   storeGetInvitationCode () {
     return store.getters.invitationCd
   },
-  storeSetInvitationSendTo (send_to) {
-    store.commit('mSetInvitationSendTo', send_to)
-  },
   storeSetInvitationEmployeeId (invitation_employee_id) {
     store.commit('mSetInvitationEmployeeId', invitation_employee_id)
   },
@@ -69,13 +66,5 @@ export default {
   storeSetInvitationShopCode (invitation_shop_cd) {
     store.commit('mSetInvitationShopCode', invitation_shop_cd)
   },
-  // 店舗
-  
-  // スタッフグループ従業員
-  storeSetStaffGroupStaffs (staffs) {
-    store.commit('mSetStaffGroupStaffs', staffs)
-  },
-  storeGetStaffGroupStaffs () {
-    return store.getters.staffGroupStaffs
-  }
+
 }
