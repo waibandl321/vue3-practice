@@ -55,8 +55,9 @@
 
 <script>
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-import { ref, watch } from 'vue'
 import AppAlert from '@/components/common/AppAlert.vue'
+
+import { ref, watch } from 'vue'
 
 export default {
   name: 'employee-list',

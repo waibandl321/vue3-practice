@@ -91,7 +91,7 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 
-import shopApiFunc from '@/mixins/api/master/shop.js'
+import apiFunc from '@/mixins/api/api.js'
 
 export default {
   name: 'shop-edit',
@@ -112,10 +112,10 @@ export default {
     const save = async () => {
       try {
         if(props.params.is_new) {
-          await shopApiFunc.apiCreateShop(props.params.editor)
+          await apiFunc.apiCreateShop(props.params.editor)
           props.messageSet('店舗を登録しました', 'success')
         } else {
-          await shopApiFunc.apiUpdateShop(props.params.editor)
+          await apiFunc.apiUpdateShop(props.params.editor)
           props.messageSet('店舗情報を更新しました', 'success')
         }
       } catch (error) {

@@ -47,7 +47,8 @@ import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 
 import utilsMixin from '@/mixins/utils/utils.js'
-import brandApiFunc from '@/mixins/api/master/brand.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { computed, ref } from '@vue/runtime-core'
 
 export default {
@@ -76,10 +77,10 @@ export default {
       loading.value = true
       try {
         if(props.params.is_new) {
-          await brandApiFunc.apiBrandCreate(props.params.editor)
+          await apiFunc.apiCreateBrand(props.params.editor)
           props.messageSet('ブランドを登録しました', 'success')
         } else {
-          await brandApiFunc.apiUpdateBrand(props.params.editor)
+          await apiFunc.apiUpdateBrand(props.params.editor)
           props.messageSet('ブランドを更新しました', 'success')
         }
         props.initList()

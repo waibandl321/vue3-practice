@@ -12,6 +12,7 @@
     <PcFooter :options="footer_options" />
   </v-container>
 </template>
+
 <script>
 import PcFooter from '@/components/common/PcFooter.vue'
 

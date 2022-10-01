@@ -73,8 +73,10 @@
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 
-import positionApiFunc from '@/mixins/api/master/position.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { ref, watch } from 'vue'
+
 export default {
   name: 'position-list',
   components: { MasterLeftMenu, AppAlert },
@@ -101,7 +103,7 @@ export default {
     // 削除
     const deletePosition = async (position) => {
       try {
-        await positionApiFunc.apiDeletePosition(position)
+        await apiFunc.apiDeletePosition(position)
         alert('ポジションを削除しました')
       } catch (error) {
         console.error(error);

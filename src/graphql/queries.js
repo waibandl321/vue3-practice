@@ -803,9 +803,63 @@ export const listShops = /* GraphQL */ `
           nextToken
         }
         staffs {
+          items {
+            id
+            shop_staff_id
+            company_shop_cd
+            staff_id
+            status
+            delete
+            createdAt
+            updatedAt
+            employee {
+              items {
+                id
+                company_employee_id
+                staff_id
+                company_cd
+                last_name
+                first_name
+                last_name_kana
+                first_name_kana
+                gender
+                birth
+                employee_number
+                permanent
+                official_position
+              }
+              nextToken
+            }
+            role {
+              items {
+                id
+                role_cd
+                staff_id
+                company_cd
+              }
+              nextToken
+            }         
+          }
           nextToken
         }
         groups {
+          items {
+            id
+            staff_group_cd
+            company_shop_cd
+            group_name
+            staff_id
+            createdAt
+            updatedAt
+            members {
+              items {
+                id
+                staff_group_cd
+                shop_staff_id
+              }
+              nextToken
+            }
+          }
           nextToken
         }
       }

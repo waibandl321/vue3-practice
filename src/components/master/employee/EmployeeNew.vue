@@ -169,8 +169,8 @@ import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 
 import utilsMixin from '@/mixins/utils/utils.js'
-import invitationApiFunc from '@/mixins/api/invitation.js'
-import employeeApiFunc from '@/mixins/api/master/employee'
+import apiFunc from '@/mixins/api/api.js'
+
 import { reactive, ref } from 'vue'
 
 export default {
@@ -200,10 +200,10 @@ export default {
       try {
         // 従業員作成
         const is_inv = true
-        const employee = await employeeApiFunc.apiEmployeeCreate(props.params.editor, is_inv)
+        const employee = await apiFunc.apiCreateEmployee(props.params.editor, is_inv)
         console.log('employee', employee);
         // 招待データ作成
-        await invitationApiFunc.apiCreateInvitation(employee, invitation)
+        await apiFunc.apiCreateInvitation(employee, invitation)
         props.messageSet('従業員を新規作成しました。', 'success')
         props.changeMode('list')
       } catch (error) {

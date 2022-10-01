@@ -23,8 +23,8 @@ import StaffGroupList from './StaffGroupList.vue';
 import StaffGroupDetail from './StaffGroupDetail.vue';
 import StaffGroupEdit from './StaffGroupEdit.vue';
 
-import shopApiFunc from '@/mixins/api/master/shop.js'
-import employeeApiFunc from '@/mixins/api/master/employee.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { reactive, ref } from '@vue/reactivity';
 
 export default {
@@ -47,7 +47,7 @@ export default {
     })
 
     async function companyEmployees () {
-      group_info.company_employees = await employeeApiFunc.apiGetEmployeeList()
+      group_info.company_employees = await apiFunc.apiGetEmployees()
     }
     companyEmployees()
     
@@ -65,7 +65,7 @@ export default {
     const refreshMember = async () => {
       let results = []
       try {
-        results = await shopApiFunc.apiGetStaffGroupStaff(group_info.editor)
+        results = await apiFunc.apiGetStaffGroupStaffs(group_info.editor)
       } catch (error) {
         console.log(error);
       }

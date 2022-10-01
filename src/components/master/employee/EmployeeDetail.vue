@@ -51,6 +51,7 @@
 
 <script>
 import utilsMixin from '@/mixins/utils/utils.js'
+
 export default {
   name: 'brand-detail',
   mixins: [utilsMixin],

@@ -36,7 +36,9 @@
 import PcFooter from '@/components/common/PcFooter.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
-import areaApiFunc from '@/mixins/api/master/area.js'
+
+import apiFunc from '@/mixins/api/api.js'
+
 import { ref } from '@vue/reactivity'
 
 export default {
@@ -55,10 +57,10 @@ export default {
       loading.value = true
       try {
         if(props.params.is_new) {
-          await areaApiFunc.apiCreateArea(props.params.editor)
+          await apiFunc.apiCreateArea(props.params.editor)
           props.messageSet('エリアを登録しました', 'success')
         } else {
-          await areaApiFunc.apiUpdateArea(props.params.editor)
+          await apiFunc.apiUpdateArea(props.params.editor)
           props.messageSet('エリアを更新しました', 'success')
         }
         props.initList()

@@ -1,12 +1,12 @@
 import { API } from 'aws-amplify'
 import { createShop, updateShop, createShopStaff, deleteShopStaff, createShopStaffGroup, 
   deleteShopStaffGroup, createShopStaffGroupStaff, updateShopStaffGroup, deleteShopStaffGroupStaff } from '@/graphql/mutations'
-import { listShops, listShopStaffs, listShopStaffGroups, listShopStaffGroupStaffs, getShopStaff } from '@/graphql/queries'
+import { listShops, listShopStaffGroups, listShopStaffGroupStaffs, getShopStaff } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import store from '@/store/index.js'
 
 export default {
-  async apiCreateShop (shop) {
+  async create (shop) {
     const _shop = this.generateShopObject(shop)
     return await API.graphql({
       query: createShop,
@@ -14,7 +14,7 @@ export default {
     })
   },
 
-  async apiUpdateShop (_shop) {
+  async update (_shop) {
     const item = this.generateShopObject(_shop)
     item.id = _shop.id
 
@@ -40,7 +40,7 @@ export default {
     }
   },
 
-  async apiGetShops () {
+  async getShops () {
     const filter = {
       company_cd: {
         eq: store.getters.companyCd
@@ -53,8 +53,8 @@ export default {
     return results.data.listShops.items
   },
 
-  // 店舗スタッフ
-  async apiCreateShopStaff () {
+  // 店舗スタッフ追加
+  async createShopStaff () {
     const shop_staff = this.generateShopStaffObject()
     return await API.graphql({
       query: createShopStaff,
@@ -70,18 +70,6 @@ export default {
       delete: 0
     }
   },
-  async apiGetShopStaffList(company_shop_cd) {
-    const filter = {
-      company_shop_cd: {
-        eq: company_shop_cd
-      }
-    }
-    const results = await API.graphql({
-      query: listShopStaffs,
-      variables: { filter: filter }
-    })
-    return results.data.listShopStaffs.items
-  },
   async getShopStaffDetail (shop_staff) {
     const result = await API.graphql({
       query: getShopStaff,
@@ -89,7 +77,7 @@ export default {
     })
     return result.data.getShopStaff
   },
-  async apiDeleteShopStaff (id) {
+  async deleteShopStaff (id) {
     const filter = {
       id: id,
     }
@@ -99,7 +87,7 @@ export default {
     });
   },
   // スタッフグループ作成
-  async apiCreateShopStaffGroup (shop, staff_group_name) {
+  async createStaffGroup (shop, staff_group_name) {
     const shop_staff_group = this.generateCreateShopStaffObject(shop, staff_group_name)
     const result = await API.graphql({
       query: createShopStaffGroup,
@@ -116,7 +104,7 @@ export default {
     }
   },
   // スタッフグループ更新
-  async apiUpdateShopStaffGroup (shop, staff_group) {
+  async updateStaffGroup (shop, staff_group) {
     const item = this.generateUpdateShopStaffObject(shop, staff_group)
 
     return await API.graphql({
@@ -134,7 +122,7 @@ export default {
     }
   },
   // スタッフグループ取得
-  async apiGetShopStaffGroup (shop) {
+  async getStaffGroups (shop) {
     const filter = {
       company_shop_cd: {
         eq: shop.company_shop_cd
@@ -147,7 +135,7 @@ export default {
     return results.data.listShopStaffGroups.items
   },
   // スタッフグループ削除
-  async apiDeleteShopStaffGroup (shop_staff_group) {
+  async deleteStaffGroup (shop_staff_group) {
     const filter = {
       id: shop_staff_group.id,
     }
@@ -157,7 +145,7 @@ export default {
     });
   },
   // スタッフグループ所属メンバー登録
-  async apiCreateStaffGroupStaff (staff_group, staff_id) {
+  async addStaffGroupStaff (staff_group, staff_id) {
     const data = this.generateStaffGroupStaffObject(staff_group, staff_id)
     const result =  await API.graphql({
       query: createShopStaffGroupStaff,
@@ -172,7 +160,7 @@ export default {
     }
   },
   // スタッフグループ所属メンバー取得
-  async apiGetStaffGroupStaff (staff_group) {
+  async getStaffGroupStaffs (staff_group) {
     const filter = {
       staff_group_cd: {
         eq: staff_group.staff_group_cd
@@ -185,7 +173,7 @@ export default {
     return results.data.listShopStaffGroupStaffs.items
   },
   // スタッフグループ所属メンバー削除
-  async apiDeleteStaffGroupStaff (staff) {
+  async deleteStaffGroupStaff (staff) {
     const filter = {
       id: staff.id,
     }

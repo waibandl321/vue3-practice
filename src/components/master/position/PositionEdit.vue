@@ -27,7 +27,8 @@ import PcFooter from '@/components/common/PcFooter.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 
-import positionApiFunc from '@/mixins/api/master/position.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { ref } from '@vue/reactivity'
 
 export default {
@@ -45,10 +46,10 @@ export default {
       loading.value = true
       try {
         if(props.params.is_new) {
-          await positionApiFunc.apiCreatePosition(props.params.editor)
+          await apiFunc.apiCreatePosition(props.params.editor)
           props.messageSet('ポジションを登録しました', 'success')
         } else {
-          await positionApiFunc.apiUpdatePosition(props.params.editor)
+          await apiFunc.apiUpdatePosition(props.params.editor)
           props.messageSet('ポジションを更新しました', 'success')
         }
         props.changeMode('list')

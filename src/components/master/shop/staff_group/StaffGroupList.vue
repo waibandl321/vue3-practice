@@ -72,8 +72,9 @@ import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import PcFooter from '@/components/common/PcFooter.vue'
 
+import apiFunc from '@/mixins/api/api.js'
+
 import { inject, ref } from 'vue'
-import shopApiFunc from '@/mixins/api/master/shop.js'
 
 export default {
   name: 'staff-group-list',
@@ -105,7 +106,7 @@ export default {
       staff_group_create_modal.value = false
       loading.value = true
       try {
-        const result = await shopApiFunc.apiCreateShopStaffGroup(inj_params.viewer, staff_group_name.value)
+        const result = await apiFunc.apiCreateStaffGroup(inj_params.viewer, staff_group_name.value)
         groups.value.push(result)
         injFuncMessageSet('スタッフグループを作成しました', 'success')
       } catch (error) {
@@ -120,7 +121,7 @@ export default {
       if(!confirm('削除後は復元できません。よろしいですか？')) return;
       loading.value = true
       try {
-        await shopApiFunc.apiDeleteShopStaffGroup(staff_group)
+        await apiFunc.apiDeleteStaffGroup(staff_group)
         await deleteStaffGroupMembers(staff_group)
         await refreshGroups()
         injFuncMessageSet('スタッフグループを削除しました。', 'success')
@@ -133,7 +134,7 @@ export default {
         const members = staff_group.members.items
         if(members.length > 0) {
           for (const member of members) {
-            await shopApiFunc.apiDeleteStaffGroupStaff(member) 
+            await apiFunc.apiDeleteStaffGroupStaff(member) 
           }
         }
       }
@@ -141,7 +142,7 @@ export default {
     // 再読み込み
     async function refreshGroups () {
       try {
-        groups.value = await shopApiFunc.apiGetShopStaffGroup(inj_params.viewer)
+        groups.value = await apiFunc.apiGetStaffGroups(inj_params.viewer)
       } catch (error) {
         console.log(error);
       }

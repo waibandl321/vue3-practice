@@ -64,6 +64,7 @@ export default {
     }
 
     const employee = ref({})
+    // TODO: 必要ない？
     const getEmployee = async () => {
       employee.value = await employeeApiFunc.apiGetEmployeeRelateStaffId(store.getters.staff.staff_id)
     }

@@ -30,7 +30,8 @@ import BrandList from '@/components/master/brand/BrandList.vue'
 import BrandDetail from '@/components/master/brand/BrandDetail.vue'
 import BrandEdit from '@/components/master/brand/BrandEdit.vue'
 
-import brandApiFunc from '@/mixins/api/master/brand.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { reactive, ref } from '@vue/reactivity'
 import _ from 'lodash'
 
@@ -57,7 +58,7 @@ export default {
     const initList = async () => {
       params.loading = true
       try {
-        params.items = await brandApiFunc.apiGetBrand()
+        params.items = await apiFunc.apiGetBrands()
       } catch (error) {
         params.items = []
         params.error = '読み込みに失敗しました'

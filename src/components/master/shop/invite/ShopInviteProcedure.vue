@@ -4,7 +4,7 @@
 
 <script>
 import OverlayLoading from '@/components/common/OverlayLoading.vue';
-import shopApiFunc from '@/mixins/api/master/shop.js'
+import apiFunc from '@/mixins/api/api.js'
 import storeAuth from '@/mixins/store/auth';
 import { inject } from '@vue/runtime-core';
 
@@ -20,7 +20,7 @@ export default {
     const injFuncMessageSet = inject('message-set')
     const createShopStaff = async () => {
       try {
-        await shopApiFunc.apiCreateShopStaff()
+        await apiFunc.apiCreateShopStaff()
         storeAuth.storeSetInvitationShopCode(null)
         injFuncMessageSet('店舗スタッフを追加しました。', 'success')
         props.changeMode('list')

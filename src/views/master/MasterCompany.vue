@@ -30,7 +30,8 @@ import CompanyList from '@/components/master/company/CompanyList.vue'
 import CompanyDetail from '@/components/master/company/CompanyDetail.vue'
 import CompanyEdit from '@/components/master/company/CompanyEdit.vue'
 
-import companyApiFunc from '@/mixins/api/master/company.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { reactive, ref } from '@vue/reactivity'
 import _ from 'lodash'
 
@@ -55,7 +56,7 @@ export default {
 
     const initList = async () => {
       try {
-        params.items = await companyApiFunc.apiGetCompany()
+        params.items = await apiFunc.apiGetCompanies()
       } catch (error) {
         params.items = []
         params.error = '読み込みに失敗しました'

@@ -52,10 +52,7 @@ import ShopInviteProcedure from '@/components/master/shop/invite/ShopInviteProce
 import ShopStaffList from '@/components/master/shop/ShopStaffList.vue'
 import StaffGroupIndex from '@/components/master/shop/staff_group/StaffGroup.vue'
 
-import shopApiFunc from '@/mixins/api/master/shop.js'
-import areaApiFunc from '@/mixins/api/master/area.js'
-import brandApiFunc from '@/mixins/api/master/brand.js'
-import roleFunc from '@/mixins/api/master/role.js'
+import apiFunc from '@/mixins/api/api.js'
 import storeFunc from '@/mixins/store/auth.js'
 
 import { reactive, ref } from '@vue/reactivity'
@@ -102,10 +99,10 @@ export default {
     const init = async () => {
       params.loading = true
       try {
-        params.brands = await brandApiFunc.apiGetBrand()
-        params.areas = await areaApiFunc.apiGetArea()
-        params.items = await shopApiFunc.apiGetShops()
-        params.roles = roleFunc.getSystemRoleList()
+        params.brands = await apiFunc.apiGetBrands()
+        params.areas = await apiFunc.apiGetAreas()
+        params.items = await apiFunc.apiGetShops()
+        params.roles = apiFunc.getSystemRoles()
       } catch (error) {
         params.error = 'データの読み込みに失敗しました。'
         console.error(error);

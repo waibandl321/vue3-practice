@@ -36,9 +36,7 @@ import EmployeeDetail from '@/components/master/employee/EmployeeDetail.vue'
 import EmployeeEdit from '@/components/master/employee/EmployeeEdit.vue'
 import EmployeeNew from '@/components/master/employee/EmployeeNew.vue'
 
-import employeeApiFunc from '@/mixins/api/master/employee.js'
-import shopApiFunc from '@/mixins/api/master/shop.js'
-import roleFunc from '@/mixins/api/master/role.js'
+import apiFunc from '@/mixins/api/api.js'
 
 import _ from 'lodash'
 import { reactive, ref } from '@vue/reactivity'
@@ -71,14 +69,15 @@ export default {
     const initData = async () => {
       params.loading = true
       try {
-        params.items = await employeeApiFunc.apiGetEmployeeList()
-        params.shops = await shopApiFunc.apiGetShops()
-        params.roles = roleFunc.getSystemRoleList()
+        params.items = await apiFunc.apiGetEmployees()
+        params.loading = false
+        params.shops = await apiFunc.apiGetShops()
+        params.roles = apiFunc.getSystemRoles()
       } catch (error) {
         params.error = "読み込みに失敗しました。"
         console.error(error);
+        params.loading = false
       }
-      params.loading = false
     }
     initData()
 

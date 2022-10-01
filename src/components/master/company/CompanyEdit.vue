@@ -90,7 +90,7 @@ import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 
 import utilsMixin from '@/mixins/utils/utils.js'
-import companyApiFunc from '@/mixins/api/master/company.js'
+import apiFunc from '@/mixins/api/api.js'
 import { ref } from '@vue/reactivity'
 
 export default {
@@ -109,7 +109,7 @@ export default {
     const save = async () => {
       loading.value = true
       try {
-        await companyApiFunc.apiUpdateCompany(props.params.editor)
+        await apiFunc.apiUpdateCompany(props.params.editor)
         props.messageSet('企業情報を更新しました', 'success')
         props.changeMode('list')
       } catch (error) {

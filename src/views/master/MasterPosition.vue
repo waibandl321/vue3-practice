@@ -30,7 +30,8 @@ import PositionList from '@/components/master/position/PositionList.vue'
 import PositionDetail from '@/components/master/position/PositionDetail.vue'
 import PositionEdit from '@/components/master/position/PositionEdit.vue'
 
-import positionApiFunc from '@/mixins/api/master/position.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { reactive, ref } from '@vue/reactivity'
 import _ from 'lodash'
 
@@ -64,7 +65,7 @@ export default {
     const initList = async () => {
       params.loading = true
       try {
-        params.items = await positionApiFunc.apiGetPosition()
+        params.items = await apiFunc.apiGetPositions()
       } catch (error) {
         params.items = []
         params.error = '読み込みに失敗しました'

@@ -52,7 +52,6 @@
 <script>
 import AppAlert from '@/components/common/AppAlert.vue'
 import MasterLeftMenu from '../MasterLeftMenu.vue'
-// import brandApiFunc from '@/mixins/api/master/brand.js'
 import { ref, watch } from 'vue'
 
 export default {

@@ -40,9 +40,11 @@
     <PcFooter :options="footer_options" />
   </v-container>
 </template>
+
 <script>
 import utilFunc from '@/mixins/utils/utils.js'
 import PcFooter from '@/components/common/PcFooter.vue'
+
 import { computed } from '@vue/runtime-core'
 
 export default {

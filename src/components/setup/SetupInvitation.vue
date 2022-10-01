@@ -65,10 +65,8 @@ import SetupFooter from './SetupFooter.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 import OverlayLoading from '../common/OverlayLoading.vue'
 
-import companyApiFunc from '@/mixins/api/master/company.js'
-import employeeApiFunc from '@/mixins/api/master/employee.js'
 import accountApiFunc from '@/mixins/api/account.js'
-import invitationApiFunc from '@/mixins/api/invitation.js'
+import apiFunc from '@/mixins/api/api.js'
 
 import storeAuth from '@/mixins/store/auth'
 import { reactive, ref } from 'vue'
@@ -76,7 +74,6 @@ import { useRouter } from 'vue-router'
 
 export default {
   name: 'setup-invite',
-  // mixins: [utilsMixin],
   components: {
     SetupFooter,
     OverlayLoading,
@@ -106,11 +103,11 @@ export default {
       loading.value = true
       try {
         // 企業
-        setup_data.company = await companyApiFunc.apiGetCompanyFromInvitation(storeAuth.storeGetInvitationCode())
+        setup_data.company = await apiFunc.apiGetCompanyFromInvitation(storeAuth.storeGetInvitationCode())
         // 招待情報
-        setup_data.invitation = await invitationApiFunc.apiGetInvitation()
+        setup_data.invitation = await apiFunc.apiGetInvitation()
         // 従業員
-        setup_data.employee = await employeeApiFunc.apiGetEmployeeDetail(setup_data.invitation.employee_id)
+        setup_data.employee = await apiFunc.apiGetEmployeeDetail(setup_data.invitation.employee_id)
       } catch (error) {
         console.error(error);
         message.error = error
@@ -144,7 +141,7 @@ export default {
           setup_data.invitation.role_cd
         )
         // employeeステータス有効化
-        await employeeApiFunc.apiUpdateEmployee(setup_data.employee)
+        await apiFunc.apiUpdateEmployee(setup_data.employee)
         // store保存
         storeAuth.storeSetAssociateStaff(associate, staff)
         storeAuth.storeSetStaffRole(staff_role)
@@ -165,11 +162,11 @@ export default {
       }
     ]
     return {
-        setup_data,
-        saveSetup,
-        footer_options,
-        loading,
-        message
+      setup_data,
+      saveSetup,
+      footer_options,
+      loading,
+      message
       }
   },
 }

@@ -121,12 +121,13 @@
 </template>
 
 <script>
-import utilsMixin from '@/mixins/utils/utils.js'
-import employeeApiFunc from '@/mixins/api/master/employee.js'
-import { reactive, ref } from '@vue/reactivity'
-
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
+
+import utilsMixin from '@/mixins/utils/utils.js'
+import apiFunc from '@/mixins/api/api.js'
+
+import { reactive, ref } from '@vue/reactivity'
 
 export default {
   name: "employee-edit",
@@ -144,7 +145,7 @@ export default {
     const update = async () => {
       loading.value = true
       try {
-        await employeeApiFunc.apiUpdateEmployee(editor);
+        await apiFunc.apiUpdateEmployee(editor);
         props.messageSet("従業員情報を更新しました", "success");
       }
       catch (error) {

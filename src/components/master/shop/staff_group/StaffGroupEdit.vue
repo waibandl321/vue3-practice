@@ -122,7 +122,7 @@
 <script>
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 
-import shopApiFunc from '@/mixins/api/master/shop.js'
+import apiFunc from '@/mixins/api/api.js'
 
 import { ref } from '@vue/reactivity'
 import { inject } from '@vue/runtime-core'
@@ -194,7 +194,7 @@ export default {
     const updateStaffGroup = async () => {
       loading.value = true
       try {
-        await shopApiFunc.apiUpdateShopStaffGroup(inj_params.viewer, props.groupInfo.editor)
+        await apiFunc.apiUpdateStaffGroup(inj_params.viewer, props.groupInfo.editor)
         await _deleteStaffs()
         await _addStaffs()
         injFuncMessageSet('スタッフグループを更新しました。', 'success')
@@ -210,14 +210,14 @@ export default {
       async function _deleteStaffs () {
         if(delete_staffs.value.length > 0) {
           for (const delete_staff of delete_staffs.value) {
-            await shopApiFunc.apiDeleteStaffGroupStaff(delete_staff)
+            await apiFunc.apiDeleteStaffGroupStaff(delete_staff)
           }
         }
       }
       async function _addStaffs () {
         if(add_staff_array.value.length > 0) {
           for (const staff_id of add_staff_array.value) {
-            const result = await shopApiFunc.apiCreateStaffGroupStaff(props.groupInfo.editor, staff_id)
+            const result = await apiFunc.apiAddStaffGroupStaff(props.groupInfo.editor, staff_id)
             staff_group_staffs.value.push(result)
             selectable_staffs.value = getSelectableStaffs()
           }

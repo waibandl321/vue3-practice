@@ -100,7 +100,8 @@
 import AppAlert from '@/components/common/AppAlert.vue'
 
 import { ref } from '@vue/reactivity'
-import shopApiFunc from '@/mixins/api/master/shop'
+// import shopApiFunc from '@/mixins/api/master/shop'
+import apiFunc from '@/mixins/api/api.js'
 import accountApiFunc from '@/mixins/api/account'
 
 export default {
@@ -122,7 +123,6 @@ export default {
     // 店舗従業員取得
     const items = ref([])
     const getShopStaffList = async () => {
-      console.log('props.params.viewer.staffs.items', props.params.viewer.staffs.items);
       for (const shop_staff of props.params.viewer.staffs.items) {
         shop_staff.employee = shop_staff.employee.items[0]
         shop_staff.staff_role = shop_staff.role.items[0]
@@ -153,7 +153,7 @@ export default {
     // 店舗スタッフ削除
     const clickDeleteShopStaff = async (staff) => {
       try {
-        await shopApiFunc.apiDeleteShopStaff(staff.id)
+        await apiFunc.apiDeleteShopStaff(staff.id)
         // スタッフグループからも削除する
         await deleteFromStaffGroup()
         props.messageSet('店舗従業員を削除しました。', 'success')
@@ -167,7 +167,7 @@ export default {
         for (const group of groups) {
           const delete_staff = group.members.items.find(r => r.shop_staff_id === staff.staff_id)
           if(delete_staff) {
-            await shopApiFunc.apiDeleteStaffGroupStaff(delete_staff)
+            await apiFunc.apiDeleteStaffGroupStaff(delete_staff)
           }
         }
       }

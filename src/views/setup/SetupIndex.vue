@@ -10,10 +10,11 @@
 
 <script>
 import utilMixin from '@/mixins/utils/utils'
-import companyApiFunc from '@/mixins/api/master/company.js'
-import brandApiFunc from '@/mixins/api/master/brand.js'
-import employeeApiFunc from '@/mixins/api/master/employee.js'
+// import companyApiFunc from '@/mixins/api/master/company.js'
+// import brandApiFunc from '@/mixins/api/master/brand.js'
+// import employeeApiFunc from '@/mixins/api/master/employee.js'
 import accountApiFunc from '@/mixins/api/account.js'
+import apiFunc from '@/mixins/api/api.js'
 
 import store from '@/store/index.js'
 import storeAuth from '@/mixins/store/auth'
@@ -68,8 +69,8 @@ export default {
     async save () {
       this.loading = true
       try {
-        this.company = await companyApiFunc.apiCompanyCreate(this.params.company)
-        this.brand = await brandApiFunc.apiBrandCreate(this.params.brand, this.company)
+        this.company = await apiFunc.apiCreateCompany(this.params.company)
+        this.brand = await apiFunc.apiCreateBrand(this.params.brand, this.company)
         storeAuth.storeSetSetupInfo(this.company, this.brand)
         this.afterSave()
       } catch (error) {
@@ -89,7 +90,7 @@ export default {
         console.log('created staff role', staff)
         storeAuth.storeSetAssociateStaff(associate, staff)
         storeAuth.storeSetStaffRole(staff_role)
-        await employeeApiFunc.apiEmployeeCreate(this.params.profile)
+        await apiFunc.apiCreateEmployee(this.params.profile)
         // TODO: ファイル、掲示板、チャットの最上位カラムを追加しなければならない
         this.$router.push('/')
       } catch (error) {

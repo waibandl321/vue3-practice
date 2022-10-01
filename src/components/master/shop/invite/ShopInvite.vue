@@ -38,6 +38,7 @@
 import QRCodeVue3 from "qrcode-vue3";
 import invitationApiFunc from '@/mixins/api/invitation.js'
 import { ref } from '@vue/reactivity';
+
 export default {
   name: 'shop-invite',
   components: {

@@ -30,7 +30,8 @@ import AreaList from '@/components/master/area/AreaList.vue'
 import AreaDetail from '@/components/master/area/AreaDetail.vue'
 import AreaEdit from '@/components/master/area/AreaEdit.vue'
 
-import areaApiFunc from '@/mixins/api/master/area.js'
+import apiFunc from '@/mixins/api/api.js'
+
 import { reactive, ref } from '@vue/reactivity'
 import _ from 'lodash'
 
@@ -57,7 +58,7 @@ export default {
     const initList = async () => {
       params.loading = true
       try {
-        params.items = await areaApiFunc.apiGetArea()
+        params.items = await apiFunc.apiGetAreas()
       } catch (error) {
         params.items = []
         params.error = '読み込みに失敗しました'

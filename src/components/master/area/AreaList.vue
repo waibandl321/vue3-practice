@@ -75,7 +75,7 @@
 import MasterLeftMenu from '../MasterLeftMenu.vue'
 import AppAlert from '@/components/common/AppAlert.vue'
 
-import areaApiFunc from '@/mixins/api/master/area.js'
+import apiFunc from '@/mixins/api/api.js'
 import { ref, watch } from 'vue'
 
 export default {
@@ -105,7 +105,7 @@ export default {
     // 削除
     const deleteArea = async (area) => {
       try {
-        await areaApiFunc.apiDeleteArea(area)
+        await apiFunc.apiDeleteArea(area)
         items.value = items.value.filter(v => v.id !== area.id)
         props.initList()
         alert('エリアを削除しました')
