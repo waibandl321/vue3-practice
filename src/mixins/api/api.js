@@ -235,6 +235,9 @@ export default {
   apiDeleteChatRoom (room) {
     return api_chat.deleteRoom(room)
   },
+  apiGetChatMembers (room) {
+    return api_chat.getChatRoomMember(room)
+  },
   apiCreateFirstChatRoomMember (room, datetime) {
     return api_chat.createInitRoomMember(room, datetime)
   },
@@ -277,5 +280,5 @@ export default {
   },
   apiGetNotifications () {
     return api_notification.getNotifications()
-  }
+  },
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="chat-main">
-    <!-- {{ params }} -->
+    {{ params.room_viewer.members }}
     <AppAlert
       :success="params.success"
       :error="params.error"
@@ -63,6 +63,8 @@
           :subtitle="posterStaffName(message.poster_ids)"
           class="chat-message"
         >
+          <!-- 投稿日 -->
+          <v-list-item-subtitle>投稿日:{{ message.createdAt }}</v-list-item-subtitle>
           <!-- 削除同線 -->
           <v-menu
             v-if="judgePoster(message.poster_ids)"
@@ -108,6 +110,26 @@
               >{{ url.url_key }}</a>
             </div>
           </div>
+          <!-- 既読 -->
+          <v-list-item-subtitle 
+            class="mt-2"
+            v-if="params.room_viewer.members.items.length > 1"
+          >
+            既読：
+            <template
+              v-for="(readable_member, index) in readableMembers(message)"
+              :key="index"
+            >
+              <v-chip
+                v-if="isRead(readable_member, message)"
+              >
+              <v-icon left>
+                mdi-check
+              </v-icon>
+                {{ posterStaffName(readable_member.member_id) }} {{ readable_member.updatedAt }}
+              </v-chip>
+            </template>
+          </v-list-item-subtitle>
         </v-list-item>
       </v-list>
     </div>
@@ -291,7 +313,7 @@ export default {
     const initChatRoom = inject('init-chat-room')
     const messageSet = inject('message-set')
     
-    const room_members = params.room_viewer.members.items
+    let room_members = params.room_viewer.members.items
     
     // トークルーム変更時のメッセージ読み込み
     watch(
@@ -303,19 +325,6 @@ export default {
       },
       { deep: true }
     )
-
-    // ルーム訪問履歴記録
-    const updateLastAccess = async () => {
-      try {
-        const current_member = room_members.find(
-          v => v.member_id === storeAuth.storeGetStaffId()
-        )
-        await apiFunc.apiUpdateChatMember(current_member, utilMixin.currentDateTime())
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    updateLastAccess()
 
     // 送信者名取得
     const posterStaffName = (staff_id) => {
@@ -383,6 +392,7 @@ export default {
       async () => {
         chat_messages.value = await getChatFilePreview(chat_messages.value)
         scrollEnd()
+        updateLastAccess()
         return;
       }
     )
@@ -509,6 +519,31 @@ export default {
       }
     }
 
+    // ルーム訪問履歴記録
+    const updateLastAccess = async () => {
+      try {
+        const current_member = room_members.find(
+          v => v.member_id === storeAuth.storeGetStaffId()
+        )
+        await apiFunc.apiUpdateChatMember(current_member, utilMixin.currentDateTime())
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    updateLastAccess()
+    
+    // 既読可能ユーザー
+    const readableMembers = (message) => {
+      return room_members.filter(v => v.member_id !== message.poster_ids)
+    }
+    // 既読判定
+    const isRead = (readable_member, message) => {
+      const last_visit_datetime = new Date(readable_member.updatedAt)
+      const post_datetime = new Date(message.createdAt)
+
+      return last_visit_datetime.getTime() > post_datetime.getTime()
+    }
+
     // メッセージ送信
     let message = reactive({
       text: "",
@@ -611,6 +646,9 @@ export default {
       chat_messages,
       judgePoster,
       posterStaffName,
+      // 既読可能
+      readableMembers,
+      isRead,
       // メッセージ送信
       message,
       file_select_modal,
