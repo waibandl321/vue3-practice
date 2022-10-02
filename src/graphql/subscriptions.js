@@ -3080,6 +3080,7 @@ export const onCreateNotification = /* GraphQL */ `
     onCreateNotification(filter: $filter) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id
@@ -3098,6 +3099,7 @@ export const onUpdateNotification = /* GraphQL */ `
     onUpdateNotification(filter: $filter) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id
@@ -3116,6 +3118,7 @@ export const onDeleteNotification = /* GraphQL */ `
     onDeleteNotification(filter: $filter) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id

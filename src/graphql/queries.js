@@ -2143,6 +2143,7 @@ export const getNotification = /* GraphQL */ `
     getNotification(id: $id) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id
@@ -2164,6 +2165,7 @@ export const listNotifications = /* GraphQL */ `
       items {
         id
         notification_id
+        company_group_cd
         category
         service_name
         poster_id

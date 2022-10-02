@@ -3312,6 +3312,7 @@ export const createNotification = /* GraphQL */ `
     createNotification(input: $input, condition: $condition) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id
@@ -3331,6 +3332,7 @@ export const updateNotification = /* GraphQL */ `
     updateNotification(input: $input, condition: $condition) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id
@@ -3350,6 +3352,7 @@ export const deleteNotification = /* GraphQL */ `
     deleteNotification(input: $input, condition: $condition) {
       id
       notification_id
+      company_group_cd
       category
       service_name
       poster_id

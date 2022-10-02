@@ -13,6 +13,7 @@ import api_shop from '@/mixins/api/master/shop.js'
 import api_forum from '@/mixins/api/func/forum'
 import api_chat from '@/mixins/api/func/chat'
 import api_file from '@/mixins/api/func/file'
+import api_notification from '@/mixins/api/func/notification.js'
 
 export default {
   // 認証
@@ -269,5 +270,9 @@ export default {
   },
   apiDeleteChatMessageUrl (url) {
     return api_chat.deleteChatUrl(url)
+  },
+  // 通知
+  apiCreateNotification (data, service_type, function_cd) {
+    return api_notification.create(data, service_type, function_cd)
   }
 }

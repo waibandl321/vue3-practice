@@ -308,7 +308,6 @@ export default {
       })
     }
     // 保存
-    // TODO: お知らせに連携する
     const savePost = async () => {
       loading.value = true
       try {
@@ -320,6 +319,8 @@ export default {
           await forumMixin.mixinCreateUrls(editor, new_post)
           await forumMixin.mixinCreateTags(editor, new_post)
           await forumMixin.mixinCreateTagOptions(props.params.forum, props.params.tag_options)
+          // TODO: お知らせに連携する
+          await forumMixin.createForumNotification(new_post)
           props.messageSet('投稿を作成しました。', 'success')
         } else {
           // 更新
@@ -338,9 +339,11 @@ export default {
         console.error(error)
       }
       loading.value = false
-      props.changeMode('list')
       props.initForum()
+      props.changeMode('list')
     }
+
+    // const createForumNotification = (post) => {}
 
     // ファイル管理から選択
     const file_select_modal = ref(false)

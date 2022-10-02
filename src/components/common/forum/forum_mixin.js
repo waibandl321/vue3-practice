@@ -11,8 +11,8 @@ export default {
     if(editor.eyecatch){
       // ローカルアップロード
       if(!editor.eyecatch.id) {
-        editor.eyecatch.data_url = await storageFunc.upload(editor.eyecatch, "forum_eyecatch")
-        await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
+        editor.eyecatch.data_url = await storageFunc.upload(editor.eyecatch, STORAGE_DIR_NAME)
+        await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, FUNCTION_CD)
       }
       await apiFunc.apiCreateForumEyecatch(editor.eyecatch, save_post)
     }
@@ -23,8 +23,8 @@ export default {
     if(files.length > 0) {
       for (const file of files) {
         if(!file.id) {
-          file.data_url = await storageFunc.upload(file, "forum")
-          await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+          file.data_url = await storageFunc.upload(file, FUNCTION_CD)
+          await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, FUNCTION_CD)
         }
         await apiFunc.apiCreateForumFile(file, save_post)
       }
@@ -88,8 +88,8 @@ export default {
     }
 
     async function uploadNew () {
-      editor.eyecatch.data_url = await storageFunc.upload(editor.eyecatch, "forum_eyecatch")
-      await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, "forum")
+      editor.eyecatch.data_url = await storageFunc.upload(editor.eyecatch, STORAGE_DIR_NAME)
+      await this.mixinSaveForumFileDatabase(dir_top, editor.eyecatch, editor.eyecatch.data_url, FUNCTION_CD)
     }
   },
   // URL更新
@@ -133,8 +133,8 @@ export default {
         for (const file of editor.files.items) {
           // ローカルアップロード
           if(!file.id) {
-            file.data_url = await storageFunc.upload(file, "forum")
-            await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+            file.data_url = await storageFunc.upload(file, FUNCTION_CD)
+            await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, FUNCTION_CD)
           }
           await apiFunc.apiCreateForumFile(file, editor)
         }
@@ -147,8 +147,8 @@ export default {
           if(!file.post_key) {
             // ローカルアップロード
             if(!file.id) {
-              file.data_url = await storageFunc.upload(file, "forum")
-              await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, "forum")
+              file.data_url = await storageFunc.upload(file, FUNCTION_CD)
+              await this.mixinSaveForumFileDatabase(dir_top, file, file.data_url, FUNCTION_CD)
             }
             await apiFunc.apiCreateForumFile(file, editor)
           }
@@ -237,5 +237,12 @@ export default {
         await apiFunc.apiDeleteForumTag(tag)
       }
     }
-  }
+  },
+  async createForumNotification (post) {
+    await apiFunc.apiCreateNotification(post, SERVICE_TYPE, FUNCTION_CD)
+  },
 }
+
+const STORAGE_DIR_NAME = "forum_eyecatch"
+const SERVICE_TYPE = "portal"
+const FUNCTION_CD = "forum"

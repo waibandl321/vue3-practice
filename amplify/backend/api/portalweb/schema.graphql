@@ -434,6 +434,7 @@ type ChatUrl @model {
 type Notification @model {
   id: ID!
   notification_id: ID!
+  company_group_cd: String
   category: Int
   service_name: String
   poster_id: String
