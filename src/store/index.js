@@ -20,7 +20,7 @@ export default createStore({
     brand_cd: null,
     company: null,
     company_cd: null,
-    company_group_cd: null,
+    // company_group_cd: null,
     shop_cd: null,
     staff: null,
     staff_role_cd: null,
@@ -58,9 +58,6 @@ export default createStore({
     },
     companyCd (state) {
       return state.company_cd
-    },
-    companyGroupCd (state) {
-      return state.company_group_cd
     },
     brandCd (state) {
       return state.brand_cd
@@ -122,9 +119,6 @@ export default createStore({
     },
     mSetCompanyCd (state, company_cd) {
       state.company_cd = company_cd
-    },
-    mSetCompanyGroupCd (state, company_group_cd) {
-      state.company_group_cd = company_group_cd
     },
     mSetBrandCd (state, brand) {
       state.brand_cd = brand.company_brand_cd

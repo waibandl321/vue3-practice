@@ -86,7 +86,6 @@ export default {
         storeAuth.storeSetAssociateStaff(associate, staff)
         storeAuth.storeSetStaffRole(staff.roles.items[0])
         storeAuth.storeSetCompanyCd(staff.company_cd)
-        storeAuth.storeSetCompanyGroupCd(staff.company_group_cd)
         // TODO: 複数のブランドある場合どうするか?
         // MEMO :複数ブランドに所属している場合はどのブランドの従業員としてログインするか選択させる?
         // すき家に勤めているのに、なか卯の情報見れたらまずい

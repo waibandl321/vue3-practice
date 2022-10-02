@@ -60,7 +60,6 @@ export default {
 
     const company = {
       company_cd: store.getters.companyCd,
-      company_group_cd: store.getters.companyGroupCd,
     }
 
     const employee = ref({})

@@ -1,4 +1,5 @@
 import store from '@/store/index.js'
+
 export default {
   storeSetAuthUser (user) {
     store.commit('mSetCognitoUser', user)
@@ -34,11 +35,11 @@ export default {
   storeResetUser () {
     store.commit('mResetUser')
   },
-  storeSetCompanyGroupCd (company_group_cd) {
-    store.commit('mSetCompanyGroupCd', company_group_cd)
-  },
   storeSetCompanyCd (company_cd) {
     store.commit('mSetCompanyCd', company_cd)
+  },
+  storeGetCompanyCd () {
+    return store.getters.companyCd
   },
   storeSetBrandCd (brand) {
     store.commit('mSetBrandCd', brand)
@@ -46,9 +47,7 @@ export default {
   storeSetStaffRole (staff_role) {
     store.commit('mSetStaffRole', staff_role.role_cd)
   },
-  storeGetCompanyCd () {
-    return store.getters.companyCd
-  },
+  
   // 招待
   storeSetInvitationCode (invitation_cd) {
     store.commit('mSetInvitationCode', invitation_cd)
