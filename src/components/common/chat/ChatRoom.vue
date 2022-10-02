@@ -566,7 +566,8 @@ export default {
     //   message.text += emoji
     // }
     
-    // 送信！
+    // 送信処理
+    // TODO: 通知設定がONの場合は、通知登録
     const sendMessage = async () => {
       message_loading.value = true
       try {

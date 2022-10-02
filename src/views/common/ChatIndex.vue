@@ -68,6 +68,7 @@ export default {
       loading.value = true
       try {
         const result = await apiFunc.apiGetChat()
+        console.log(result);
         params.company_chat = result
         params.rooms = result.rooms.items
         params.company_employees = result.company_employees.items

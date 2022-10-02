@@ -69,6 +69,10 @@ export default {
     function zeroPadding(value) {
       return value.toString().padStart(2, "0")
     }
+  },
+  getDateTime (_date) {
+    const date = new Date(_date)
+    return date.getTime()
   }
 
 }

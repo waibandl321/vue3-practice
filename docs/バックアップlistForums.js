@@ -1774,6 +1774,22 @@ export const listChats = /* GraphQL */ `
               }
               nextToken
             }
+            posts {
+              items {
+                id
+                chat_key
+                room_id
+                attached
+                post_text
+                url_links
+                poster_ids
+                mentions
+                delete
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
           }
           nextToken
         }

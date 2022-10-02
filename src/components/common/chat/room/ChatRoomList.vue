@@ -29,7 +29,16 @@
           :key="index"
           :title="group.room_name"
           @click="moveRoom(group)"
-        ></v-list-item>
+        >
+          <template v-slot:append>
+            <v-badge
+              class="chat-list-badge"
+              color="primary"
+              content="6"
+            >
+            </v-badge>
+          </template>
+        </v-list-item>
       </v-list-group>
       <v-list-group
         value="Personal"
@@ -45,11 +54,23 @@
           ></v-list-item>
         </template>
         <v-list-item
-          v-for="personal in personal_rooms"
-          :key="personal.id"
-          :title="personal.room_name"
-          @click="moveRoom(personal)"
-        ></v-list-item>
+          v-for="personal_room in personal_rooms"
+          :key="personal_room.id"
+          :title="personal_room.room_name"
+          @click="moveRoom(personal_room)"
+        >
+          <template 
+            v-if="unreadCount(personal_room) > 0"
+            v-slot:append
+          >
+            <v-badge
+              class="chat-list-badge"
+              color="primary"
+              :content="unreadCount(personal_room)"
+            >
+            </v-badge>
+        </template>
+        </v-list-item>
       </v-list-group>
     </v-list>
     <div class="chat-add">
@@ -76,6 +97,7 @@ import ChatRoomCreate from './ChatRoomCreate.vue'
 import OverlayLoading from '../../OverlayLoading.vue'
 
 import storeAuth from '@/mixins/store/auth.js'
+import utilMixin from '@/mixins/utils/utils.js'
 
 import { ref } from '@vue/reactivity'
 import { inject, watch } from '@vue/runtime-core'
@@ -125,6 +147,15 @@ export default {
     }
     initRoomList()
 
+    const unreadCount = (room) => {
+      const myself = room.members.items.find(v => v.member_id === storeAuth.storeGetStaffId())
+      const results = room.posts.items.filter((v) => {
+        return v.poster_ids !== storeAuth.storeGetStaffId()
+        && utilMixin.getDateTime(v.createdAt) > utilMixin.getDateTime(myself.updatedAt)
+      })
+      return results.length
+    }
+
     const closeRoomCreate = async () => {
       room_add_mode.value = false
       messageSet('トークルームを作成しました', 'success')
@@ -145,6 +176,7 @@ export default {
       moveRoom,
       room_add_mode,
       closeRoomCreate,
+      unreadCount,
       group_rooms,
       personal_rooms,
     };
@@ -167,4 +199,12 @@ export default {
   justify-content: center;
   width: 100%;
 }
+/* .chat-list-badge {
+  position: absolute;
+  right: 16px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+} */
 </style>
