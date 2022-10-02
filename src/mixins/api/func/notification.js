@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify'
 import { createNotification } from '@/graphql/mutations'
-// import {  } from '@/graphql/queries'
+import { listNotifications } from '@/graphql/queries'
 import { uuid } from 'vue-uuid'
 import storeFunc from '@/mixins/store/auth'
 
@@ -14,6 +14,18 @@ const CHAT_TEMPLATE = { key: "chat", title: 'チャット通知', text: "チャ�
 // const FORUM_TEMPLATE = { key: "forum", title: '', text: "掲示板に新規投稿があります" }
 
 export default {
+  async getNotifications () {
+    const filter = {
+      company_group_cd: {
+        eq: storeFunc.storeGetCompanyCd()
+      }
+    }
+    const results = await API.graphql({
+      query: listNotifications,
+      variables: { filter: filter }
+    })
+    return results.data.listNotifications.items
+  },
   async create (data, service_type, function_cd) {
     const notification = this.generateNotificationObject(data, service_type, function_cd)
     return await API.graphql({

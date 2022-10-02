@@ -11,17 +11,22 @@
         hide-details="auto"
         label="絞り込み"
         color="primary"
+        @change="filter"
       ></v-select>
       <!-- アイテム -->
-      <v-card class="mt-4 pt-4">
+      <v-card
+        class="mt-4 pt-4"
+        v-for="(item, index) in notifications"
+        :key="index"
+      >
         <v-card-subtitle>
-          2022年07月28日 12時00分
+          {{ item.createdAt }}
         </v-card-subtitle>
         <v-card-title>
-          お知らせ
+          {{ item.post_title }}
         </v-card-title>
         <v-card-text>
-          明日メンテナンスを実施します。
+          {{ item.post_text }}
         </v-card-text>
       </v-card>
     </v-main>
@@ -30,7 +35,7 @@
 
 <script>
 import Header from '@/components/common/AppHeader.vue'
-// import apiFunc from '@/mixins/api/api.js'
+import apiFunc from '@/mixins/api/api.js'
 import { ref } from '@vue/reactivity'
 
 export default {
@@ -40,16 +45,28 @@ export default {
   },
   setup () {
     const notifications = ref([])
+    const getNotifications = async () => {
+      notifications.value = await apiFunc.apiGetNotifications ()
+    }
+    getNotifications()
+
+
     const filter_category = ref(0)
     const filter_options = [
       { category_key: 0, category_name: "すべてのお知らせ" },
       { category_key: 1, category_name: "システム通知" },
       { category_key: 2, category_name: "運営会社からメッセージ" },
     ]
+
+    const filter = () => {
+
+    }
+    
     return {
       notifications,
       filter_category,
-      filter_options
+      filter_options,
+      filter
     }
   },
 }

@@ -274,5 +274,8 @@ export default {
   // 通知
   apiCreateNotification (data, service_type, function_cd) {
     return api_notification.create(data, service_type, function_cd)
+  },
+  apiGetNotifications () {
+    return api_notification.getNotifications()
   }
 }
