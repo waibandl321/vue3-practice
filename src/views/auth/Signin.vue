@@ -89,7 +89,7 @@ export default {
         // TODO: 複数のブランドある場合どうするか?
         // MEMO :複数ブランドに所属している場合はどのブランドの従業員としてログインするか選択させる?
         // すき家に勤めているのに、なか卯の情報見れたらまずい
-        storeAuth.storeSetBrandCd(...brands)
+        storeAuth.storeSetBrands(brands)
 
         this.$router.push('/')
       } catch (error) {

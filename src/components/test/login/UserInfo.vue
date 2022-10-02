@@ -7,7 +7,7 @@
     </v-card>
     <v-card border flat>
       <v-card-title>アソシエイト</v-card-title>
-      <v-card-text>{{ account }}</v-card-text>
+      <v-card-text>{{ associate }}</v-card-text>
     </v-card>
     <v-card border flat>
       <v-card-title>スタッフ</v-card-title>
@@ -39,6 +39,7 @@
 <script>
 import employeeApiFunc from '@/mixins/api/master/employee.js'
 import store from '@/store/index.js'
+import storeFunc from '@/mixins/store/auth.js'
 import { ref } from 'vue'
 
 export default {
@@ -46,31 +47,32 @@ export default {
   setup () {
     const cognito = store.getters.cognitoUser
     const account = {
-      account: store.getters.account
-    }
-    const staff = {
-      staff: store.getters.staff,
-    }
-    const staff_role = {
-      staff_role_cd: store.getters.staffRoleCd
+      account: storeFunc.storeGetAccount()
     }
     const associate = {
-      associate_id: store.getters.associateId,
+      associate: storeFunc.storeGetAssociate(),
     }
-
+    const staff = {
+      staff: storeFunc.storeGetStaff(),
+    }
+    const staff_role = {
+      staff_role_cd: storeFunc.storeGetStaffRole()
+    }
     const company = {
-      company_cd: store.getters.companyCd,
+      company_cd: storeFunc.storeGetCompanyCd()
     }
 
     const employee = ref({})
     // TODO: 必要ない？
     const getEmployee = async () => {
-      employee.value = await employeeApiFunc.apiGetEmployeeRelateStaffId(store.getters.staff.staff_id)
+      employee.value = await employeeApiFunc.apiGetEmployeeRelateStaffId(
+        store.getters.staff.staff_id
+      )
     }
     getEmployee()
 
     const brand = {
-      brand_cd: store.getters.brandCd,
+      brands: storeFunc.storeGetBrands()
     }
 
     return {

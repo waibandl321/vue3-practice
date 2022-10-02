@@ -16,8 +16,8 @@ export default createStore({
     cognito_refresh_token: null,
     // アカウントまわり
     account: null,
-    associate_id: null,
-    brand_cd: null,
+    associate: null,
+    brands: null,
     company: null,
     company_cd: null,
     // company_group_cd: null,
@@ -47,11 +47,11 @@ export default createStore({
     account (state) {
       return state.account
     },
+    associate (state) {
+      return state.associate
+    },
     staff (state) {
       return state.staff
-    },
-    associateId (state) {
-      return state.associate_id
     },
     company (state) {
       return state.company
@@ -59,8 +59,8 @@ export default createStore({
     companyCd (state) {
       return state.company_cd
     },
-    brandCd (state) {
-      return state.brand_cd
+    brands (state) {
+      return state.brands
     },
     staffRoleCd (state) {
       return state.staff_role_cd
@@ -90,11 +90,11 @@ export default createStore({
       state.cognito_refresh_token = null
       state.account = null
 
-      state.associate_id = null
+      state.associate = null
       state.staff = null
       state.company_cd = null
       state.company_group_cd = null
-      state.brand_cd = null,
+      state.brands = null,
       state.staff_role_cd = null
     },
     mSetCognitoUser (state, user) {
@@ -108,7 +108,7 @@ export default createStore({
       state.account = account
     },
     mSetAssociate (state, associate) {
-      state.associate_id = associate.associate_id
+      state.associate = associate
     },
     mSetStaff (state, staff) {
       state.staff = staff
@@ -120,8 +120,8 @@ export default createStore({
     mSetCompanyCd (state, company_cd) {
       state.company_cd = company_cd
     },
-    mSetBrandCd (state, brand) {
-      state.brand_cd = brand.company_brand_cd
+    mSetBrands (state, brands) {
+      state.brands = brands
     },
     mSetStaffRole (state, role_cd) {
       state.staff_role_cd = role_cd

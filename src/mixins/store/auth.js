@@ -13,15 +13,21 @@ export default {
   storeGetAccount () {
     return store.getters.account
   },
-  storeSetSetupInfo (company, brand) {
-    store.commit('mSetCompany', company)
-    store.commit('mSetBrandCd', brand)
-  },
   storeSetAssociate (associate) {
     store.commit('mSetAssociate', associate)
   },
+  storeGetAssociate () {
+    return store.getters.associate
+  },
+  storeSetSetupInfo (company, brand) {
+    store.commit('mSetCompany', company)
+    store.commit('mSetBrands', brand)
+  },
   storeSetStaff (staff) {
     store.commit('mSetStaff', staff)
+  },
+  storeGetStaff () {
+    return store.getters.staff
   },
   storeGetStaffId () {
     return store.state.staff.staff_id
@@ -41,11 +47,17 @@ export default {
   storeGetCompanyCd () {
     return store.getters.companyCd
   },
-  storeSetBrandCd (brand) {
-    store.commit('mSetBrandCd', brand)
+  storeSetBrands (brand) {
+    store.commit('mSetBrands', brand)
+  },
+  storeGetBrands () {
+    return store.getters.brands
   },
   storeSetStaffRole (staff_role) {
     store.commit('mSetStaffRole', staff_role.role_cd)
+  },
+  storeGetStaffRole () {
+    return store.getters.staffRoleCd
   },
   
   // 招待
