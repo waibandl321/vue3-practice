@@ -29,16 +29,7 @@
           :key="index"
           :title="group.room_name"
           @click="moveRoom(group)"
-        >
-          <template v-slot:append>
-            <v-badge
-              class="chat-list-badge"
-              color="primary"
-              content="6"
-            >
-            </v-badge>
-          </template>
-        </v-list-item>
+        ></v-list-item>
       </v-list-group>
       <v-list-group
         value="Personal"
