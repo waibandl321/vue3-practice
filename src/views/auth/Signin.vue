@@ -53,6 +53,7 @@ export default {
     }
   },
   methods: {
+    // MEMO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
     async signIn () {
       this.loading = true
       this.error = ''
@@ -62,7 +63,7 @@ export default {
           this.afterSigninMove(cognito_user)
         }
       } catch (error) {
-        console.log('error signing in', error)
+        console.error(error)
         this.loading = false
         this.error = error
       }
@@ -70,27 +71,19 @@ export default {
     async afterSigninMove (cognito_user) {
       try {
         const account = await apiFunc.apiGetAccount(cognito_user)
-        // MEMO: アカウント登録だけして離脱し、サインインしようとするとエラーになる
         const associate = account.associate.items[0]
         const staff = associate.staffs.items[0]
         const brands = await apiFunc.apiGetBrandsBySignin(staff.company_cd)
-
-        console.log('signin account', account);
-        console.log('signin associate', associate);
-        console.log('signin staff', staff);
-        console.log('signin staff role', staff.roles.items[0]);
-        console.log('signin brand', brands);
-
+        
         storeAuth.storeSetAuthUser(cognito_user)
         storeAuth.storeSetAccount(account)
         storeAuth.storeSetAssociateStaff(associate, staff)
-        storeAuth.storeSetStaffRole(staff.roles.items[0])
+        storeAuth.storeSetStaffRole(...staff.roles.items)
         storeAuth.storeSetCompanyCd(staff.company_cd)
-        // TODO: 複数のブランドある場合どうするか?
         // MEMO :複数ブランドに所属している場合はどのブランドの従業員としてログインするか選択させる?
-        // すき家に勤めているのに、なか卯の情報見れたらまずい
+        // すき家に勤めているのに、なか卯の情報見れたらまずい？
+        // 企業本部なら問題ない？
         storeAuth.storeSetBrands(brands)
-
         this.$router.push('/')
       } catch (error) {
         console.log(error)

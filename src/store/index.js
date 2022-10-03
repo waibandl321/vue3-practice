@@ -93,7 +93,7 @@ export default createStore({
       state.associate = null
       state.staff = null
       state.company_cd = null
-      state.company_group_cd = null
+      // state.company_group_cd = null
       state.brands = null,
       state.staff_role_cd = null
     },
@@ -115,7 +115,7 @@ export default createStore({
     },
     mSetCompany (state, company) {
       state.company_cd = company.company_cd
-      state.company_group_cd = company.id
+      // state.company_group_cd = company.id
     },
     mSetCompanyCd (state, company_cd) {
       state.company_cd = company_cd

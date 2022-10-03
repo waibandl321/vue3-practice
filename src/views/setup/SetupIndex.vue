@@ -78,12 +78,9 @@ export default {
       try {
         const account = await apiFunc.apiGetAccount(storeFunc.storeGetCognitoUser())
         const associate = await apiFunc.apiCreateAssociate(account, this.company)
-        console.log('created associate', associate)
         const staff = await apiFunc.apiCreateStaff(associate, this.company)
-        console.log('created staff', staff)
-        // MEMO: setupから登録されるスタッフについては強制的に「admin」権限
+        // MEMO: setupから登録されるスタッフについては強制的に「admin」権限とする
         const staff_role = await apiFunc.apiCreateStaffRole(staff, invitation_role)
-        console.log('created staff role', staff)
         storeFunc.storeSetAssociateStaff(associate, staff)
         storeFunc.storeSetStaffRole(staff_role)
         await apiFunc.apiCreateEmployee(this.params.profile)
