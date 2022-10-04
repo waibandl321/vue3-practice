@@ -1,31 +1,27 @@
 <template>
-  <PcHeader />
-  <v-main>
-    <v-container>
-      企業：{{ company }}
-      <v-card
-        v-for="(func, idx) in arr"
-        :key="idx"
-        border
-        link
-        @click="func.callback"
-      >
-        <v-card-text>{{ func.text }}</v-card-text>
-      </v-card>
-    </v-container>
-  </v-main>
+  <v-container>
+    企業：{{ company }}
+    <v-card
+      v-for="(func, idx) in arr"
+      :key="idx"
+      border
+      link
+      @click="func.callback"
+    >
+      <v-card-text>{{ func.text }}</v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
-import PcHeader from '@/components/common/AppHeader.vue';
 import companyApiFunc from '@/mixins/api/master/company.js'
 import chatApiFunc from '@/mixins/api/func/chat.js'
 import forumApiFunc from '@/mixins/api/func/forum.js'
 import fileApiFunc from '@/mixins/api/func/file.js'
 import { ref } from '@vue/reactivity';
+
 export default {
   name: "init-chat-forum-file",
-  components: { PcHeader },
   setup () {
     const company = ref({})
     const getCompany = async () => {

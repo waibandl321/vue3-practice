@@ -26,7 +26,7 @@
             :key="idx2"
             link
             :title="second.meta.title"
-            :to="second.path"
+            :to="'/timemanagement/' + second.path"
           ></v-list-item>
         </v-list>
       </v-menu>
@@ -69,21 +69,30 @@ export default {
   setup () {
     const routes = routerFunc.getRoutes()
     const menus = reactive({
-      home: {
-        text: "ホーム",
+      portal: {
+        text: "ポータルトップ",
         route: "/"
       },
-      master: {
-        text: "業務管理",
+      home: {
+        text: "ホーム",
+        route: "/timemanagement"
+      },
+      manage: {
+        text: '業務管理',
         children: []
       },
-      settings: {
-        text: "設定",
+      myshop: {
+        text: 'My店舗',
         children: []
       },
-      timemanagement: {
-        text: 'タイムマネジメント',
-        route: '/timemanagement'
+      routine: {
+        text: '本日のタスク',
+        route: '/timemanagement/todaytask'
+        
+      },
+      dashboard: {
+        text: 'ダッシュボード',
+        route: '/timemanagement/dashboard'
       }
     })
     const header_icons = [
@@ -92,11 +101,19 @@ export default {
       { icon: 'mdi-clipboard-edit-outline', path: '/forum', title: '掲示板' },
       { icon: 'mdi-folder-multiple-outline', path: '/file', title: 'ファイル管理' }
     ]
-    const initMenus = () => {
-      menus.master.children = routes.filter(v => v.path.includes('/master/'))
-      menus.settings.children = routes.filter(v => v.path.includes('/setting/'))
+
+    const readRoutes = () => {
+      const timemng_routes = routes.find(v => v.name === 'timng-index').children;
+      for (const route of timemng_routes) {
+        if(/myshop/.test(route.name)) {
+          menus.myshop.children.push(route)
+        }
+        if(/manage/.test(route.name) && !/myshop/.test(route.name)) {
+          menus.manage.children.push(route)
+        }
+      }
     }
-    initMenus()
+    readRoutes()
 
     return {
       menus,

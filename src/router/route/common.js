@@ -3,8 +3,14 @@ import ChatIndex from '@/views/common/ChatIndex.vue'
 import FileIndex from '@/views/common/FileIndex.vue'
 import ForumIndex from '@/views/common/ForumIndex.vue'
 import NotificationIndex from '@/views/common/NotificationIndex.vue'
+import NotFoundComponent from '@/views/common/NotFound.vue'
 
 export default [
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundComponent
+  },
   {
     path: '/',
     name: 'home',
@@ -34,5 +40,5 @@ export default [
     path: '/file',
     component: FileIndex,
     meta: { title: 'ファイル管理' }
-  }
+  },
 ]

@@ -1,46 +1,42 @@
 <template>
-  <PcHeader />
-  <v-main>
-    <v-container>
-      <v-alert
-        v-if="alert_message"
-        closable
-      >{{ alert_message }}</v-alert>
-      <v-card class="mt-10">
-        <v-card-title>S3ファイルアップロード</v-card-title>
-        <v-card-text>
-          <v-file-input
-            v-model="upload_file"
-            label="File input"
-            clearable
-          ></v-file-input>
-          <v-btn
-            color="primary"
-            :disabled="upload_file.length === 0"
-            @click="uploadFiles"
-          >アップロード</v-btn>
-        </v-card-text>
-      </v-card>
-      <v-card class="mt-10">
-        <v-card-title>S3ファイル取得</v-card-title>
-        <v-card-text>
-          {{ items }}
-        </v-card-text>
-      </v-card>
-      <OverlayLoading v-if="loading" />
-    </v-container>
-  </v-main>
+  <v-container>
+    <v-alert
+      v-if="alert_message"
+      closable
+    >{{ alert_message }}</v-alert>
+    <v-card class="mt-10">
+      <v-card-title>S3ファイルアップロード</v-card-title>
+      <v-card-text>
+        <v-file-input
+          v-model="upload_file"
+          label="File input"
+          clearable
+        ></v-file-input>
+        <v-btn
+          color="primary"
+          :disabled="upload_file.length === 0"
+          @click="uploadFiles"
+        >アップロード</v-btn>
+      </v-card-text>
+    </v-card>
+    <v-card class="mt-10">
+      <v-card-title>S3ファイル取得</v-card-title>
+      <v-card-text>
+        {{ items }}
+      </v-card-text>
+    </v-card>
+    <OverlayLoading v-if="loading" />
+  </v-container>
 </template>
 <script>
 import { ref } from '@vue/reactivity'
 import Storage from '@aws-amplify/storage'
 import OverlayLoading from '@/components/common/OverlayLoading.vue'
 import storeAuth from '@/mixins/store/auth'
-import PcHeader from '@/components/common/AppHeader.vue'
 
 export default {
   name: "file-upload",
-  components: { OverlayLoading, PcHeader },
+  components: { OverlayLoading },
   setup() {
     const alert_message = ref("")
     const loading = ref(false);

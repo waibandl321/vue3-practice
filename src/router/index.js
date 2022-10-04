@@ -4,6 +4,7 @@ import TestRoute from './route/test.js'
 import AuthRoute from './route/auth.js'
 import MasterRoute from './route/master.js'
 import SettingRoute from './route/setting.js'
+import TimngRoute from './route/timemanagement/timemanagement.js'
 
 import Utils from './utils.js'
 import store from '@/store/index.js'
@@ -13,7 +14,8 @@ const routes = [
   ...AuthRoute,
   ...MasterRoute,
   ...SettingRoute,
-  ...TestRoute
+  ...TestRoute,
+  ...TimngRoute
 ]
 
 const router = createRouter({
