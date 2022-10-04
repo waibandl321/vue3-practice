@@ -4,12 +4,18 @@ import FileIndex from '@/views/common/FileIndex.vue'
 import ForumIndex from '@/views/common/ForumIndex.vue'
 import NotificationIndex from '@/views/common/NotificationIndex.vue'
 import NotFoundComponent from '@/views/common/NotFound.vue'
+import TimemanagementNotFound from '@/views/timemanagement/common/NotFound.vue'
 
 export default [
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFoundComponent
+  },
+  {
+    path: '/timemanagement/:pathMatch(.*)*',
+    name: 'timemanagement-notfound',
+    component: TimemanagementNotFound
   },
   {
     path: '/',
