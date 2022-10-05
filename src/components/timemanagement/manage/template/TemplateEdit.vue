@@ -59,5 +59,6 @@ export default {
 <style scoped>
 .view-body {
   width: 100%;
+  padding: 12px 12px 100px 12px;
 }
 </style>

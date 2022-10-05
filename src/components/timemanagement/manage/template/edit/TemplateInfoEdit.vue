@@ -1,3 +1,10 @@
 <template>
-  テンプレート情報編集
+  <v-card-item>
+    <v-card-subtitle>テンプレート名</v-card-subtitle>
+    <v-text-field></v-text-field>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>テンプレート内容</v-card-subtitle>
+    <v-textarea></v-textarea>
+  </v-card-item>
 </template>

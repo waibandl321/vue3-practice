@@ -1,3 +1,51 @@
 <template>
-  サブタスク 概要
+  <v-card-title>サブタスク名</v-card-title>
+  <v-card-text>サブタスク001内容内容サブタスク001内容内容</v-card-text>
+  <v-card-item>
+    <v-card-subtitle>仕込み量設定</v-card-subtitle>
+    <v-card-text>都度（店舗）入力</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>仕込み表</v-card-subtitle>
+    <v-table>
+      <thead>
+        <tr>
+          <th class="text-left">
+            食材名
+          </th>
+          <th class="text-left">
+            適正在庫数
+          </th>
+          <th class="text-left">
+            適正在庫単位
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          @click="setViewer('hogehoge')"
+        >
+          <td>ジャガイモ</td>
+          <td>20</td>
+          <td>個</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>調理手順</v-card-subtitle>
+    <v-card-text>あああああ</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>所要時間</v-card-subtitle>
+    <v-card-text>30分</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>オプション</v-card-subtitle>
+    <ul>
+      <li>aaaa</li>
+      <li>aaaa</li>
+      <li>aaaa</li>
+    </ul>
+  </v-card-item>
 </template>

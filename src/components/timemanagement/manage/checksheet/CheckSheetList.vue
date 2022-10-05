@@ -5,12 +5,10 @@
       <v-table>
         <thead>
           <tr>
-            <th class="text-left">
-              チェックシート
-            </th>
-            <th class="text-left">
-              Calories
-            </th>
+            <th class="text-left">チェックシート名</th>
+            <th class="text-left">区切り</th>
+            <th class="text-left">タグ</th>
+            <th class="text-right"></th>
           </tr>
         </thead>
         <tbody>
@@ -18,7 +16,35 @@
             @click="setViewer('hogehoge')"
           >
             <td>チェックシート名</td>
-            <td>あああ</td>
+            <td>一日</td>
+            <td>タグ</td>
+            <td class="text-right">
+              <v-menu>
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    color="primary"
+                    v-bind="props"
+                    icon="mdi-dots-horizontal"
+                    variant="text"
+                  >
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    link
+                    density="compact"
+                  >
+                  チェックシートを削除
+                  </v-list-item>
+                  <v-list-item
+                    link
+                    density="compact"
+                  >
+                    コピーして新規作成
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -49,6 +75,7 @@ export default {
 </script>
 <style scoped>
 .list-body{
+  padding: 12px 12px 100px 12px;
   width: 100%;
 }
 </style>

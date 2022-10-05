@@ -30,7 +30,6 @@ import EmergencyInfoEdit from './edit/EmergencyInfoEdit.vue';
 import EmergencyFileEdit from './edit/EmergencyFileEdit.vue';
 import EmergencyApplyEdit from './edit/EmergencyApplyEdit.vue';
 
-
 export default {
   components: {
     TimngManageDetailLeft,
@@ -64,6 +63,7 @@ export default {
 </script>
 <style scoped>
 .view-body {
+  padding: 12px 12px 100px 12px;
   width: 100%;
 }
 </style>

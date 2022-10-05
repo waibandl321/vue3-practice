@@ -1,3 +1,69 @@
 <template>
-  チェックシート 編集
+  <v-card-item>
+    <v-card-subtitle>フォーマット</v-card-subtitle>
+    <v-select
+      :items="['select1','select2']"
+    ></v-select>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>チェックシート名</v-card-subtitle>
+    <v-text-field></v-text-field>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>チェックシート説明</v-card-subtitle>
+    <v-textarea></v-textarea>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>シートの区切り</v-card-subtitle>
+    <v-select
+      :items="['select1','select2']"
+    ></v-select>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>列設定</v-card-subtitle>
+    <v-table>
+      <thead>
+        <tr>
+          <th></th>
+          <th class="text-left">
+            列タイトル
+          </th>
+          <th class="text-left">
+            入力規制
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="100%">
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="text"
+            >
+              追加
+            </v-btn>
+          </td>
+        </tr>
+        <tr
+          
+        >
+          <td>
+            <v-btn
+              icon="mdi-menu"
+              class="drag-btn"
+              size="small"
+              variant="text"
+            ></v-btn>
+          </td>
+          <td>**しているか</td>
+          <td>テキスト入力</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>タグ</v-card-subtitle>
+    
+  </v-card-item>
 </template>

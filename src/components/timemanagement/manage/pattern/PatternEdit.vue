@@ -64,6 +64,7 @@ export default {
 </script>
 <style scoped>
 .view-body {
+  padding: 12px 12px 100px 12px;
   width: 100%;
 }
 </style>

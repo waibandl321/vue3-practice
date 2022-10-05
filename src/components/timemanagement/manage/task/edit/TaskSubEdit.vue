@@ -9,14 +9,34 @@
           <th class="text-left">
             所要時間
           </th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td colspan="100%">
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="text"
+            >
+              追加
+            </v-btn>
+          </td>
+        </tr>
         <tr
-          @click="subtaskView('hogehoge')"
+          @click="subtaskEdit('hogehoge')"
         >
           <td>サブタスク名</td>
           <td>30分</td>
+          <td>
+            <v-btn
+              icon="mdi-delete"
+              color="primary"
+              size="small"
+              variant="text"
+            ></v-btn>
+          </td>
         </tr>
       </tbody>
     </v-table>
@@ -96,7 +116,7 @@ export default {
     const changePage = (page) => {
       active_page.value = page
     }
-    const subtaskView = (subtask) => {
+    const subtaskEdit = (subtask) => {
       params.subtask_editor = _.cloneDeep(subtask)
       subtask_display.value = true
     }
@@ -106,7 +126,7 @@ export default {
       menus,
       subtask_display,
       changePage,
-      subtaskView
+      subtaskEdit
     }
   },
 }
@@ -115,5 +135,11 @@ export default {
 <style scoped>
 .view-body {
   width: 100%;
+  padding: 12px 12px 100px 12px;
+}
+.v-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 </style>

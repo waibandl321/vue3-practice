@@ -9,16 +9,42 @@
               臨時タスク
             </th>
             <th class="text-left">
-              Calories
+              適用期間
             </th>
+            <th class="text-left">
+              実施回数
+            </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr
             @click="setViewer('hogehoge')"
           >
-            <td>臨時タスク名</td>
-            <td>あああ</td>
+            <td>臨時タスクテスト001</td>
+            <td>2022-05-10 - 2022-07-31</td>
+            <td>1回のみ</td>
+            <td class="text-right">
+              <v-menu>
+                <template v-slot:activator="{ props }">
+                  <v-btn
+                    color="primary"
+                    v-bind="props"
+                    icon="mdi-dots-horizontal"
+                    variant="text"
+                  >
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    link
+                    density="compact"
+                  >
+                    臨時タスクを削除
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -49,5 +75,6 @@ export default {
 <style scoped>
 .list-body{
   width: 100%;
+  padding: 12px 12px 100px 12px;
 }
 </style>

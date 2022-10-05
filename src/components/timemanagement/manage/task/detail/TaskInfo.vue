@@ -1,3 +1,28 @@
 <template>
-  タスク概要
+  <v-card-title>タスク名</v-card-title>
+  <v-card-text>タスク説明タスク説明</v-card-text>
+  <v-card-item>
+    <v-card-subtitle>タスク区分</v-card-subtitle>
+    <v-card-text>***</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>ポジション</v-card-subtitle>
+    <v-card-text>***</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>所要時間</v-card-subtitle>
+    <v-card-text>***</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>チェックシート連携</v-card-subtitle>
+    <v-card-text>***</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>オプション</v-card-subtitle>
+    <v-card-text>***</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>タグ</v-card-subtitle>
+    <v-card-text>***</v-card-text>
+  </v-card-item>
 </template>

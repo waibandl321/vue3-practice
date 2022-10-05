@@ -1,3 +1,39 @@
 <template>
-  チェックシート情報
+  <v-card-title>衛生管理チェック</v-card-title>
+  <v-card-text>衛生管理チェック衛生管理チェック衛生管理チェック衛生管理チェック衛生管理チェック</v-card-text>
+  <v-card-item>
+    <v-card-subtitle>表の区切り</v-card-subtitle>
+    <v-card-text>1日</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>列設定</v-card-subtitle>
+    <v-table>
+        <thead>
+          <tr>
+            <th class="text-left">
+              列タイトル
+            </th>
+            <th class="text-left">
+              入力規制
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            
+          >
+            <td>マニュアル通りの帽子のかぶり方、耳以外のピアスはないか</td>
+            <td>チェック</td>
+          </tr>
+          <tr>
+            <td>ネイル、装飾品、爪の長さは適正か</td>
+            <td>チェック</td>
+          </tr>
+        </tbody>
+    </v-table>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>タグ</v-card-subtitle>
+    <v-card-text>...</v-card-text>
+  </v-card-item>
 </template>

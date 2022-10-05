@@ -102,5 +102,11 @@ export default {
 <style scoped>
 .view-body {
   width: 100%;
+  padding: 12px 12px 100px 12px;
+}
+.v-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 </style>

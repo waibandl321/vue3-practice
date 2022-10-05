@@ -1,3 +1,95 @@
 <template>
-  サブタスク 概要編集
+  <v-card-item>
+    <v-card-subtitle>サブタスク名</v-card-subtitle>
+    <v-text-field></v-text-field>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>仕込み量設定</v-card-subtitle>
+    <v-radio-group>
+      <v-radio
+        label="都度入力"
+        color="primary"
+      ></v-radio>
+      <v-radio
+        label="固定"
+        color="primary"
+      ></v-radio>
+    </v-radio-group>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>仕込み表</v-card-subtitle>
+    <v-table>
+      <thead>
+        <tr>
+          <th class="text-left">
+            食材名
+          </th>
+          <th class="text-left">
+            適正在庫数
+          </th>
+          <th class="text-left">
+            適正在庫単位
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="100%">
+            <v-btn
+              color="primary"
+              prepend-icon="mdi-plus"
+              variant="text"
+            >
+              追加
+            </v-btn>
+          </td>
+        </tr>
+        <tr
+          @click="setViewer('hogehoge')"
+        >
+          <td>ジャガイモ</td>
+          <td>20</td>
+          <td>個</td>
+        </tr>
+      </tbody>
+    </v-table>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>調理手順</v-card-subtitle>
+    <v-textarea></v-textarea>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>WEBサイト</v-card-subtitle>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>サブタスク内容</v-card-subtitle>
+    <v-textarea></v-textarea>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>ポジション</v-card-subtitle>
+    <v-select
+      :items="['select1','select2']"
+    ></v-select>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>所要時間</v-card-subtitle>
+    <v-text-field
+      type="number"
+    ></v-text-field>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>オプション</v-card-subtitle>
+    <v-checkbox
+      v-for="n in 3"
+      :key="n"
+      :label="`オプション ${n}`"
+      :value="n"
+      color="primary"
+      hide-details
+    ></v-checkbox>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>タグ</v-card-subtitle>
+    
+  </v-card-item>
 </template>
