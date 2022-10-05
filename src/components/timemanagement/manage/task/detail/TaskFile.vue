@@ -1,0 +1,3 @@
+<template>
+  タスク ファイル
+</template>

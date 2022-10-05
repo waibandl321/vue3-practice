@@ -1,5 +1,5 @@
 <template>
-  <v-card width="300">
+  <v-card class="manage-left">
     <v-list>
       <template v-for="(menu, index) in menus" :key="index">
         <v-list-item
@@ -48,6 +48,13 @@ export default {
 </script>
 
 <style scoped>
+.manage-left {
+  height: calc(100vh - 48px);
+  position: sticky;
+  top: 48px;
+  min-width: 240px;
+  max-width: 240px;
+}
 .manage-menu-second {
   margin-left: 24px;
 }
