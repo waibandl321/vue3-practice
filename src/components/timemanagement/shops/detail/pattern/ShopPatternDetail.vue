@@ -1,4 +1,10 @@
 <template>
+  <div class="my-4">
+    <v-btn 
+      @click="changePatternMode('list')"
+      prepend-icon="mdi-chevron-left"
+    >業務パターン一覧に戻る</v-btn>
+  </div>
   <v-list v-model:opened="open">
     <v-list-group>
       <template v-slot:activator="{ props }">
@@ -35,6 +41,11 @@
 
 <script>
 export default {
+  props: {
+    changePatternMode: {
+      type: Function
+    }
+  },
   setup() {
     
   },

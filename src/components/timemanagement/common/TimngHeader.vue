@@ -77,6 +77,10 @@ export default {
         text: "ホーム",
         route: "/timemanagement"
       },
+      shops: {
+        text: "店舗一覧",
+        route: "/timemanagement/shops"
+      },
       manage: {
         text: '業務管理',
         children: []

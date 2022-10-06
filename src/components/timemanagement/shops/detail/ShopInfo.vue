@@ -1,0 +1,51 @@
+<template>
+  <v-card-item>
+    <v-card-subtitle>店舗コード</v-card-subtitle>
+    <v-card-text>003</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>店舗名</v-card-subtitle>
+    <v-card-text>テスト店舗003</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>店舗名（カナ）</v-card-subtitle>
+    <v-card-text>テストテンポ</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>ブランド</v-card-subtitle>
+    <v-card-text>テストブランド001</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>エリア</v-card-subtitle>
+    <v-card-text>東京</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>住所</v-card-subtitle>
+    <v-card-text>東京都千代田区丸の内1-1-1</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>電話番号</v-card-subtitle>
+    <v-card-text>08000000000</v-card-text>
+  </v-card-item>
+  <v-card-item>
+    <v-card-subtitle>営業時間</v-card-subtitle>
+    <v-table>
+      <tr>
+        <td>月曜</td>
+        <td>12:00 ~ 23:00</td>
+      </tr>
+      <tr>
+        <td>火曜</td>
+        <td>12:00 ~ 23:00</td>
+      </tr>
+      <tr>
+        <td>水曜</td>
+        <td>12:00 ~ 23:00</td>
+      </tr>
+      <tr>
+        <td>木曜</td>
+        <td>12:00 ~ 23:00</td>
+      </tr>
+    </v-table>
+  </v-card-item>
+</template>
