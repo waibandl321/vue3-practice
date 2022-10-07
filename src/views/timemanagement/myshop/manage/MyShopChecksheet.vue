@@ -1,16 +1,22 @@
 <template>
   <TimngHeader />
-  <v-main >My店舗 チェックシート</v-main>
+  <v-main >
+    <MyShopBreadcrumb />
+    My店舗 チェックシート
+  </v-main>
 </template>
 
 <script>
-  import TimngHeader from '@/components/timemanagement/common/TimngHeader.vue'
-  export default {
-    components: {
-      TimngHeader
-    },
-    setup() {
-      
-    },
-  }
-  </script>
+import TimngHeader from '@/components/timemanagement/common/TimngHeader.vue'
+import MyShopBreadcrumb from '../MyShopBreadcrumb.vue'
+
+export default {
+  components: {
+    TimngHeader,
+    MyShopBreadcrumb
+  },
+  setup() {
+    
+  },
+}
+</script>

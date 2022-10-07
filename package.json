@@ -19,6 +19,7 @@
     "lodash": "^4.17.21",
     "qrcode-vue3": "^1.4.17",
     "roboto-fontface": "*",
+    "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vue-uuid": "^3.0.0",

@@ -1,5 +1,6 @@
 import crypto from 'crypto-js';
 import { uuid } from 'vue-uuid';
+
 export default {
   methods: {
     getCompanyTypes () {
@@ -74,8 +75,9 @@ export default {
     const date = new Date(_date)
     return date.getTime()
   }
-
 }
+
+
 const CryptHash = 'hcg7ebiisufh'
 const CompanyTypes = [
   { value: 0, text: '法人' },
