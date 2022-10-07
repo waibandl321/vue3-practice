@@ -1,6 +1,6 @@
 <template>
   <TimngHeader />
-  <v-main>本日のタスク</v-main>
+  <v-main >ルーチン チェックシート</v-main>
 </template>
 
 <script>

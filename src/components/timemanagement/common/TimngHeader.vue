@@ -91,7 +91,7 @@ export default {
       },
       routine: {
         text: '本日のタスク',
-        route: '/timemanagement/todaytask'
+        route: '/timemanagement/routine/todaytask'
         
       },
       dashboard: {

@@ -12,9 +12,9 @@
 import MyShopBreadcrumb from '../MyShopBreadcrumb.vue';
   export default {
     components: {
-    TimngHeader,
-    MyShopBreadcrumb
-},
+      TimngHeader,
+      MyShopBreadcrumb
+    },
     setup() {
       
     },
